@@ -1,0 +1,9 @@
+.lock-waf*
+*.htm
+*.idb
+*.pdb
+*.user
+waf-*
+*.lnk
+build
+.trac/
