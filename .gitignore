@@ -8,7 +8,8 @@
 waf-*
 *.lnk
 build
-make-build
+make-build*
 Debug
 .trac-*
 *.o
+.waf-*
