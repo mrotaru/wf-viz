@@ -6,4 +6,5 @@
 waf-*
 *.lnk
 build
-.trac/
+.trac-*
+*.o

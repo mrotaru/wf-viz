@@ -16,8 +16,11 @@ def build( bld ):
     bld.program(
             target      = 'wfb',
             features    = [ 'cxxprogram' ],
-            source      = [ 'src/main.cpp' ],
-            includes    = [ './freeglut/include' ],
+            source      = [ 'src/main.cpp',
+                            'src/Point.cpp',
+                            'src/Line.cpp' ],
+            includes    = [ './include',
+                            './freeglut/include' ],
             defines     = [ 'FREEGLUT_STATIC' ],
             lib         = [ 'freeglut_static', 'opengl32', 'gdi32', 'glu32', 'winmm' ],
             libpath     = [ a_path + '/freeglut/lib' ],
