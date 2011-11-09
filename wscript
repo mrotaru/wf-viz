@@ -2,7 +2,7 @@
 import os
 
 top = '.'
-out = 'build'
+out = 'waf-build'
 
 def options( opt ):
 #    opt.load( 'compiler_cxx')
