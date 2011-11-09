@@ -2,6 +2,10 @@
 #include <iomanip>
 using namespace std;
 
+#ifdef _MSC_VER
+#include <windows.h>
+#endif
+
 #include <GL/glu.h>
 
 #include "Point.h"

@@ -1,3 +1,5 @@
+*.ncb
+*.suo
 .lock-waf*
 *.htm
 *.idb
@@ -6,5 +8,7 @@
 waf-*
 *.lnk
 build
+make-build
+Debug
 .trac-*
 *.o

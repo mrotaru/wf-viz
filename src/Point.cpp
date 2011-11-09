@@ -1,10 +1,14 @@
 #include <iostream>
 #include <string>
 #include <iomanip>
-#include <cmath>
 using namespace std;
 
+#define _USE_MATH_DEFINES
 #include <cmath>
+
+#ifdef _MSC_VER
+#include <windows.h>
+#endif
 
 #include "Point.h"
 
