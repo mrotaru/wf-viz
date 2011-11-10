@@ -1,8 +1,8 @@
 CC         =g++
 SOURCES    =src/main.cpp src/Line.cpp src/Point.cpp
 
-UNAME      :=$(shell uname)
-ifeq ($(UNAME), Linux)
+UNAME      :=$(shell uname -o)
+ifeq ($(UNAME), GNU/Linux)
 CFLAGS     =-c -g -O2 -Wall
 INCLUDES   =-I"./include"
 LINKFLAGS  =-static-libgcc # need g++ >= 4.5 for -static-libstdc++
@@ -10,7 +10,7 @@ LIB        =-lglut -lGLU
 BUILDDIR   =make-build-linux
 endif
 
-ifeq ($(UNAME), MINGW32_NT-5.1)
+ifeq ($(UNAME), Msys)
 CFLAGS     =-c -g -O2 -Wall -DFREEGLUT_STATIC
 INCLUDES   =-I"./include" -I"./freeglut/include"
 LDFLAGS    =-L"./freeglut/lib"
