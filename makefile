@@ -16,7 +16,7 @@ INCLUDES   =-I"./include" -I"./freeglut/include"
 LDFLAGS    =-L"./freeglut/lib"
 LINKFLAGS  =-static-libgcc -static-libstdc++ -W1,subsystem,windows
 LIB        =-lfreeglut_static -lopengl32 -lgdi32 -lglu32 -lwinmm
-BUILDDIR   =make-build
+BUILDDIR   =make-build-win32
 endif
 
 OBJECTS    =$(patsubst src/%.cpp,$(BUILDDIR)/%.o,$(SOURCES))
