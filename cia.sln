@@ -5,14 +5,14 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "cia", "cia.vcproj", "{0274A
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
-		Debug|Win32 = Debug|Win32
-		Release|Win32 = Release|Win32
+		vs-build-debug|Win32 = vs-build-debug|Win32
+		vs-build-release|Win32 = vs-build-release|Win32
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{0274A613-EEFA-41C3-A418-56FF9100EF2E}.Debug|Win32.ActiveCfg = Debug|Win32
-		{0274A613-EEFA-41C3-A418-56FF9100EF2E}.Debug|Win32.Build.0 = Debug|Win32
-		{0274A613-EEFA-41C3-A418-56FF9100EF2E}.Release|Win32.ActiveCfg = Release|Win32
-		{0274A613-EEFA-41C3-A418-56FF9100EF2E}.Release|Win32.Build.0 = Release|Win32
+		{0274A613-EEFA-41C3-A418-56FF9100EF2E}.vs-build-debug|Win32.ActiveCfg = vs-build-debug|Win32
+		{0274A613-EEFA-41C3-A418-56FF9100EF2E}.vs-build-debug|Win32.Build.0 = vs-build-debug|Win32
+		{0274A613-EEFA-41C3-A418-56FF9100EF2E}.vs-build-release|Win32.ActiveCfg = vs-build-release|Win32
+		{0274A613-EEFA-41C3-A418-56FF9100EF2E}.vs-build-release|Win32.Build.0 = vs-build-release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

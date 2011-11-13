@@ -1,6 +1,8 @@
 # !/bin/env/python
 import os
 import sys
+from subprocess import *
+from shutil import copy
 
 top = '.'
 if sys.platform == 'linux2':
@@ -12,7 +14,8 @@ def options( opt ):
     pass
 
 def configure( cnf ):
-    cnf.load( 'g++')
+    cnf.load( 'g++' )
+    cnf.env.EXE_NAME = Popen( "python scripts/exe_name.py" , stdout=PIPE, stderr=PIPE, shell=True ).stdout.read().strip()
 
     #-------------------------------------------------------------------- LINUX
     if sys.platform.startswith( 'linux' ):
@@ -33,7 +36,7 @@ def configure( cnf ):
 
 def build( bld ):
     bld.program(
-            target      = 'wfb',
+            target      = bld.env.EXE_NAME,
             features    = [ 'cxxprogram' ],
             source      = [ 'src/main.cpp',
                             'src/Point.cpp',
@@ -45,5 +48,7 @@ def build( bld ):
             linkflags   = bld.env.LINKFLAGS,
             cxxflags    = [ '-c', '-g', '-O2', '-Wall' ]
             )
+    copy( 'VERSION', out )        
+    call( 'python scripts/append_date.py ' + out + '/VERSION', shell=True )
 
 # vim:filetype=python
