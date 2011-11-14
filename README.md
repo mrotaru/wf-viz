@@ -23,3 +23,10 @@ Linux. The build files will be placed in a folder named make-build-[win32|linux]
 
 Not much to say about the third option; just open the VS solution and select
 Build -> Build Solution - or simply press F7, like a boss.
+
+When the program is run from VS, it will not display the correct build info
+( because VS tells it that it's working directory is the folder containing
+the .sln file ); this can be fixed by setting the working direcotry to
+$(OutDir) in the Project -> cia Properties... [ Debug -> Working Directory ]
+However, if the executable is double-clicked, or launched from the console,
+it will work just fine.
