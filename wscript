@@ -15,7 +15,6 @@ def options( opt ):
 
 def configure( cnf ):
     cnf.load( 'g++' )
-    cnf.env.EXE_NAME = Popen( "python scripts/exe_name.py" , stdout=PIPE, stderr=PIPE, shell=True ).stdout.read().strip()
 
     #-------------------------------------------------------------------- LINUX
     if sys.platform.startswith( 'linux' ):
@@ -35,12 +34,15 @@ def configure( cnf ):
         cnf.env.LIBPATH    = [ cnf.path.abspath() + '/freeglut/lib' ]
 
 def build( bld ):
+    call( 'python scripts/describe.py ', shell=True )
+    bld.env.EXE_NAME = Popen( "python scripts/exe_name.py" , stdout=PIPE, stderr=PIPE, shell=True ).stdout.read().strip()
     bld.program(
             target      = bld.env.EXE_NAME,
             features    = [ 'cxxprogram' ],
             source      = [ 'src/main.cpp',
                             'src/Point.cpp',
-                            'src/Line.cpp' ],
+                            'src/Line.cpp',
+                            'src/utils.cpp' ],
             includes    = bld.env.INCLUDES,
             defines     = bld.env.DEFINES,
             lib         = bld.env.LIB,

@@ -1,5 +1,5 @@
 CC         =g++
-SOURCES    =src/main.cpp src/Line.cpp src/Point.cpp
+SOURCES    =src/main.cpp src/Line.cpp src/Point.cpp src/utils.cpp
 
 UNAME      :=$(shell uname -o)
 ifeq ($(UNAME), GNU/Linux)
@@ -19,10 +19,11 @@ LIB        =-lfreeglut_static -lopengl32 -lgdi32 -lglu32 -lwinmm
 BUILDDIR   =make-build-win32
 endif
 
+MKV        :=$(shell python scripts/describe.py) # create VERSION file
 EXE_NAME   :=$(shell python scripts/exe_name.py)
+EXECUTABLE =$(BUILDDIR)/$(EXE_NAME).exe
 
 OBJECTS    =$(patsubst src/%.cpp,$(BUILDDIR)/%.o,$(SOURCES))
-EXECUTABLE =$(BUILDDIR)/$(EXE_NAME).exe
 
 all: $(SOURCES) $(EXECUTABLE)
 	
@@ -35,6 +36,5 @@ $(OBJECTS):$(BUILDDIR)/%.o:src/%.cpp
 	mkdir -p $(dir $@)
 	$(CC) $(CFLAGS) $< -o $@ $(INCLUDES)
 clean:
-	rm -f $(BUILDDIR)/*.o $(BUILDDIR)/*~
-	rm $(BUILDDIR)/$(EXE_NAME).exe
-	rm $(BUILDDIR)/VERSION
+	rm -rf $(BUILDDIR)
+	rm VERSION

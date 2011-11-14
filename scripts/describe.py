@@ -31,8 +31,8 @@ def which(program):
 if not which( 'git' ):
     pass
 else:
-    ver_short = Popen( "git describe --tags --abbrev=0" , stdout=PIPE, stderr=PIPE ).stdout.read().strip()
-    ver_full = Popen( "git describe --tags --abbrev=7 --dirty" , stdout=PIPE, stderr=PIPE ).stdout.read().strip()
+    ver_short = Popen( "git describe --tags --abbrev=0" , stdout=PIPE, stderr=PIPE, shell=True ).stdout.read().strip()
+    ver_full = Popen( "git describe --tags --abbrev=7 --dirty" , stdout=PIPE, stderr=PIPE, shell=True ).stdout.read().strip()
 
     # create VERSION
     ver_file = open( "VERSION", 'w' )

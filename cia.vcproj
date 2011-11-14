@@ -91,7 +91,7 @@
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
-				CommandLine="copy freeglut-vs\freeglut.dll $(OutDir)&#x0D;&#x0A;python scripts\append_date.py $(OutDir)\VERSION"
+				CommandLine="copy freeglut-vs\freeglut.dll $(OutDir)&#x0D;&#x0A;python scripts\append_date.py $(OutDir)\VERSION&#x0D;&#x0A;"
 			/>
 		</Configuration>
 		<Configuration
@@ -191,6 +191,10 @@
 				RelativePath=".\src\Point.cpp"
 				>
 			</File>
+			<File
+				RelativePath=".\src\utils.cpp"
+				>
+			</File>
 		</Filter>
 		<Filter
 			Name="Header Files"
@@ -207,6 +211,10 @@
 			</File>
 			<File
 				RelativePath=".\include\Primitive.h"
+				>
+			</File>
+			<File
+				RelativePath=".\include\utils.h"
 				>
 			</File>
 		</Filter>

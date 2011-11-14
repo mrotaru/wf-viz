@@ -9,6 +9,8 @@ waf-*
 *.lnk
 build
 make-build*
+waf-build*
+vs-build*
 Debug
 .trac-*
 *.o
