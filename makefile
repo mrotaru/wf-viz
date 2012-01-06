@@ -2,21 +2,25 @@ CC         =g++
 SOURCES    =src/main.cpp src/Line.cpp src/Point.cpp src/utils.cpp
 
 UNAME      :=$(shell uname -o)
+
+#-------------------------------------------------------------------------LINUX
 ifeq ($(UNAME), GNU/Linux)
 CFLAGS     =-c -g -O2 -Wall
 INCLUDES   =-I"./include"
 LINKFLAGS  =-static-libgcc # need g++ >= 4.5 for -static-libstdc++
 LIB        =-lglut -lGLU
-BUILDDIR   =make-build-linux
+BUILDDIR   =build/make/linux
 endif
 
+# Windows
+#------------------------------------------------------------------------WINDOWS
 ifeq ($(UNAME), Msys)
 CFLAGS     =-c -g -O2 -Wall -DFREEGLUT_STATIC
 INCLUDES   =-I"./include" -I"./freeglut/include"
 LDFLAGS    =-L"./freeglut/lib"
 LINKFLAGS  =-static-libgcc -static-libstdc++ -W1,subsystem,windows
 LIB        =-lfreeglut_static -lopengl32 -lgdi32 -lglu32 -lwinmm
-BUILDDIR   =make-build-win32
+BUILDDIR   =build/make/win32
 endif
 
 MKV        :=$(shell python scripts/describe.py) # create VERSION file

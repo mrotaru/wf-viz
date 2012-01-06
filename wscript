@@ -6,9 +6,9 @@ from shutil import copy
 
 top = '.'
 if sys.platform == 'linux2':
-    out                = 'waf-build-linux'
+    out                = 'build/waf/linux'
 elif sys.platform == 'win32':
-    out                = 'waf-build-win32'
+    out                = 'build/waf/win32'
 
 def options( opt ):
     pass
