@@ -16,8 +16,8 @@ endif
 #------------------------------------------------------------------------WINDOWS
 ifeq ($(UNAME), Msys)
 CFLAGS     =-c -g -O2 -Wall -DFREEGLUT_STATIC
-INCLUDES   =-I"./include" -I"./freeglut/include"
-LDFLAGS    =-L"./freeglut/lib"
+INCLUDES   =-I"./include" -I"./external/freeglut/2.6/mingw/include"
+LDFLAGS    =-L"./external/freeglut/2.6/mingw/lib"
 LINKFLAGS  =-static-libgcc -static-libstdc++ -W1,subsystem,windows
 LIB        =-lfreeglut_static -lopengl32 -lgdi32 -lglu32 -lwinmm
 BUILDDIR   =build/make/win32
