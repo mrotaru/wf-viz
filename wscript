@@ -6,9 +6,9 @@ from shutil import copy
 
 top = '.'
 if sys.platform == 'linux2':
-    out                = 'waf-build-linux'
+    out                = 'build/waf/linux'
 elif sys.platform == 'win32':
-    out                = 'waf-build-win32'
+    out                = 'build/waf/win32'
 
 def options( opt ):
     pass
@@ -27,11 +27,11 @@ def configure( cnf ):
     elif sys.platform == 'win32' or sys.platform == 'cygwin':
         print 'os: ' + sys.platform 
         cnf.env.INCLUDES   = [ './include',
-                               './freeglut/include' ]
+                               './external/freeglut/2.6/mingw/include' ]
         cnf.env.DEFINES    = [ 'FREEGLUT_STATIC' ]
         cnf.env.LINKFLAGS  = [ '-static-libgcc', '-static-libstdc++', '-W1,subsystem,windows' ]
         cnf.env.LIB        = [ 'freeglut_static', 'opengl32', 'gdi32', 'glu32', 'winmm' ]
-        cnf.env.LIBPATH    = [ cnf.path.abspath() + '/freeglut/lib' ]
+        cnf.env.LIBPATH    = [ cnf.path.abspath() + '/external/freeglut/2.6/mingw/lib' ]
 
 def build( bld ):
     call( 'python scripts/describe.py ', shell=True )
