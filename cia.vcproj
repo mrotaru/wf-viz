@@ -17,9 +17,9 @@
 	</ToolFiles>
 	<Configurations>
 		<Configuration
-			Name="vs-build-release|Win32"
-			OutputDirectory="$(SolutionDir)$(ConfigurationName)"
-			IntermediateDirectory="$(ConfigurationName)"
+			Name="release|Win32"
+			OutputDirectory="$(SolutionDir)\build\vs9.0\$(ConfigurationName)"
+			IntermediateDirectory="$(SolutionDir)\build\vs9.0\$(ConfigurationName)\intermediate"
 			ConfigurationType="1"
 			CharacterSet="1"
 			WholeProgramOptimization="1"
@@ -95,9 +95,9 @@
 			/>
 		</Configuration>
 		<Configuration
-			Name="vs-build-debug|Win32"
-			OutputDirectory="$(SolutionDir)$(ConfigurationName)"
-			IntermediateDirectory="$(ConfigurationName)"
+			Name="debug|Win32"
+			OutputDirectory="$(SolutionDir)\build\vs9.0\$(ConfigurationName)"
+			IntermediateDirectory="$(SolutionDir)\build\vs9.0\$(ConfigurationName)\intermediate"
 			ConfigurationType="1"
 			CharacterSet="1"
 			>
