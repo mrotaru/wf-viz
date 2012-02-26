@@ -47,6 +47,12 @@ def configure( cnf ):
         cnf.env.LIB        = [ 'glut', 'GLU' ]
         cnf.env.STLIBPATH  = [ '/usr/local/boost_1_49_0/stage/lib' ]
         cnf.env.STLIB      = [ 'boost_regex' ]
+
+        # for building the test runners
+        #----------------------------------------
+        cnf.env.TEST_STLIBPATH = "/usr/local/boost_1_49_0/stage/lib"
+        cnf.env.TEST_STLIB = "boost_test_exec_monitor"
+        cnf.env.TEST_INCLUDES = cnf.env.BOOST_PATH
     
     # WINDOWS
     #--------------------------------------------------------------------------
@@ -67,7 +73,6 @@ def configure( cnf ):
 
         # for building the test runners
         #----------------------------------------
-#        cnf.env.TEST_STLIBPATH = cnf.env.BOOST_PATH + "/bin.v2/libs/test/build/gcc-mingw-4.6.1/debug/link-static"
         cnf.env.TEST_STLIBPATH = cnf.path.abspath() + "/libs/test/gcc-mingw-4.6.1/debug/link-static"
         cnf.env.TEST_STLIB = "boost_test_exec_monitor-mgw46-d-1_48"
         cnf.env.TEST_INCLUDES = cnf.env.BOOST_PATH
