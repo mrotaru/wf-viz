@@ -20,12 +20,13 @@ sources     = [ 'src/Point.cpp',
                 'src/globals.cpp',
                 'src/BezierCurve.cpp',
                 'src/Shape.cpp',
-                'src/Group.cpp'
-                ]
+                'src/Group.cpp' ]
 
 #----------------------------------------------------------------
 main_cpp        = "src/main.cpp"    # used to run the application
 test_runner_cpp = "tests/runner.cpp"  # used to run the tests
+test_sources    = [ 'tests/testPoint.cpp',
+                    'tests/testLine.cpp' ]
 
 def options( opt ):
     opt.add_option('--check', action='store', default=False, help='compile test runners')
@@ -50,8 +51,8 @@ def configure( cnf ):
 
         # for building the test runners
         #----------------------------------------
-        cnf.env.TEST_STLIBPATH = "/usr/local/boost_1_49_0/stage/lib"
-        cnf.env.TEST_STLIB = "boost_test_exec_monitor"
+        cnf.env.TEST_LIBPATH = "/usr/local/boost_1_49_0/stage/lib"
+        cnf.env.TEST_LIB = "boost_unit_test_framework"
         cnf.env.TEST_INCLUDES = cnf.env.BOOST_PATH
     
     # WINDOWS
@@ -103,9 +104,9 @@ def build( bld ):
                 target      = 'runner',
                 features    = [ 'cxxprogram' ],
                 includes    = bld.env.TEST_INCLUDES,
-                source      = sources + [ test_runner_cpp ],
-                stlibpath   = bld.env.TEST_STLIBPATH,
-                stlib       = bld.env.TEST_STLIB,
+                source      = sources + [ test_runner_cpp ] + test_sources,
+                libpath     = bld.env.TEST_LIBPATH,
+                lib         = bld.env.TEST_LIB,
                 linkflags   = bld.env.LINKFLAGS,
                 cxxflags    = [ '-c', '-g', '-O2', '-Wall' ]
                 )

@@ -7,6 +7,8 @@
 
 namespace xmx {
 
+class Point;
+
 class Line : virtual public Primitive
 {
 public:
