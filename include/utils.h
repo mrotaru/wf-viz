@@ -23,6 +23,7 @@ template < typename T > T getFromRegex( string , const boost::regex& );
 void printText( int nX, int nY, string text );
 void printBigText( int nX, int nY, string text );
 GLfloat dist( GLfloat x1, GLfloat y1, GLfloat x2, GLfloat y2 );
+GLfloat degrees_to_radians( GLfloat );
 
 } // namespace xmx
 #endif /* UTILS_H */

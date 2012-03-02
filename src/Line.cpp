@@ -1,5 +1,6 @@
 #include <iostream>
 #include <iomanip>
+#include <cmath>
 using namespace std;
 
 #ifdef _MSC_VER
@@ -120,8 +121,9 @@ void Line::print( std::string str )
 //------------------------------------------------------------------------------
 GLfloat Line::distanceTo( GLfloat x, GLfloat y )
 {
-    // not implemented
-    return -1001;
+    float num = abs(( x2 - x1 ) * ( y1 - y ) - ( x1 - x ) * ( y2 - y1 ));
+    float nmr = sqrt(( x2 - x1 ) * ( x2 - x1 ) + ( y2 - y1 ) * ( y2 - y1 ));
+    return num/nmr;
 }
 
 GLfloat Line::getMaxX() { return ( x1 > x2 ? x1 : x2 ); }

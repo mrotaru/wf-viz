@@ -10,6 +10,9 @@ using namespace std;
 #include <windows.h>
 #endif
 
+#define _USE_MATH_DEFINES
+#include <cmath>
+
 #include <GL/glu.h>
 #include <GL/glut.h>
 
@@ -84,6 +87,14 @@ void printBigText( int nX, int nY, string text )
 GLfloat dist( GLfloat x1, GLfloat y1, GLfloat x2, GLfloat y2 )
 {
     return sqrt( ((x1 - x2) * (x1 - x2)) + ((y1 - y2) * (y1 - y2)) ) ;
+}
+
+// convert `degrees` to radians
+//------------------------------------------------------------------------------
+GLfloat degrees_to_radians( GLfloat degrees )
+{
+    double const PI = 3.14159265358979323;
+    return degrees * ( PI/180.0 ); 
 }
 
 } // namespace xmx

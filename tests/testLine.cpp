@@ -3,6 +3,7 @@
 #   define BOOST_TEST_MODULE Main
 #endif
 #include <boost/test/unit_test.hpp>
+#include <boost/shared_ptr.hpp>
 
 #include <iostream>
 #include "../include/Line.h"
@@ -10,12 +11,25 @@
 using namespace std;
 using namespace xmx;
 
-BOOST_AUTO_TEST_SUITE(TestLine)
+struct Fixture
+{
+    Fixture() { l = boost::shared_ptr<Line>(new Line( 10, 10, 20, 10 )); }
+    ~Fixture() {}
+    boost::shared_ptr<Line> l;
+};
+
+BOOST_FIXTURE_TEST_SUITE( TestLine, Fixture )
+
+BOOST_AUTO_TEST_CASE( TestDistance )
+{
+    BOOST_CHECK( l->distanceTo( 15,20 ) == 10.0 );
+}
 
 BOOST_AUTO_TEST_CASE(Test1)
 {
-    Line l( 10, 10, 20, 20 );
-    l.rotate( 45 );
+    l->print("before rotation: ");
+    l->rotate( 45 );
+    l->print("after rotation:  ");
     BOOST_CHECK( true );
 }
 

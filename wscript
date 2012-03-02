@@ -26,7 +26,8 @@ sources     = [ 'src/Point.cpp',
 main_cpp        = "src/main.cpp"    # used to run the application
 test_runner_cpp = "tests/runner.cpp"  # used to run the tests
 test_sources    = [ 'tests/testPoint.cpp',
-                    'tests/testLine.cpp' ]
+                    'tests/testLine.cpp',
+                    'tests/testUtils.cpp' ]
 
 def options( opt ):
     opt.add_option('--check', action='store', default=False, help='compile test runners')

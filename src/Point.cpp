@@ -11,19 +11,20 @@ using namespace std;
 #endif
 
 #include "Point.h"
+#include "utils.h"
 
 namespace xmx {
 
 //------------------------------------------------------------------------------
 void nice_cout( string msg, GLfloat f )
 {
-    cout<< msg << setfill(' ') << setw( 15 ) <<setiosflags( ios::fixed | ios::right ) << setprecision(4) << f <<endl;
+    cout<< msg << setfill(' ') << setw( 15 ) <<setiosflags( ios::fixed | ios::right ) << setprecision(10) << f <<endl;
 }
 
 //------------------------------------------------------------------------------
 void nice_cout_( string msg, GLfloat f )
 {
-    cout<< msg << setfill(' ') << setw( 15 ) <<setiosflags( ios::fixed | ios::right ) << setprecision(4) << f;
+    cout<< msg << setfill(' ') << setw( 15 ) <<setiosflags( ios::fixed | ios::right ) << setprecision(10) << f;
 }
 
 //------------------------------------------------------------------------------
@@ -52,32 +53,37 @@ Point psqrt( const Point& p )
     return Point( sqrt( p.getX() ), sqrt( p.getY() ), sqrt( p.getZ()));
 }
 
+
 // rotates the point `theta` degrees around the origin
 //------------------------------------------------------------------------------
 void Point::rotate( const GLfloat& theta )
 {
-    GLfloat theta_radians = theta/180 * M_PI;
+    GLfloat theta_radians = degrees_to_radians( theta );
+    cout <<" D2R: " << theta_radians << endl;
     x = x * cos( theta_radians ) - y * sin( theta_radians );
-    y = x * cos( theta_radians ) + y * sin( theta_radians );
+    cout << "cos: " << cos( theta_radians ) << endl;
+    cout << "sin: " << sin( theta_radians ) << endl;
+    cout <<" x: " << x << endl;
+    y = x * sin( theta_radians ) + y * cos( theta_radians );
+    cout <<" y: " << y << endl;
 }
 
 // rotates the point `theta` degrees around `x_coord`,`y_coord` 
 //------------------------------------------------------------------------------
 void Point::rotate( const GLfloat& theta, const Point& P )
 {
-    GLfloat theta_radians = theta/180 * M_PI;
+    GLfloat theta_radians = degrees_to_radians( theta );
     x = P.getX() + (( x - P.getX() ) * cos( theta_radians )) - (( y - P.getY() ) * sin( theta_radians ));
-    y = P.getY() + (( y - P.getY() ) * cos( theta_radians )) + (( x - P.getX() ) * sin( theta_radians ));
+    y = P.getY() + (( y - P.getY() ) * sin( theta_radians )) + (( x - P.getX() ) * cos( theta_radians ));
 }
-
 
 // rotates the point `theta` degrees around `x_coord`,`y_coord` 
 //------------------------------------------------------------------------------
 void Point::rotate( const GLfloat& theta, const GLfloat& x_coord, const GLfloat& y_coord )
 {
-    GLfloat theta_radians = theta/180 * M_PI;
+    GLfloat theta_radians = degrees_to_radians( theta);
     x = x_coord + (( x - x_coord ) * cos( theta_radians )) - (( y - y_coord ) * sin( theta_radians ));
-    y = y_coord + (( y - y_coord ) * cos( theta_radians )) + (( x - x_coord ) * sin( theta_radians ));
+    y = y_coord + (( y - y_coord ) * sin( theta_radians )) + (( x - x_coord ) * cos( theta_radians ));
 }
 
 // operators
