@@ -59,13 +59,9 @@ Point psqrt( const Point& p )
 void Point::rotate( const GLfloat& theta )
 {
     GLfloat theta_radians = degrees_to_radians( theta );
-    cout <<" D2R: " << theta_radians << endl;
-    x = x * cos( theta_radians ) - y * sin( theta_radians );
-    cout << "cos: " << cos( theta_radians ) << endl;
-    cout << "sin: " << sin( theta_radians ) << endl;
-    cout <<" x: " << x << endl;
-    y = x * sin( theta_radians ) + y * cos( theta_radians );
-    cout <<" y: " << y << endl;
+    GLfloat  new_x = x * cos( theta_radians ) - y * sin( theta_radians );
+                 y = x * sin( theta_radians ) + y * cos( theta_radians );
+    x = new_x;
 }
 
 // rotates the point `theta` degrees around `x_coord`,`y_coord` 
@@ -73,8 +69,9 @@ void Point::rotate( const GLfloat& theta )
 void Point::rotate( const GLfloat& theta, const Point& P )
 {
     GLfloat theta_radians = degrees_to_radians( theta );
-    x = P.getX() + (( x - P.getX() ) * cos( theta_radians )) - (( y - P.getY() ) * sin( theta_radians ));
-    y = P.getY() + (( y - P.getY() ) * sin( theta_radians )) + (( x - P.getX() ) * cos( theta_radians ));
+    GLfloat new_x = P.getX() + (( x - P.getX() ) * cos( theta_radians )) - (( y - P.getY() ) * sin( theta_radians ));
+                y = P.getY() + (( x - P.getX() ) * sin( theta_radians )) + (( y - P.getY() ) * cos( theta_radians ));
+    x = new_x;
 }
 
 // rotates the point `theta` degrees around `x_coord`,`y_coord` 
@@ -82,8 +79,9 @@ void Point::rotate( const GLfloat& theta, const Point& P )
 void Point::rotate( const GLfloat& theta, const GLfloat& x_coord, const GLfloat& y_coord )
 {
     GLfloat theta_radians = degrees_to_radians( theta);
-    x = x_coord + (( x - x_coord ) * cos( theta_radians )) - (( y - y_coord ) * sin( theta_radians ));
-    y = y_coord + (( y - y_coord ) * sin( theta_radians )) + (( x - x_coord ) * cos( theta_radians ));
+    GLfloat new_x = x_coord + (( x - x_coord ) * cos( theta_radians )) - (( y - y_coord ) * sin( theta_radians ));
+                y = y_coord + (( x - x_coord ) * sin( theta_radians )) + (( y - y_coord ) * cos( theta_radians ));
+    x = new_x;
 }
 
 // operators

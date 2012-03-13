@@ -13,7 +13,7 @@ using namespace xmx;
 
 struct Fixture
 {
-    Fixture() { l = boost::shared_ptr<Line>(new Line( 10, 10, 20, 10 )); }
+    Fixture() { l = boost::shared_ptr<Line>(new Line( 100, 100, 200, 100 )); }
     ~Fixture() {}
     boost::shared_ptr<Line> l;
 };
@@ -22,14 +22,14 @@ BOOST_FIXTURE_TEST_SUITE( TestLine, Fixture )
 
 BOOST_AUTO_TEST_CASE( TestDistance )
 {
-    BOOST_CHECK( l->distanceTo( 15,20 ) == 10.0 );
+    BOOST_CHECK( l->distanceTo( 150,200 ) == 100.0 );
 }
 
 BOOST_AUTO_TEST_CASE(Test1)
 {
-    l->print("before rotation: ");
+//    l->print("before rotation: ");
     l->rotate( 45 );
-    l->print("after rotation:  ");
+//    l->print("after rotation:  ");
     BOOST_CHECK( true );
 }
 

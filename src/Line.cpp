@@ -1,8 +1,7 @@
 #include <iostream>
 #include <iomanip>
 #include <cmath>
-using namespace std;
-
+using namespace std; 
 #ifdef _MSC_VER
 #include <windows.h>
 #endif
@@ -11,6 +10,7 @@ using namespace std;
 
 #include "Point.h"
 #include "Line.h"
+#include "utils.h"
 
 namespace xmx {
 
@@ -20,7 +20,6 @@ Line::Line( float _x1, float _y1, float _x2, float _y2 ):
     y1( (GLfloat )_y1 ),
     x2( (GLfloat )_x2 ),
     y2( (GLfloat )_y2 )
-    
 {
 }
 
@@ -65,13 +64,20 @@ void Line::move( GLfloat x_dir, GLfloat y_dir )
 //------------------------------------------------------------------------------
 void Line::rotate( GLfloat theta, GLfloat x, GLfloat y)
 {
+    Point P1( x1, y1 );
+    P1.rotate( theta, x, y );
+    x1 = P1.getX();
+    y1 = P1.getY();
 
+    Point P2( x2, y2 );
+    P2.rotate( theta, x, y );
+    x2 = P2.getX();
+    y2 = P2.getY();
 }
 
 //------------------------------------------------------------------------------
 void Line::rotate( GLfloat theta )
 {
-
     GLfloat x_center = ( (getMaxX() - getMinX())/2 + getMinX() );
     GLfloat y_center = ( (getMaxY() - getMinY())/2 + getMinY() );
 
@@ -84,7 +90,6 @@ void Line::rotate( GLfloat theta )
     P2.rotate( theta, x_center, y_center );
     x2 = P2.getX();
     y2 = P2.getY();
-
 }
 
 //------------------------------------------------------------------------------
@@ -115,6 +120,7 @@ void Line::print( std::string str )
     cout<< " y1: "<< setfill(' ') << setw( 10 ) <<setiosflags( ios::fixed | ios::right ) << setprecision(4) <<y1;
     cout<< " x2: "<< setfill(' ') << setw( 10 ) <<setiosflags( ios::fixed | ios::right ) << setprecision(4) <<x2;
     cout<< " y2: "<< setfill(' ') << setw( 10 ) <<setiosflags( ios::fixed | ios::right ) << setprecision(4) <<y2;
+    cout<< endl << "length: " << dist( x1, y1, x2, y2 );
     cout<<endl;
 }
 
