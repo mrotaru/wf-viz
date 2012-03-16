@@ -55,7 +55,7 @@ def configure( cnf ):
     # WINDOWS
     #--------------------------------------------------------------------------
     elif sys.platform == 'win32' or sys.platform == 'cygwin':
-        cnf.env.BOOST_PATH = 'c:/pdev/boost_1_48_0'
+        cnf.env.BOOST_PATH = 'c:/pdev/boost_1_49_0'
 
         # main program
         cnf.env.INCLUDES   = [ './include',
@@ -65,12 +65,12 @@ def configure( cnf ):
         cnf.env.LINKFLAGS  = [ '-static-libgcc', '-static-libstdc++', '-W1,subsystem,windows' ]
         cnf.env.LIB        = [ 'freeglut_static', 'opengl32', 'gdi32', 'glu32', 'winmm' ]
         cnf.env.LIBPATH    = [ cnf.path.abspath() + '/external/freeglut/2.6/mingw/lib' ]
-        cnf.env.STLIBPATH  = [ cnf.path.abspath() + '/libs/regex/gcc-mingw-4.6.1' ]
-        cnf.env.STLIB      = [ 'boost_regex-gcc-1_48' ]
+        cnf.env.STLIBPATH  = [ cnf.path.abspath() + '/libs/win32/gcc-mingw-4.6.2' ]
+        cnf.env.STLIB      = [ 'boost_regex-mgw46-1_49' ]
 
         # for building the test runners
-        cnf.env.TEST_STLIBPATH = cnf.path.abspath() + '/libs/test/gcc-mingw-4.6.1/debug/link-static'
-        cnf.env.TEST_STLIB = 'boost_test_exec_monitor-mgw46-d-1_48'
+        cnf.env.TEST_LIBPATH = cnf.path.abspath() + '/libs/win32/gcc-mingw-4.6.2'
+        cnf.env.TEST_LIB = 'boost_unit_test_framework-mgw46-1_49'
         cnf.env.TEST_INCLUDES = cnf.env.BOOST_PATH
 
 #------------------------------------------------------------------------------
@@ -87,7 +87,6 @@ def build( bld ):
             defines     = bld.env.DEFINES,
             cxxflags    = [ '-c', '-g', '-O2', '-Wall' ]
             )
-
 
     # build main program
     #---------------------------------------------------
@@ -119,6 +118,7 @@ def build( bld ):
                 cxxflags    = [ '-c', '-g', '-O2', '-Wall' ],
                 use         = 'objects'
                 )
+        copy( bld.env.TEST_LIBPATH + '/lib' + bld.env.TEST_LIB + '.dll', out )
 
     copy( 'VERSION', out )        
     call( 'python scripts/append_date.py ' + out + '/VERSION', shell=True )
