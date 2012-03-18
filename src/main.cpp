@@ -1,12 +1,25 @@
 #include <iostream>
 #include <fstream>
+#include <sstream>
+#include <list>
+#include <vector>
 using namespace std;
 
 #ifdef _MSC_VER
 #include <windows.h>
 #endif
 
+#include <boost/shared_ptr.hpp>
+#include <boost/foreach.hpp>
+
+#include "globals.h"
 #include "utils.h"
+#include "Point.h"
+#include "Line.h"
+#include "BezierCurve.h"
+#include "Shape.h"
+#include "Group.h"
+#include "Layer.h"
 using namespace xmx;
 
 #include <GL/glu.h>
@@ -16,6 +29,9 @@ string VERSION    = "?";
 string BUILD_ID   = "?";
 string BUILD_TIME = "?";
 string build_info = "";
+
+// holds the map of the world
+Group world;
 
 //------------------------------------------------------------------------------
 void gl_init()
@@ -38,6 +54,11 @@ void app_init()
     getline( ver_file, BUILD_ID );
     getline( ver_file, BUILD_TIME );
     build_info = "Build info: " + BUILD_ID + " @ " + BUILD_TIME;
+
+    // load map of the world
+    world.name = "Map of the world";
+    world.loadFromPovFile( "res/pov/blank-world-robinson.pov" );
+    world.setColor( 0.5, 0.5, 0.5 );
 }
 
 //------------------------------------------------------------------------------
@@ -45,6 +66,8 @@ void gl_display_function()
 {
     glClear( GL_COLOR_BUFFER_BIT );
     glRenderMode( GL_RENDER );
+
+    world.draw();
 
     glColor3ub( 60, 60, 60 );
     printText( 10, glutGet( GLUT_WINDOW_HEIGHT ) - 18, VERSION );

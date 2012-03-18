@@ -44,7 +44,7 @@ public:
     void setY( GLfloat _y ) { y = _y; }
     void setZ( GLfloat _z ) { x = _z; }
 
-private:
+public:
     GLfloat x,y,z;
 };
 
