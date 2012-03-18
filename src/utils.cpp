@@ -10,10 +10,36 @@ using namespace std;
 #include <windows.h>
 #endif
 
+#define _USE_MATH_DEFINES
+#include <cmath>
+
 #include <GL/glu.h>
 #include <GL/glut.h>
 
+#include <boost/regex.hpp>
+#include <boost/algorithm/string/regex.hpp>
+#include <boost/lexical_cast.hpp>
+
 namespace xmx {
+
+struct Color;
+
+// if `str` matches `myRegex`, try parsing the first match into an integer
+// NOTE: lexical_cast is said to be slow 
+// [http://stackoverflow.com/questions/1250795/very-poor-boostlexical-cast-performance]
+//-----------------------------------------------------------------------------
+template < typename T >
+T getFromRegex( string haystack, const boost::regex& myRegex )
+{
+    boost::smatch match;
+    if( regex_search( haystack, match, myRegex ))
+        return boost::lexical_cast<T>( match[1] );
+    else
+        throw( "exception in getFromRegex( string, regex )");
+}
+
+template int getFromRegex< int >( string haystack, const boost::regex& myRegex );
+template string getFromRegex< string >( string haystack, const boost::regex& myRegex );
 
 //-----------------------------------------------------------------------------
 void printText( int nX, int nY, string text )
@@ -61,6 +87,21 @@ void printBigText( int nX, int nY, string text )
 GLfloat dist( GLfloat x1, GLfloat y1, GLfloat x2, GLfloat y2 )
 {
     return sqrt( ((x1 - x2) * (x1 - x2)) + ((y1 - y2) * (y1 - y2)) ) ;
+}
+
+// returns the dot product between P1( x1, y1 ) and P2( x2, y2 )
+//-----------------------------------------------------------------------------
+GLfloat dot( GLfloat x1, GLfloat y1, GLfloat x2, GLfloat y2 )
+{
+    return( x1 * x2 + y1 * y2 );
+}
+
+// convert `degrees` to radians
+//------------------------------------------------------------------------------
+GLfloat degrees_to_radians( GLfloat degrees )
+{
+    double const PI = 3.14159265358979323;
+    return degrees * ( PI/180.0 ); 
 }
 
 } // namespace xmx

@@ -7,6 +7,8 @@
 
 namespace xmx {
 
+class Point;
+
 class Line : virtual public Primitive
 {
 public:
@@ -32,6 +34,7 @@ public:
     virtual GLfloat getMaxY();
     virtual GLfloat getMinY();
     void rotate2( GLfloat );
+    GLfloat getLength();
 
     // getters/setters
     GLfloat getX1() const { return x1; }

@@ -17,9 +17,9 @@
 	</ToolFiles>
 	<Configurations>
 		<Configuration
-			Name="vs-build-release|Win32"
-			OutputDirectory="$(SolutionDir)$(ConfigurationName)"
-			IntermediateDirectory="$(ConfigurationName)"
+			Name="release|Win32"
+			OutputDirectory="$(SolutionDir)\build\vs9.0\$(ConfigurationName)"
+			IntermediateDirectory="$(SolutionDir)\build\vs9.0\$(ConfigurationName)\intermediate"
 			ConfigurationType="1"
 			CharacterSet="1"
 			WholeProgramOptimization="1"
@@ -44,7 +44,7 @@
 				Name="VCCLCompilerTool"
 				Optimization="2"
 				EnableIntrinsicFunctions="true"
-				AdditionalIncludeDirectories="include;&quot;freeglut-vs/include&quot;;$(NOINHERIT)"
+				AdditionalIncludeDirectories="include;&quot;external\freeglut\2.6\vs\include\&quot;;$(NOINHERIT)"
 				PreprocessorDefinitions="WIN32;NDEBUG;_CONSOLE"
 				RuntimeLibrary="2"
 				EnableFunctionLevelLinking="true"
@@ -64,7 +64,7 @@
 			<Tool
 				Name="VCLinkerTool"
 				LinkIncremental="1"
-				AdditionalLibraryDirectories="&quot;freeglut-vs\lib&quot;"
+				AdditionalLibraryDirectories="&quot;external\freeglut\2.6\vs\lib\&quot;"
 				GenerateDebugInformation="true"
 				SubSystem="1"
 				OptimizeReferences="2"
@@ -91,13 +91,13 @@
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
-				CommandLine="copy freeglut-vs\freeglut.dll $(OutDir)&#x0D;&#x0A;python scripts\append_date.py $(OutDir)\VERSION&#x0D;&#x0A;"
+				CommandLine="copy external\freeglut\2.6\vs\freeglut.dll $(OutDir)&#x0D;&#x0A;python scripts\append_date.py $(OutDir)\VERSION&#x0D;&#x0A;"
 			/>
 		</Configuration>
 		<Configuration
-			Name="vs-build-debug|Win32"
-			OutputDirectory="$(SolutionDir)$(ConfigurationName)"
-			IntermediateDirectory="$(ConfigurationName)"
+			Name="debug|Win32"
+			OutputDirectory="$(SolutionDir)\build\vs9.0\$(ConfigurationName)"
+			IntermediateDirectory="$(SolutionDir)\build\vs9.0\$(ConfigurationName)\intermediate"
 			ConfigurationType="1"
 			CharacterSet="1"
 			>
@@ -120,7 +120,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="include;&quot;freeglut-vs/include&quot;;$(NOINHERIT)"
+				AdditionalIncludeDirectories="include;&quot;external\freeglut\2.6\vs\include\&quot;;$(NOINHERIT)"
 				PreprocessorDefinitions="WIN32;_DEBUG;_CONSOLE"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
@@ -142,7 +142,7 @@
 				Name="VCLinkerTool"
 				ShowProgress="0"
 				LinkIncremental="2"
-				AdditionalLibraryDirectories="&quot;freeglut-vs\lib&quot;"
+				AdditionalLibraryDirectories="&quot;external\freeglut\2.6\vs\lib\&quot;"
 				GenerateDebugInformation="true"
 				SubSystem="1"
 				TargetMachine="1"
@@ -167,7 +167,7 @@
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
-				CommandLine="copy freeglut-vs\freeglut.dll $(OutDir)&#x0D;&#x0A;python scripts\append_date.py $(OutDir)\VERSION&#x0D;&#x0A;"
+				CommandLine="copy external\freeglut\2.6\vs\freeglut.dll $(OutDir)&#x0D;&#x0A;python scripts\append_date.py $(OutDir)\VERSION&#x0D;&#x0A;"
 			/>
 		</Configuration>
 	</Configurations>
