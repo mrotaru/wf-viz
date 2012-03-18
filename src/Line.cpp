@@ -124,12 +124,27 @@ void Line::print( std::string str )
     cout<<endl;
 }
 
+// adapted from: http://stackoverflow.com/a/1501725
 //------------------------------------------------------------------------------
 GLfloat Line::distanceTo( GLfloat x, GLfloat y )
 {
-    float num = abs(( x2 - x1 ) * ( y1 - y ) - ( x1 - x ) * ( y2 - y1 ));
-    float nmr = sqrt(( x2 - x1 ) * ( x2 - x1 ) + ( y2 - y1 ) * ( y2 - y1 ));
-    return num/nmr;
+    const GLfloat l2 = pow( dist( x1, y1, x2, y2 ), 2);  // i.e. |w-v|^2 -  avoid a sqrt
+    if( l2 == 0.0 ) return dist( x1, y1, x2, y2 );
+
+    const GLfloat t = dot( x - x1, y - y1, x2 - x1, y2 - y1 ) / l2;
+
+    if     ( t < 0.0 ) return dist( x, y, x1, y1 );     // Beyond the 'v' end of the segment
+    else if( t > 1.0 ) return dist( x, y, x2, y2 );     // Beyond the 'w' end of the segment
+    
+    const GLfloat projection_x = x1 + t * ( x2 - x1 );  // Projection falls on the segment
+    const GLfloat projection_y = y1 + t * ( y2 - y1 );
+    return dist( x, y, projection_x, projection_y );
+}
+
+//------------------------------------------------------------------------------
+GLfloat Line::getLength()
+{
+    return sqrt( ((x1 - x2) * (x1 - x2)) + ((y1 - y2) * (y1 - y2)) ) ;
 }
 
 GLfloat Line::getMaxX() { return ( x1 > x2 ? x1 : x2 ); }

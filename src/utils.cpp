@@ -89,6 +89,13 @@ GLfloat dist( GLfloat x1, GLfloat y1, GLfloat x2, GLfloat y2 )
     return sqrt( ((x1 - x2) * (x1 - x2)) + ((y1 - y2) * (y1 - y2)) ) ;
 }
 
+// returns the dot product between P1( x1, y1 ) and P2( x2, y2 )
+//-----------------------------------------------------------------------------
+GLfloat dot( GLfloat x1, GLfloat y1, GLfloat x2, GLfloat y2 )
+{
+    return( x1 * x2 + y1 * y2 );
+}
+
 // convert `degrees` to radians
 //------------------------------------------------------------------------------
 GLfloat degrees_to_radians( GLfloat degrees )
