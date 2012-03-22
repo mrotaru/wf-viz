@@ -29,7 +29,8 @@ def which(program):
     return None
 
 if not which( 'git' ):
-    pass
+    print( "git not found in $PATH; not creating the 'VERSION' file" )
+    exit( 1 )
 else:
     ver_short = Popen( "git describe --tags --abbrev=0" , stdout=PIPE, stderr=PIPE, shell=True ).stdout.read().strip()
     ver_full = Popen( "git describe --tags --abbrev=7 --dirty" , stdout=PIPE, stderr=PIPE, shell=True ).stdout.read().strip()
