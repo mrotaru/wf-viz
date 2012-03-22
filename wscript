@@ -32,6 +32,7 @@ def options( opt ):
 #------------------------------------------------------------------------------
 def configure( cnf ):
     cnf.load( 'g++' )
+    
     print 'os: ' + sys.platform 
 
     # LINUX
@@ -75,8 +76,11 @@ def configure( cnf ):
 
 #------------------------------------------------------------------------------
 def build( bld ):
-    call( 'python scripts/describe.py ', shell=True )
-    bld.env.EXE_NAME = Popen( 'python scripts/exe_name.py' , stdout=PIPE, stderr=PIPE, shell=True ).stdout.read().strip()
+    version_file_created = call( 'python scripts/describe.py ', shell=True )
+    if version_file_created == 0: 
+        bld.env.EXE_NAME = Popen( 'python scripts/exe_name.py' , stdout=PIPE, stderr=PIPE, shell=True ).stdout.read().strip()
+    else:
+        bld.env.EXE_NAME = "wf-viz"
     
     # build objects
     #---------------------------------------------------
@@ -120,7 +124,8 @@ def build( bld ):
                 )
         copy( bld.env.TEST_LIBPATH + '/lib' + bld.env.TEST_LIB + '.dll', out )
 
-    copy( 'VERSION', out )        
-    call( 'python scripts/append_date.py ' + out + '/VERSION', shell=True )
+    if version_file_created == 0:
+        copy( 'VERSION', out )        
+        call( 'python scripts/append_date.py ' + out + '/VERSION', shell=True )
 
 # vim:filetype=python
