@@ -22,6 +22,9 @@ using namespace std;
 #include "Group.h"
 using namespace xmx;
 
+// disable 'comparison between signed and unsigned integer expressions'
+#pragma GCC diagnostic ignored "-Wsign-compare"
+
 typedef boost::shared_ptr<Shape> sptrShape;
 
 namespace xmx {
@@ -129,7 +132,7 @@ boost::shared_ptr< BezierCurve > parseBezierCurve( string line )
 
     boost::algorithm::split_regex( result, line, split_coords_regex );
 
-    for( int i=1; i< result.size()-1; i++ )
+    for( uint i=1; i< result.size()-1; i++ )
     {   // split the pairs into numbers
         vector<string> result2;
         boost::algorithm::split_regex ( result2, result[i], comma_split_regex );
@@ -146,7 +149,7 @@ boost::shared_ptr< BezierCurve > parseBezierCurve( string line )
 
 // try parsing a Shape from `lines`, starting with `start_line`
 // and if parsing is successufll, put the last parsed line into `end_line`
-boost::shared_ptr< Shape > parseShape( vector< string >& lines, int& line_no )
+boost::shared_ptr< Shape > parseShape( vector< string >& lines, uint& line_no )
 {
     bool DPL = DEBUG_POV_LOADING;
     if( DPL )cout<< "parsing Shape starting with line " << line_no << endl;
@@ -197,7 +200,7 @@ void Group::loadFromPovFile( string filename )
     bool DPL = DEBUG_POV_LOADING;
     //    list< sptr_shape > mlst = (list< sptr_shape >*)*shape_list;
     cout<< "loading x" << filename << " into Group @ " << this << " ( " << name << " ) ... ";
-    int total_lines = 0;
+    uint total_lines = 0;
     vector<string> lines;
     lines.push_back( filename );
 
@@ -223,12 +226,9 @@ void Group::loadFromPovFile( string filename )
 
     // process the file
     int header_start               = 0;     // the line number where the header starts
-    int num_shapes                 = 0;
-    int num_segments               = 0;
-    int num_nodes                  = 0;             
 
     // find the header
-    int cline = 1; // the current line
+    uint cline = 1; // the current line
     while( !header_start && cline <= total_lines )
     {
         cline++;
@@ -259,7 +259,6 @@ void Group::loadFromPovFile( string filename )
         else
         {
             if( DPL )cout<<"getting asdasd"<< endl;
-            num_shapes = getFromRegex<int>( lines[ header_start + 2 ], shapes_regex );
         }
     }
 
@@ -270,8 +269,6 @@ void Group::loadFromPovFile( string filename )
             cout<<"line: "<< header_start + 3 << endl;
             throw runtime_error("Pov parsing error: expected 'Segments'; line: '" + lines[ header_start + 2 ]  + "'" );
         }
-        else
-            num_segments = getFromRegex<int>( lines[ header_start + 3 ] , segments_regex );
     }
 
     if( STRICT_POV )
@@ -281,8 +278,6 @@ void Group::loadFromPovFile( string filename )
             cout<<"line: "<< header_start + 4 << endl;
             throw runtime_error("Pov parsing error: expected 'Nodes'; line: '" + lines[ header_start + 2 ] + "'" );
         }
-        else
-            num_nodes = getFromRegex<int>( lines[ header_start + 4 ], nodes_regex );
     }
 
     // we're done with the header;
@@ -312,6 +307,7 @@ void Group::loadFromPovFile( string filename )
 
         // does the line define the start of a shape ?
         else if ( regex_search( line, shape_start ))
+        {
             if( inside_shape )
             {
 
@@ -328,7 +324,8 @@ void Group::loadFromPovFile( string filename )
                 inside_shape = false;
             }
 
-        cline ++;
+            cline ++;
+        }
     }
 
     cout<< " OK - " << shapes.size() << " shapes loaded." << endl;

@@ -12,6 +12,8 @@ using namespace std;
 
 namespace xmx {
 
+typedef unsigned int uint;
+
 struct Color
 { 
     GLfloat R,G,B;
