@@ -142,7 +142,6 @@ void Shape::draw()
                 GLint bc_lines = bc -> getNumLines();
                 total_lines += bc_lines;
                 if( DEBUG_SHAPE_BEZIER_DRAW ) cout<< bc_lines << " ( new total: " << total_lines << " )" << endl;
-//                bc -> draw();
             }
         }
         if( DEBUG_SHAPE_BEZIER_DRAW ) cout<<"done counting lines composing Shape @ " << this << " ( " << name << " ) : " << total_lines << endl; 
@@ -173,10 +172,8 @@ void Shape::draw()
 
         if( DEBUG_SHAPE_BEZIER_DRAW )
         {
-            char cr;
             cout<<"finished putting lines in buffer for Shape @ " << this << " ( " << name << " ) " << endl; 
             cout<<"index: " << index << endl;
-//            cin.get(cr);
         }
 
         // draw a polygon from the vertices in the shapes_lines
@@ -184,7 +181,6 @@ void Shape::draw()
         delete[] shapes_lines;
 
     }
-
     else // contains other types of primitives ( not only beziers )
     {
         BOOST_FOREACH( boost::shared_ptr< Primitive > pPrimitive, primitives )
@@ -232,11 +228,6 @@ GLfloat Shape::getMinY()
 GLfloat Shape::distanceTo( GLfloat x, GLfloat y )
 {
     return -1001;
-}
-
-GLint Shape::getNumLines()
-{
-
 }
 
 } // namespace xmx

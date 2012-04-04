@@ -49,9 +49,6 @@ public:
     GLfloat getMinX();
     GLfloat getMaxY();
     GLfloat getMinY();
-
-    GLint getNumLines();
-
 };
 
 } // namespace xmx
