@@ -178,8 +178,9 @@ boost::shared_ptr< Shape > parseShape( vector< string >& lines, uint& line_no )
             shape_finished = true;
         }
         else
+        {
             if( DPL )cout<<"no bezier, no end: " << line << endl;
-
+        }
         line_no ++;
         line = lines[ line_no ];
     }
@@ -323,9 +324,8 @@ void Group::loadFromPovFile( string filename )
                 if( DPL )cout << "parsed shape; " << cline << endl;
                 inside_shape = false;
             }
-
-            cline ++;
         }
+        cline ++;
     }
 
     cout<< " OK - " << shapes.size() << " shapes loaded." << endl;
