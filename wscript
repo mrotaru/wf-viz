@@ -56,16 +56,16 @@ def configure( cnf ):
     # WINDOWS
     #--------------------------------------------------------------------------
     elif sys.platform == 'win32' or sys.platform == 'cygwin':
-        cnf.env.BOOST_PATH = 'c:/pdev/boost_1_49_0'
+        cnf.env.BOOST_PATH = 'd:/code/boost_1_49_0'
 
         # main program
         cnf.env.INCLUDES   = [ './include',
-                               './external/freeglut/2.6/mingw/include',
+                               './external/freeglut/2.8/mingw/include',
                                cnf.env.BOOST_PATH ]
         cnf.env.DEFINES    = [ 'FREEGLUT_STATIC' ]
         cnf.env.LINKFLAGS  = [ '-static-libgcc', '-static-libstdc++', '-W1,subsystem,windows' ]
         cnf.env.LIB        = [ 'freeglut_static', 'opengl32', 'gdi32', 'glu32', 'winmm' ]
-        cnf.env.LIBPATH    = [ cnf.path.abspath() + '/external/freeglut/2.6/mingw/lib' ]
+        cnf.env.LIBPATH    = [ cnf.path.abspath() + '/external/freeglut/2.8/mingw/lib' ]
         cnf.env.STLIBPATH  = [ cnf.path.abspath() + '/libs/win32/gcc-mingw-4.6.2' ]
         cnf.env.STLIB      = [ 'boost_regex-mgw46-1_49' ]
 
