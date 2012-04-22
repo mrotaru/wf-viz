@@ -18,6 +18,9 @@ sources         = [ 'src/Point.cpp',
                     'src/globals.cpp',
                     'src/BezierCurve.cpp',
                     'src/Shape.cpp',
+                    'src/control.cpp',
+                    'src/window.cpp',
+                    'src/label.cpp',
                     'src/Group.cpp' ]
 main_cpp        =   'src/main.cpp'
 test_runner_cpp =   'tests/runner.cpp'
@@ -56,7 +59,7 @@ def configure( cnf ):
     # WINDOWS
     #--------------------------------------------------------------------------
     elif sys.platform == 'win32' or sys.platform == 'cygwin':
-        cnf.env.BOOST_PATH = 'd:/code/boost_1_49_0'
+        cnf.env.BOOST_PATH = 'c:/pdev/boost_1_49_0'
 
         # main program
         cnf.env.INCLUDES   = [ './include',

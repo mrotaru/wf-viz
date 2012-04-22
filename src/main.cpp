@@ -11,6 +11,7 @@ using namespace std;
 
 #include <boost/shared_ptr.hpp>
 #include <boost/foreach.hpp>
+using boost::shared_ptr;
 
 #include "globals.h"
 #include "utils.h"
@@ -20,10 +21,14 @@ using namespace std;
 #include "Shape.h"
 #include "Group.h"
 #include "Layer.h"
+#include "window.h"
+#include "label.h"
 using namespace xmx;
 
 #include <GL/glu.h>
 #include <GL/glut.h>
+
+Window main_window;
 
 string VERSION    = "?";
 string BUILD_ID   = "?";
@@ -59,6 +64,10 @@ void app_init()
     world.name = "Map of the world";
     world.loadFromPovFile( "res/pov/blank-world-robinson.pov" );
     world.setColor( 0.5, 0.5, 0.5 );
+
+    // create a window
+    shared_ptr< Label > lbl1 = shared_ptr< Label >( new Label( "This is a label" ) );
+    main_window.addControl( lbl1 );
 }
 
 //------------------------------------------------------------------------------

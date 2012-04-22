@@ -1,0 +1,3 @@
+let g:headerguard_namespace_name="xmx"
+let g:headerguard_namespace_guard=1
+"vim: set filetype=vim
