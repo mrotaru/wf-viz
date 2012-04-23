@@ -8,6 +8,13 @@ extern Color control_bg;
 extern Color control_text;
 extern Color control_border;
 
+extern const Color WHITE;
+extern const Color BLACK;
+extern const Color RED;
+extern const Color GREEN;
+extern const Color BLUE;
+extern const Color GHOST_WHITE;
+
 struct BorderInfo
 {
     int size[4];

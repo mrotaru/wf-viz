@@ -62,9 +62,9 @@ void app_init()
 
     // create a window and add a label to it
     shared_ptr< Window > window1 = shared_ptr< Window >( new Window( 100, 100, 300, 100, "Window #1" ) );
-    shared_ptr< Label > lbl1 = shared_ptr< Label >( new Label( "This is a label" ) );
+    shared_ptr< Label > lbl1 = shared_ptr< Label >( new Label( 200, 18, "This is a label" ) );
     lbl1->setBackgroundColor( &dcol_EPoints );
-    window1->addControl( lbl1, 10, 10 );
+    window1->addControl( lbl1, 2, 2 );
     windows.push_back( window1 );
 }
 
