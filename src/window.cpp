@@ -46,6 +46,9 @@ void Window::draw()
     {
         sp_control->draw();
     }
+
+    // draw title bar
+    titleBar->draw();
 }
 
 } // namespace xmx

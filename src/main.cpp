@@ -60,12 +60,11 @@ void app_init()
     getline( ver_file, BUILD_TIME );
     build_info = "Build info: " + BUILD_ID + " @ " + BUILD_TIME;
 
-    // create a window and add a label to it
+    // create a couple of windows
     shared_ptr< Window > window1 = shared_ptr< Window >( new Window( 100, 100, 300, 100, "Window #1" ) );
-    shared_ptr< Label > lbl1 = shared_ptr< Label >( new Label( 200, 18, "This is a label" ) );
-    lbl1->setBackgroundColor( &dcol_EPoints );
-    window1->addControl( lbl1, 2, 2 );
+    shared_ptr< Window > window2 = shared_ptr< Window >( new Window( 200, 200, 200, 200, "Another Window" ) );
     windows.push_back( window1 );
+    windows.push_back( window2 );
 }
 
 //------------------------------------------------------------------------------
