@@ -41,7 +41,7 @@ Group world;
 //------------------------------------------------------------------------------
 void gl_init()
 {
-    glClearColor( 0.0, 0.0, 0.0, 0.0 );
+    glClearColor( 0.9, 0.9, 0.9, 0.0 );
 
     // initialize viewing values
     glMatrixMode( GL_PROJECTION );

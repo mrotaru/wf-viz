@@ -39,12 +39,15 @@ public:
 
     Color* getBackgroundColor()                 { return background_color;   }
     void setBackgroundColor( Color* color_ )    { background_color = color_; }
+    void useBackgroundColor()                   { background_color ?    setColor( background_color ): setColor(control_bg ); }
 
     Color* getTextColor()                       { return text_color;   }
     void setTextColor( Color* color_ )          { text_color = color_; }
+    void useTextColor()                         { text_color ?          setColor( text_color ): setColor( control_text ); }; 
 
     Color* getBorderColor()                     { return border_color;   }
     void setBorderColor( Color* color_ )        { border_color = color_; }
+    void useBorderColor()                       { border_color ?        setColor( border_color ): setColor( control_border ); }
 
     int getBorderWidth()                        { return border_width;   }
     void setBorderWidth( int width_ )           { border_width = width_; }

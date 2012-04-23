@@ -16,7 +16,7 @@ namespace xmx
 void Control::draw()
 {
     // draw background
-    setColor( background_color );
+    useBackgroundColor();
     int parent_x = parent->getX();
     int parent_y = parent->getY();
 
@@ -27,13 +27,9 @@ void Control::draw()
         glVertex2f( parent_x + x, toGl( parent_y + y + height ) );
     glEnd();
 
-    // border color
-    setColor( control_border );
-
-    // line
-    glLineWidth( 1.0f );
-
     // draw border
+    useBorderColor();
+    glLineWidth( 1.0f );
     if( draw_borders )
     {
         glBegin(GL_LINE_LOOP);

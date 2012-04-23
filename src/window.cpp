@@ -20,8 +20,8 @@ void Window::addControl( boost::shared_ptr<Control> ctrl, int x_, int y_ )
 
 void Window::draw()
 {
-    setColor( background_color );
-
+    // draw background
+    useBackgroundColor();
     glBegin(GL_QUADS);
         glVertex2f( x, toGl( y ) );
         glVertex2f( x + width, toGl( y ) );
@@ -29,13 +29,9 @@ void Window::draw()
         glVertex2f( x, toGl( y + height ) );
     glEnd();
 
-    // border color
-    setColor( control_border );
-
-    // line
-    glLineWidth( 1.0f );
-
     // draw border
+    useBorderColor();
+    glLineWidth( 1.0f );
     if( draw_borders )
     {
         glBegin(GL_LINE_LOOP);
