@@ -2,7 +2,11 @@
 #define GUIUTILS_H
 
 #include "utils.h"
-namespace xmx {
+using namespace xmx;
+
+extern Color control_bg;
+extern Color control_text;
+extern Color control_border;
 
 struct BorderInfo
 {
@@ -10,5 +14,4 @@ struct BorderInfo
     Color colors[4];
 };
 
-} // namespace xmx
 #endif /* GUIUTILS_H */

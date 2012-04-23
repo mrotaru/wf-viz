@@ -23,6 +23,8 @@ struct Color
 template < typename T > T getFromRegex( string , const boost::regex& );
 void printText( int nX, int nY, string text );
 void printBigText( int nX, int nY, string text );
+void setColor( const Color& );
+void setColor( const Color* );
 GLfloat dist( GLfloat x1, GLfloat y1, GLfloat x2, GLfloat y2 );
 GLfloat dot( GLfloat x1, GLfloat y1, GLfloat x2, GLfloat y2 );
 GLfloat degrees_to_radians( GLfloat );

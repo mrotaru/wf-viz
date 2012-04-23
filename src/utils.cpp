@@ -1,3 +1,6 @@
+#ifndef UTILS_CPP
+#define UTILS_CPP
+
 #include <fstream>
 #include <iostream>
 #include <sstream>
@@ -20,9 +23,10 @@ using namespace std;
 #include <boost/algorithm/string/regex.hpp>
 #include <boost/lexical_cast.hpp>
 
-namespace xmx {
+#include "globals.h"
+#include "utils.h"
 
-struct Color;
+namespace xmx {
 
 // if `str` matches `myRegex`, try parsing the first match into an integer
 // NOTE: lexical_cast is said to be slow 
@@ -84,6 +88,19 @@ void printBigText( int nX, int nY, string text )
 }
 
 //-----------------------------------------------------------------------------
+void setColor( const Color& color )
+{
+   glColor3f( color.R, color.G, color.B ); 
+}
+
+//-----------------------------------------------------------------------------
+void setColor( const Color* color )
+{
+   if( color )
+       glColor3f( color->R, color->G, color->B ); 
+}
+
+//-----------------------------------------------------------------------------
 GLfloat dist( GLfloat x1, GLfloat y1, GLfloat x2, GLfloat y2 )
 {
     return sqrt( ((x1 - x2) * (x1 - x2)) + ((y1 - y2) * (y1 - y2)) ) ;
@@ -105,3 +122,4 @@ GLfloat degrees_to_radians( GLfloat degrees )
 }
 
 } // namespace xmx
+#endif /* UTILS_CPP */

@@ -1,6 +1,8 @@
 #ifndef WINDOW_H
 #define WINDOW_H
 
+#include <iostream>
+
 #include <boost/shared_ptr.hpp>
 
 #include "control.h"
@@ -9,12 +11,15 @@
 namespace xmx
 {
 
-class Window: public GUI_surface
+class Window: public Control
 {
 public:
-    Window();
-    virtual ~Window();
-    void addControl( boost::shared_ptr<Control> );
+    Window() {};
+    Window( int x_, int y_, int width_, int height_, std::string title_ ):
+        Control( x_, y_, width_, height_ , title_ ) {}
+    virtual ~Window() {};
+    void draw();
+    void addControl( boost::shared_ptr<Control>, int, int );
 
 private:
     static int count;

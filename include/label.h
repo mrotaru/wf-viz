@@ -14,9 +14,9 @@ namespace xmx
 class Label: public Control
 {
 public:
-    Label(): Control( 10, 10, "label" ), text("label") { cout << "Label constructor" << endl; }
-    Label( std::string _text ): Control( 10, 10, "label" ), text( _text ) {}
-    Label( std::string _text, int _x, int _y ): Control( _x, _y, "label" ), text( _text ) {}
+    Label(): Control( 10, 10, 100, 50, "label", false ), text("label") {}
+    Label( std::string text_ ): Control( 10, 10, 100, 50, "label", false ), text( text_ ) {}
+    Label( int x_, int y_, std::string text_ ): Control( x_, y_, 100, 50, "label", false ), text( text_ ) {}
     void draw();
 
 protected:

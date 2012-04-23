@@ -4,6 +4,7 @@
 #include <GL/glu.h>
 #include <GL/glut.h>
 
+#include "gui_utils.h"
 #include "label.h"
 
 namespace xmx
@@ -11,21 +12,7 @@ namespace xmx
 
 void Label::draw()
 {
-    // draw border
-    glBegin(GL_LINE_LOOP);
-        glVertex2f( x, y );
-        glVertex2f( x + width, y );
-        glVertex2f( x + width, y + height );
-        glVertex2f( x, y + height);
-    glEnd();
-
-    // draw background
-    glBegin(GL_QUADS);
-        glVertex2f( x, y );
-        glVertex2f( x + width, y );
-        glVertex2f( x + width, y + height );
-        glVertex2f( x, y + height);
-    glEnd();
+    Control::draw();
 
     // draw text
 }

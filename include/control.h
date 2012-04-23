@@ -18,21 +18,45 @@ class Window;
 class Control: public GUI_surface
 {
 public:
-    Control(): GUI_surface( 10, 10 ), name( "control" ) {};
-    Control( int x_, int y_ , string name_ ): GUI_surface( 10, 10 ), name( name_ ) {}
+    Control():  GUI_surface( 10, 10 ), name( "control" ), draw_borders( true ), border_width(1),
+                background_color(0), text_color(0), border_color(0)
+                {}
+    Control( int x_, int y_, int width_, int height_, std::string name_ = "control", bool draw_borders_ = true )
+             :  GUI_surface( x_, y_, width_, height_ ), name( name_ ), draw_borders( draw_borders_ ), border_width(1),
+                background_color(0), text_color(0), border_color(0)
+                {}
     virtual ~Control() {};
 
     virtual void draw() = 0;
     int getID() { return ID; }
 
     // setters/getters
-    std::string getText()               { return text; }
-    void setText( std::string _text )   { text = _text; }
+    std::string getName()                       { return name; }
+    void setName( std::string _name )           { name = _name; }
+
+    Window* getParent()                         { return parent; }
+    void setParent(  Window* parent_ )          { parent = parent_; }
+
+    Color* getBackgroundColor()                 { return background_color;   }
+    void setBackgroundColor( Color* color_ )    { background_color = color_; }
+
+    Color* getTextColor()                       { return text_color;   }
+    void setTextColor( Color* color_ )          { text_color = color_; }
+
+    Color* getBorderColor()                     { return border_color;   }
+    void setBorderColor( Color* color_ )        { border_color = color_; }
+
+    int getBorderWidth()                        { return border_width;   }
+    void setBorderWidth( int width_ )           { border_width = width_; }
 
 protected:
-    std::string name;
-    std::string text;
     Window* parent;
+    std::string name;
+    bool draw_borders;
+    int border_width;
+    Color* background_color;
+    Color* text_color;
+    Color* border_color;
 };
 
 } // namespace xmx

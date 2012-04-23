@@ -28,7 +28,7 @@ using namespace xmx;
 #include <GL/glu.h>
 #include <GL/glut.h>
 
-Window main_window;
+vector < shared_ptr<Window> > windows;
 
 string VERSION    = "?";
 string BUILD_ID   = "?";
@@ -60,14 +60,12 @@ void app_init()
     getline( ver_file, BUILD_TIME );
     build_info = "Build info: " + BUILD_ID + " @ " + BUILD_TIME;
 
-    // load map of the world
-    world.name = "Map of the world";
-    world.loadFromPovFile( "res/pov/blank-world-robinson.pov" );
-    world.setColor( 0.5, 0.5, 0.5 );
-
-    // create a window
+    // create a window and add a label to it
+    shared_ptr< Window > window1 = shared_ptr< Window >( new Window( 100, 100, 300, 100, "Window #1" ) );
     shared_ptr< Label > lbl1 = shared_ptr< Label >( new Label( "This is a label" ) );
-    main_window.addControl( lbl1 );
+    lbl1->setBackgroundColor( &dcol_EPoints );
+    window1->addControl( lbl1, 10, 10 );
+    windows.push_back( window1 );
 }
 
 //------------------------------------------------------------------------------
@@ -76,7 +74,8 @@ void gl_display_function()
     glClear( GL_COLOR_BUFFER_BIT );
     glRenderMode( GL_RENDER );
 
-    world.draw();
+    BOOST_FOREACH( shared_ptr< Window > window, windows )
+        window->draw();
 
     glColor3ub( 60, 60, 60 );
     printText( 10, glutGet( GLUT_WINDOW_HEIGHT ) - 18, VERSION );
@@ -88,6 +87,8 @@ void gl_display_function()
 //------------------------------------------------------------------------------
 void gl_reshape( int nWidht, int nHeight )
 {
+    window_width = nWidht;
+    window_height = nHeight;
     glViewport( 0, 0, (GLsizei)nWidht, (GLsizei)nHeight );
     glMatrixMode( GL_PROJECTION );
     glLoadIdentity();
@@ -113,7 +114,9 @@ int main( int argc, char *argv[] )
     glutInitDisplayMode( GLUT_DOUBLE | GLUT_RGB | GLUT_MULTISAMPLE );
      
     // window
-    glutInitWindowSize( 800, 600 );
+    window_width = 800;
+    window_height = 600;
+    glutInitWindowSize( window_width, window_height );
     glutInitWindowPosition( 100, 100 );
     glutCreateWindow( "World Factbook" );
 
