@@ -16,9 +16,14 @@ sources         = [ 'src/Point.cpp',
                     'src/Line.cpp',
                     'src/utils.cpp',
                     'src/globals.cpp',
-                    'src/BezierCurve.cpp',
-                    'src/Shape.cpp',
-                    'src/Group.cpp' ]
+#                    'src/BezierCurve.cpp',
+#                    'src/Shape.cpp',
+#                    'src/Group.cpp',
+                    'src/gui_utils.cpp',
+                    'src/control.cpp',
+                    'src/window.cpp',
+                    'src/button.cpp',
+                    'src/label.cpp' ]
 main_cpp        =   'src/main.cpp'
 test_runner_cpp =   'tests/runner.cpp'
 test_sources    = [ 'tests/testPoint.cpp',
@@ -56,7 +61,7 @@ def configure( cnf ):
     # WINDOWS
     #--------------------------------------------------------------------------
     elif sys.platform == 'win32' or sys.platform == 'cygwin':
-        cnf.env.BOOST_PATH = 'd:/code/boost_1_49_0'
+        cnf.env.BOOST_PATH = 'c:/pdev/boost_1_49_0'
 
         # main program
         cnf.env.INCLUDES   = [ './include',
@@ -82,6 +87,8 @@ def build( bld ):
     else:
         bld.env.EXE_NAME = "wf-viz"
     
+    gcc_flags = [ '-c', '-g', '-O2', '-Wall', '-fpermissive', '-std=c++0x' ]
+
     # build objects
     #---------------------------------------------------
     bld.objects(
@@ -89,7 +96,7 @@ def build( bld ):
             target      = 'objects',
             includes    = bld.env.INCLUDES,
             defines     = bld.env.DEFINES,
-            cxxflags    = [ '-c', '-g', '-O2', '-Wall' ]
+            cxxflags    = gcc_flags
             )
 
     # build main program
@@ -103,7 +110,7 @@ def build( bld ):
             lib         = bld.env.LIB,
             libpath     = bld.env.LIBPATH,
             linkflags   = bld.env.LINKFLAGS,
-            cxxflags    = [ '-c', '-g', '-O2', '-Wall' ],
+            cxxflags    = gcc_flags,
             use         = 'objects'
             )
 
@@ -119,7 +126,7 @@ def build( bld ):
                 libpath     = bld.env.TEST_LIBPATH,
                 lib         = bld.env.TEST_LIB,
                 linkflags   = bld.env.LINKFLAGS,
-                cxxflags    = [ '-c', '-g', '-O2', '-Wall' ],
+                cxxflags    = gcc_flags,
                 use         = 'objects'
                 )
         copy( bld.env.TEST_LIBPATH + '/lib' + bld.env.TEST_LIB + '.dll', out )

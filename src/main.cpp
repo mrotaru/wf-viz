@@ -9,21 +9,32 @@ using namespace std;
 #include <windows.h>
 #endif
 
-#include <boost/shared_ptr.hpp>
 #include <boost/foreach.hpp>
 
 #include "globals.h"
 #include "utils.h"
-#include "Point.h"
-#include "Line.h"
-#include "BezierCurve.h"
-#include "Shape.h"
-#include "Group.h"
+//#include "Point.h"
+//#include "Line.h"
+//#include "BezierCurve.h"
+//#include "Shape.h"
+//#include "Group.h"
 #include "Layer.h"
+#include "window.h"
+#include "label.h"
+#include "button.h"
 using namespace xmx;
 
 #include <GL/glu.h>
 #include <GL/glut.h>
+
+vector < shared_ptr<Window> > windows;
+shared_ptr< Label > label1;
+shared_ptr< Window > focused_window;
+shared_ptr< Window > hovered_window;
+
+shared_ptr< Control > dragged_control = nullptr;
+int drag_offset_x;
+int drag_offset_y;
 
 string VERSION    = "?";
 string BUILD_ID   = "?";
@@ -31,17 +42,22 @@ string BUILD_TIME = "?";
 string build_info = "";
 
 // holds the map of the world
-Group world;
+//Group world;
 
 //------------------------------------------------------------------------------
 void gl_init()
 {
-    glClearColor( 0.0, 0.0, 0.0, 0.0 );
+    glClearColor( 0.9, 0.9, 0.9, 0.0 );
 
     // initialize viewing values
     glMatrixMode( GL_PROJECTION );
     glLoadIdentity();
     gluOrtho2D( 0, GLUT_WINDOW_HEIGHT, 0, GLUT_WINDOW_WIDTH );
+}
+
+void button_clicked()
+{
+    label1->setText( "The button was clicked!" );
 }
 
 //------------------------------------------------------------------------------
@@ -55,19 +71,28 @@ void app_init()
     getline( ver_file, BUILD_TIME );
     build_info = "Build info: " + BUILD_ID + " @ " + BUILD_TIME;
 
-    // load map of the world
-    world.name = "Map of the world";
-    world.loadFromPovFile( "res/pov/blank-world-robinson.pov" );
-    world.setColor( 0.5, 0.5, 0.5 );
+    // create a couple of windows
+    shared_ptr< Window > window1 = shared_ptr< Window >( new Window( 100, 100, 300, 100, "Window #1" ) );
+    shared_ptr< Window > window2 = shared_ptr< Window >( new Window( 200, 200, 200, 200, "Another Window" ) );
+    label1 = shared_ptr< Label >( new Label( 200, 18, "This is a label" ) ); 
+    auto btn = shared_ptr< Button >( new Button( 100, 22, "Click Me!" ) );
+    btn->setOnClick( button_clicked );
+    window1->addControl( label1, 2, 20 );
+    window1->addControl( btn,    4, 45 );
+    windows.push_back( window1 );
+    windows.push_back( window2 );
+    window1->giveFocus();
+    focused_window = window1;
 }
 
 //------------------------------------------------------------------------------
-void gl_display_function()
+void gl_display_callback()
 {
     glClear( GL_COLOR_BUFFER_BIT );
     glRenderMode( GL_RENDER );
 
-    world.draw();
+    BOOST_FOREACH( shared_ptr< Window > window, windows )
+        window->draw();
 
     glColor3ub( 60, 60, 60 );
     printText( 10, glutGet( GLUT_WINDOW_HEIGHT ) - 18, VERSION );
@@ -77,8 +102,10 @@ void gl_display_function()
 }
 
 //------------------------------------------------------------------------------
-void gl_reshape( int nWidht, int nHeight )
+void gl_reshape_callback( int nWidht, int nHeight )
 {
+    window_width = nWidht;
+    window_height = nHeight;
     glViewport( 0, 0, (GLsizei)nWidht, (GLsizei)nHeight );
     glMatrixMode( GL_PROJECTION );
     glLoadIdentity();
@@ -87,7 +114,70 @@ void gl_reshape( int nWidht, int nHeight )
 }
 
 //------------------------------------------------------------------------------
-void gl_keyboard_function( unsigned char key, int x, int y )
+void gl_mouse_click_callback( int button, int state, int x, int y )
+{
+    label1->setText( "click: x = " + to_string( x ) + ", y = " + to_string( y ) +
+            ", button: " + to_string( button ) + ", state: " + to_string( state )); 
+
+    BOOST_FOREACH( shared_ptr< Window > window, windows )
+    {
+        if( window->isPointInside( x, y ) )
+        {
+            focused_window->losfFocus();
+            window->giveFocus();
+            focused_window = window;
+            window->clickEvent( x, y, button, state );
+        }
+    }
+}
+
+//------------------------------------------------------------------------------
+void gl_mouse_drag_callback( int x, int y )
+{
+    if( !dragged_control )  
+    {
+        BOOST_FOREACH( shared_ptr< Window > window, windows )
+        {
+            if( window->isPointInside( x, y ) )
+            {
+                dragged_control = window;
+                drag_offset_x = x - dragged_control->getX();
+                drag_offset_y = y - dragged_control->getY();
+            }
+        }
+    }
+    else
+    {
+        dragged_control->setX( x - drag_offset_x );
+        dragged_control->setY( y - drag_offset_y );
+        dragged_control->draw();
+        glutPostRedisplay(); 
+    }
+}
+
+//------------------------------------------------------------------------------
+void gl_mouse_move_callback( int x, int y )
+{
+    if( dragged_control )
+        dragged_control = shared_ptr< Control >();
+
+    bool hovering_a_window = false;
+    BOOST_FOREACH( shared_ptr< Window > window, windows )
+    {
+        if( window->isPointInside( x, y ) )
+        {
+            hovered_window = window;
+            hovering_a_window = true;
+            window->hoverEnterEvent( x, y );
+        }
+    }
+
+    if( !hovering_a_window && hovered_window )
+        hovered_window = shared_ptr< Window >();
+}
+
+//------------------------------------------------------------------------------
+void gl_keyboard_callback( unsigned char key, int x, int y )
 {
     switch( key )
     {
@@ -104,7 +194,9 @@ int main( int argc, char *argv[] )
     glutInitDisplayMode( GLUT_DOUBLE | GLUT_RGB | GLUT_MULTISAMPLE );
      
     // window
-    glutInitWindowSize( 800, 600 );
+    window_width = 800;
+    window_height = 600;
+    glutInitWindowSize( window_width, window_height );
     glutInitWindowPosition( 100, 100 );
     glutCreateWindow( "World Factbook" );
 
@@ -112,9 +204,12 @@ int main( int argc, char *argv[] )
     app_init(); // application-specific initializations
 
     // callbacks
-    glutDisplayFunc( gl_display_function );
-    glutKeyboardFunc( gl_keyboard_function );
-    glutReshapeFunc( gl_reshape );
+    glutDisplayFunc         ( gl_display_callback );
+    glutKeyboardFunc        ( gl_keyboard_callback );
+    glutReshapeFunc         ( gl_reshape_callback );
+    glutMouseFunc           ( gl_mouse_click_callback );
+    glutMotionFunc          ( gl_mouse_drag_callback );
+    glutPassiveMotionFunc   ( gl_mouse_move_callback );
 
     glutMainLoop();
     

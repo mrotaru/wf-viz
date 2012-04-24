@@ -1,7 +1,6 @@
 #ifndef UTILS_H
 #define UTILS_H
 
-#include <list>
 #include <string>
 using namespace std;
 
@@ -22,11 +21,16 @@ struct Color
 };
 
 template < typename T > T getFromRegex( string , const boost::regex& );
+template < typename T > inline std::string to_string( const T& p );
 void printText( int nX, int nY, string text );
 void printBigText( int nX, int nY, string text );
+void setColor( const Color& );
+void setColor( const Color* );
 GLfloat dist( GLfloat x1, GLfloat y1, GLfloat x2, GLfloat y2 );
 GLfloat dot( GLfloat x1, GLfloat y1, GLfloat x2, GLfloat y2 );
 GLfloat degrees_to_radians( GLfloat );
+
+typedef void (*fptr_click_event)();
 
 } // namespace xmx
 #endif /* UTILS_H */
