@@ -30,6 +30,7 @@ using namespace xmx;
 
 vector < shared_ptr<Window> > windows;
 shared_ptr< Label > label1;
+shared_ptr< Window > focused_window;
 
 string VERSION    = "?";
 string BUILD_ID   = "?";
@@ -69,6 +70,7 @@ void app_init()
     windows.push_back( window1 );
     windows.push_back( window2 );
     window1->giveFocus();
+    focused_window = window1;
 }
 
 //------------------------------------------------------------------------------
@@ -103,6 +105,17 @@ void gl_reshape_callback( int nWidht, int nHeight )
 void gl_mouse_callback( int button, int state, int x, int y )
 {
     label1->setText( "click: x = " + to_string( x ) + ", y = " + to_string( y )); 
+
+    BOOST_FOREACH( shared_ptr< Window > window, windows )
+    {
+        if(     x >= window->getX() && x <= window->getX() + window->getWidth()
+             && y >= window->getY() && y <= window->getY() + window->getHeight())
+        {
+            focused_window->losfFocus();
+            window->giveFocus();
+            focused_window = window;
+        }
+    }
 }
 
 //------------------------------------------------------------------------------
