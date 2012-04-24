@@ -21,6 +21,8 @@ public:
         { setTextColor( &BLACK ); }
     void draw();
 
+    void clickEvent( int, int ) {}
+
     std::string getText()                         { return text; }
     void setText( std::string _text )             { text = _text; }
 

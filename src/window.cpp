@@ -4,6 +4,7 @@
 #include <memory>
 using std::shared_ptr;
 
+#include "utils.h"
 #include "window.h"
 #include "control.h"
 
@@ -16,6 +17,15 @@ void Window::addControl( shared_ptr<Control> ctrl, int x_, int y_ )
     ctrl->setY( y_ );
     ctrl->setParent( this );
     controls.push_back( ctrl );
+}
+
+void Window::clickEvent( int click_x, int click_y )
+{
+    BOOST_FOREACH( shared_ptr< Control > control, controls )
+    {
+        if( control->isPointInside( click_x - x, click_y - y ))
+            control->clickEvent( click_x - x, click_y - y );
+    }
 }
 
 void Window::draw()

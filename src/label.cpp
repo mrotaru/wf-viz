@@ -1,6 +1,3 @@
-#ifndef LABEL_CPP
-#define LABEL_CPP
-
 #include <GL/glu.h>
 #include <GL/glut.h>
 
@@ -24,4 +21,3 @@ void Label::draw()
 }
 
 } // namespace xmx
-#endif /* LABEL_CPP */

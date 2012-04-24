@@ -22,6 +22,7 @@ sources         = [ 'src/Point.cpp',
                     'src/gui_utils.cpp',
                     'src/control.cpp',
                     'src/window.cpp',
+                    'src/button.cpp',
                     'src/label.cpp' ]
 main_cpp        =   'src/main.cpp'
 test_runner_cpp =   'tests/runner.cpp'

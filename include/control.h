@@ -6,6 +6,7 @@
 #include <memory>
 
 #include "gui_surface.h"
+#include "window.h"
 #include "gui_utils.h"
 
 namespace xmx
@@ -26,6 +27,7 @@ public:
     virtual ~Control() {};
 
     virtual void draw() = 0;
+    virtual void clickEvent( int, int ) = 0;
     int getID() { return ID; }
 
     // setters/getters
@@ -49,6 +51,8 @@ public:
 
     int getBorderWidth()                          { return border_width;   }
     void setBorderWidth( int width_ )             { border_width = width_; }
+
+    bool isPointInside( int, int );
 
 protected:
     Window* parent;

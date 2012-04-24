@@ -29,7 +29,7 @@ void Control::draw()
 
     // draw border
     useBorderColor();
-    glLineWidth( 1.0f );
+    glLineWidth( border_width );
     if( draw_borders )
     {
         glBegin(GL_LINE_LOOP);
@@ -42,6 +42,16 @@ void Control::draw()
 
     // set color to the default
     setColor( dcol_Clear );
+}
+
+
+bool Control::isPointInside( int x_, int y_ )
+{ 
+//    std::cout << "checking if " << to_string(x_) << ", " << to_string(y) <<" is inside " << name << endl;
+//    std::cout <<" ( " << to_string(x) << ", " << to_string(y) << endl;
+//    std::cout <<" ( " << to_string(width) << ", " << to_string(height) << endl;
+    return(  x_ >= x && x_ <= x + width 
+          && y_ >= y && y_ <= y + height );
 }
 
 } /* namespace xmx */

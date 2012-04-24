@@ -21,6 +21,7 @@ using namespace std;
 #include "Layer.h"
 #include "window.h"
 #include "label.h"
+#include "button.h"
 using namespace xmx;
 
 #include <GL/glu.h>
@@ -53,6 +54,11 @@ void gl_init()
     gluOrtho2D( 0, GLUT_WINDOW_HEIGHT, 0, GLUT_WINDOW_WIDTH );
 }
 
+void button_clicked()
+{
+    label1->setText( "The button was clicked!" );
+}
+
 //------------------------------------------------------------------------------
 void app_init()
 {
@@ -68,7 +74,10 @@ void app_init()
     shared_ptr< Window > window1 = shared_ptr< Window >( new Window( 100, 100, 300, 100, "Window #1" ) );
     shared_ptr< Window > window2 = shared_ptr< Window >( new Window( 200, 200, 200, 200, "Another Window" ) );
     label1 = shared_ptr< Label >( new Label( 200, 18, "This is a label" ) ); 
+    auto btn = shared_ptr< Button >( new Button( 100, 22, "Click Me!" ) );
+    btn->setOnClick( button_clicked );
     window1->addControl( label1, 2, 20 );
+    window1->addControl( btn,    4, 45 );
     windows.push_back( window1 );
     windows.push_back( window2 );
     window1->giveFocus();
@@ -115,6 +124,7 @@ void gl_mouse_click_callback( int button, int state, int x, int y )
             focused_window->losfFocus();
             window->giveFocus();
             focused_window = window;
+            window->clickEvent( x, y );
         }
     }
 }

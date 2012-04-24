@@ -30,5 +30,7 @@ GLfloat dist( GLfloat x1, GLfloat y1, GLfloat x2, GLfloat y2 );
 GLfloat dot( GLfloat x1, GLfloat y1, GLfloat x2, GLfloat y2 );
 GLfloat degrees_to_radians( GLfloat );
 
+typedef void (*fptr_click_event)();
+
 } // namespace xmx
 #endif /* UTILS_H */
