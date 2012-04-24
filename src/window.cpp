@@ -21,12 +21,12 @@ void Window::addControl( shared_ptr<Control> ctrl, int x_, int y_ )
     controls.push_back( ctrl );
 }
 
-void Window::clickEvent( int click_x, int click_y )
+void Window::clickEvent( int click_x, int click_y, int button, int state )
 {
     BOOST_FOREACH( shared_ptr< Control > control, controls )
     {
         if( control->isPointInside( click_x - x, click_y - y ))
-            control->clickEvent( click_x - x, click_y - y );
+            control->clickEvent( click_x - x, click_y - y, button, state );
     }
 }
 

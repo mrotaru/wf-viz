@@ -21,7 +21,7 @@ public:
         { setTextColor( &BLACK ); }
     void draw();
 
-    void clickEvent( int, int ) {}
+    void clickEvent( int, int, int, int ) {}
     void hoverEnterEvent( int, int ) {}
     void hoverLeaveEvent( int, int ) {}
 

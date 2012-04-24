@@ -30,7 +30,7 @@ public:
     bool hasFocus()     { return focus; }
     void losfFocus()    { titleBar->setBackgroundColor( &DARK_GREY ); focus = false; }
     void giveFocus()    { titleBar->setBackgroundColor( &dcol_EPoints ); focus = true; }
-    void clickEvent( int, int );
+    void clickEvent( int, int, int, int );
     bool isPointInside( int x_, int y_ ) { return(  x_ >= x && x_ <= x + width && y_ >= y && y_ <= y + height); }
     void hoverEnterEvent( int, int );
     void hoverLeaveEvent( int, int );

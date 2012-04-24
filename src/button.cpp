@@ -1,3 +1,5 @@
+#include <GL/glut.h>
+
 #include "window.h"
 #include "button.h"
 #include "gui_utils.h"
@@ -5,9 +7,20 @@
 namespace xmx
 {
 
+void Button::clickEvent( int x_, int y_, int button, int state )
+{ 
+    pressed = state ? false : true ;
+    glutPostRedisplay();
+
+    if( onClick )
+        (*onClick)();
+}
+
 void Button::draw()
 {
-    setBackgroundColor( hovered ? &LIGHTER_GREY : &GAINSBORO );
+    if(!pressed)
+        setBackgroundColor( hovered ? &LIGHTER_GREY : &GAINSBORO );
+    else setBackgroundColor( &LIGHT_GREY );
 
     Control::draw();
     int parent_x = parent->getX();

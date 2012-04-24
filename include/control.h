@@ -27,7 +27,7 @@ public:
     virtual ~Control() {};
 
     virtual void draw() = 0;
-    virtual void clickEvent( int, int ) = 0;
+    virtual void clickEvent( int, int, int, int ) = 0;
     void hoverEnterEvent( int, int ) { hovered = true; };
     void hoverLeaveEvent( int, int ) { hovered = false; };
     int getID() { return ID; }

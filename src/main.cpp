@@ -116,7 +116,8 @@ void gl_reshape_callback( int nWidht, int nHeight )
 //------------------------------------------------------------------------------
 void gl_mouse_click_callback( int button, int state, int x, int y )
 {
-    label1->setText( "click: x = " + to_string( x ) + ", y = " + to_string( y )); 
+    label1->setText( "click: x = " + to_string( x ) + ", y = " + to_string( y ) +
+            ", button: " + to_string( button ) + ", state: " + to_string( state )); 
 
     BOOST_FOREACH( shared_ptr< Window > window, windows )
     {
@@ -125,7 +126,7 @@ void gl_mouse_click_callback( int button, int state, int x, int y )
             focused_window->losfFocus();
             window->giveFocus();
             focused_window = window;
-            window->clickEvent( x, y );
+            window->clickEvent( x, y, button, state );
         }
     }
 }
