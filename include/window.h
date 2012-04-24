@@ -20,6 +20,7 @@ public:
     Window( int x_, int y_, int width_, int height_, std::string title_ ):
         Control( x_, y_, width_, height_ , title_ ), focus( false ) { 
             titleBar = shared_ptr< Label >( new Label( width_ - 3, 18, title_ ) ); 
+            titleBar->setTextColor( &GHOST_WHITE );
             titleBar->setBackgroundColor( &DARK_GREY );
             addControl( titleBar, 1, 1 );   
         }

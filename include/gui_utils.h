@@ -4,9 +4,9 @@
 #include "utils.h"
 using namespace xmx;
 
-extern Color control_bg;
-extern Color control_text;
-extern Color control_border;
+extern const Color control_bg;
+extern const Color control_text;
+extern const Color control_border;
 
 extern const Color WHITE;
 extern const Color BLACK;

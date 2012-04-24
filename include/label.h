@@ -16,8 +16,13 @@ class Label: public Control
 public:
     Label(): Control( 10, 10, 100, 50, "label", false ), text("label") {}
     Label( std::string text_ ): Control( 10, 10, 100, 50, "label", false ), text( text_ ) {}
-    Label( int width_, int height_, std::string text_ ): Control( 0, 0, width_, height_, "label", false ), text( text_ ) {}
+    Label( int width_, int height_, std::string text_ ):
+        Control( 0, 0, width_, height_, "label", false ), text( text_ )
+        { setTextColor( &BLACK ); }
     void draw();
+
+    std::string getText()                         { return text; }
+    void setText( std::string _text )             { text = _text; }
 
 protected:
     string text;

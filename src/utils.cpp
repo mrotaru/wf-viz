@@ -45,6 +45,19 @@ T getFromRegex( string haystack, const boost::regex& myRegex )
 template int getFromRegex< int >( string haystack, const boost::regex& myRegex );
 template string getFromRegex< string >( string haystack, const boost::regex& myRegex );
 
+// return a string representation of `p`
+// from: http://notfaq.wordpress.com/2006/08/30/c-convert-int-to-string/#comment-22
+//-----------------------------------------------------------------------------
+template <class T>
+inline std::string to_string( const T& p )
+{
+    std::stringstream ss;
+    ss << p;
+    return ss.str();
+}
+
+template string to_string< int >( const int& );
+
 //-----------------------------------------------------------------------------
 void printText( int nX, int nY, string text )
 {

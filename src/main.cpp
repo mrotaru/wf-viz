@@ -29,6 +29,7 @@ using namespace xmx;
 #include <GL/glut.h>
 
 vector < shared_ptr<Window> > windows;
+shared_ptr< Label > label1;
 
 string VERSION    = "?";
 string BUILD_ID   = "?";
@@ -63,13 +64,15 @@ void app_init()
     // create a couple of windows
     shared_ptr< Window > window1 = shared_ptr< Window >( new Window( 100, 100, 300, 100, "Window #1" ) );
     shared_ptr< Window > window2 = shared_ptr< Window >( new Window( 200, 200, 200, 200, "Another Window" ) );
+    label1 = shared_ptr< Label >( new Label( 200, 18, "This is a label" ) ); 
+    window1->addControl( label1, 2, 20 );
     windows.push_back( window1 );
     windows.push_back( window2 );
     window1->giveFocus();
 }
 
 //------------------------------------------------------------------------------
-void gl_display_function()
+void gl_display_callback()
 {
     glClear( GL_COLOR_BUFFER_BIT );
     glRenderMode( GL_RENDER );
@@ -85,7 +88,7 @@ void gl_display_function()
 }
 
 //------------------------------------------------------------------------------
-void gl_reshape( int nWidht, int nHeight )
+void gl_reshape_callback( int nWidht, int nHeight )
 {
     window_width = nWidht;
     window_height = nHeight;
@@ -97,7 +100,13 @@ void gl_reshape( int nWidht, int nHeight )
 }
 
 //------------------------------------------------------------------------------
-void gl_keyboard_function( unsigned char key, int x, int y )
+void gl_mouse_callback( int button, int state, int x, int y )
+{
+    label1->setText( "click: x = " + to_string( x ) + ", y = " + to_string( y )); 
+}
+
+//------------------------------------------------------------------------------
+void gl_keyboard_callback( unsigned char key, int x, int y )
 {
     switch( key )
     {
@@ -124,9 +133,10 @@ int main( int argc, char *argv[] )
     app_init(); // application-specific initializations
 
     // callbacks
-    glutDisplayFunc( gl_display_function );
-    glutKeyboardFunc( gl_keyboard_function );
-    glutReshapeFunc( gl_reshape );
+    glutDisplayFunc( gl_display_callback );
+    glutKeyboardFunc( gl_keyboard_callback );
+    glutReshapeFunc( gl_reshape_callback );
+    glutMouseFunc( gl_mouse_callback );
 
     glutMainLoop();
     

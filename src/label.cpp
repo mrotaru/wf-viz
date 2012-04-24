@@ -19,7 +19,7 @@ void Label::draw()
     int parent_y = parent->getY();
 
     // draw text
-    setColor( GHOST_WHITE );
+    setColor( text_color );
     printText( parent_x + x + 5, toGl( parent_y + y + 13 ), text );
 }
 
