@@ -5,8 +5,6 @@
 #include <string>
 #include <memory>
 
-#include <boost/shared_ptr.hpp>
-
 #include "gui_surface.h"
 #include "gui_utils.h"
 

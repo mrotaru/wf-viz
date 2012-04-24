@@ -49,7 +49,10 @@ public:
     // height
     int getHeight()                     { return height; }
     void setHeight( int _height )       { height = _height; }
-    
+
+    bool isPointInside( int x_, int y_ )
+    { return(  x_ >= x && x_ <= x + width && y_ >= y && y_ <= y + height); }
+
 protected:
     int ID;
     int x,y;

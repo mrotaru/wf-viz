@@ -2,9 +2,8 @@
 #define WINDOW_H
 
 #include <iostream>
-
-#include <boost/shared_ptr.hpp>
-using boost::shared_ptr;
+#include <memory>
+using std::shared_ptr;
 
 #include "GUI_surface.h"
 #include "control.h"
@@ -27,7 +26,7 @@ public:
 
     virtual ~Window() {};
     void draw();
-    void addControl( boost::shared_ptr<Control>, int, int );
+    void addControl( shared_ptr<Control>, int, int );
     bool hasFocus()     { return focus; }
     void losfFocus()    { titleBar->setBackgroundColor( &DARK_GREY ); focus = false; }
     void giveFocus()    { titleBar->setBackgroundColor( &dcol_EPoints ); focus = true; }
@@ -37,7 +36,7 @@ private:
     static int count;
     int ID;
     shared_ptr< Label > titleBar;
-    vector< boost::shared_ptr<Control> > controls;
+    vector< shared_ptr<Control> > controls;
 };
 
 } // namespace xmx

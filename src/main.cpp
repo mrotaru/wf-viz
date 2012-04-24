@@ -9,17 +9,15 @@ using namespace std;
 #include <windows.h>
 #endif
 
-#include <boost/shared_ptr.hpp>
 #include <boost/foreach.hpp>
-using boost::shared_ptr;
 
 #include "globals.h"
 #include "utils.h"
-#include "Point.h"
-#include "Line.h"
-#include "BezierCurve.h"
-#include "Shape.h"
-#include "Group.h"
+//#include "Point.h"
+//#include "Line.h"
+//#include "BezierCurve.h"
+//#include "Shape.h"
+//#include "Group.h"
 #include "Layer.h"
 #include "window.h"
 #include "label.h"
@@ -32,13 +30,17 @@ vector < shared_ptr<Window> > windows;
 shared_ptr< Label > label1;
 shared_ptr< Window > focused_window;
 
+shared_ptr< Control > dragged_control = nullptr;
+int drag_offset_x;
+int drag_offset_y;
+
 string VERSION    = "?";
 string BUILD_ID   = "?";
 string BUILD_TIME = "?";
 string build_info = "";
 
 // holds the map of the world
-Group world;
+//Group world;
 
 //------------------------------------------------------------------------------
 void gl_init()
@@ -102,20 +104,50 @@ void gl_reshape_callback( int nWidht, int nHeight )
 }
 
 //------------------------------------------------------------------------------
-void gl_mouse_callback( int button, int state, int x, int y )
+void gl_mouse_click_callback( int button, int state, int x, int y )
 {
     label1->setText( "click: x = " + to_string( x ) + ", y = " + to_string( y )); 
 
     BOOST_FOREACH( shared_ptr< Window > window, windows )
     {
-        if(     x >= window->getX() && x <= window->getX() + window->getWidth()
-             && y >= window->getY() && y <= window->getY() + window->getHeight())
+        if( window->isPointInside( x, y ) )
         {
             focused_window->losfFocus();
             window->giveFocus();
             focused_window = window;
         }
     }
+}
+
+//------------------------------------------------------------------------------
+void gl_mouse_drag_callback( int x, int y )
+{
+    if( !dragged_control )  
+    {
+        BOOST_FOREACH( shared_ptr< Window > window, windows )
+        {
+            if( window->isPointInside( x, y ) )
+            {
+                dragged_control = window;
+                drag_offset_x = x - dragged_control->getX();
+                drag_offset_y = y - dragged_control->getY();
+            }
+        }
+    }
+    else
+    {
+        dragged_control->setX( x - drag_offset_x );
+        dragged_control->setY( y - drag_offset_y );
+        dragged_control->draw();
+        glutPostRedisplay(); 
+    }
+}
+
+//------------------------------------------------------------------------------
+void gl_mouse_move_callback( int x, int y )
+{
+    if( dragged_control )
+        dragged_control = shared_ptr< Control >();
 }
 
 //------------------------------------------------------------------------------
@@ -146,10 +178,12 @@ int main( int argc, char *argv[] )
     app_init(); // application-specific initializations
 
     // callbacks
-    glutDisplayFunc( gl_display_callback );
-    glutKeyboardFunc( gl_keyboard_callback );
-    glutReshapeFunc( gl_reshape_callback );
-    glutMouseFunc( gl_mouse_callback );
+    glutDisplayFunc         ( gl_display_callback );
+    glutKeyboardFunc        ( gl_keyboard_callback );
+    glutReshapeFunc         ( gl_reshape_callback );
+    glutMouseFunc           ( gl_mouse_click_callback );
+    glutMotionFunc          ( gl_mouse_drag_callback );
+    glutPassiveMotionFunc   ( gl_mouse_move_callback );
 
     glutMainLoop();
     

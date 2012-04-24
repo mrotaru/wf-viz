@@ -1,8 +1,8 @@
-#include <boost/shared_ptr.hpp>
 #include <boost/foreach.hpp>
 
 #include <iostream>
-using namespace std;
+#include <memory>
+using std::shared_ptr;
 
 #include "window.h"
 #include "control.h"
@@ -10,7 +10,7 @@ using namespace std;
 namespace xmx
 {
 
-void Window::addControl( boost::shared_ptr<Control> ctrl, int x_, int y_ )
+void Window::addControl( shared_ptr<Control> ctrl, int x_, int y_ )
 {
     ctrl->setX( x_ );
     ctrl->setY( y_ );
@@ -42,7 +42,7 @@ void Window::draw()
         glEnd();
     }
 
-    BOOST_FOREACH( boost::shared_ptr< Control > sp_control, controls )
+    BOOST_FOREACH( shared_ptr< Control > sp_control, controls )
     {
         sp_control->draw();
     }
