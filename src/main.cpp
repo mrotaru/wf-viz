@@ -30,6 +30,7 @@ using namespace xmx;
 vector < shared_ptr<Window> > windows;
 shared_ptr< Label > label1;
 shared_ptr< Window > focused_window;
+shared_ptr< Window > hovered_window;
 
 shared_ptr< Control > dragged_control = nullptr;
 int drag_offset_x;
@@ -158,6 +159,20 @@ void gl_mouse_move_callback( int x, int y )
 {
     if( dragged_control )
         dragged_control = shared_ptr< Control >();
+
+    bool hovering_a_window = false;
+    BOOST_FOREACH( shared_ptr< Window > window, windows )
+    {
+        if( window->isPointInside( x, y ) )
+        {
+            hovered_window = window;
+            hovering_a_window = true;
+            window->hoverEnterEvent( x, y );
+        }
+    }
+
+    if( !hovering_a_window && hovered_window )
+        hovered_window = shared_ptr< Window >();
 }
 
 //------------------------------------------------------------------------------

@@ -18,3 +18,4 @@ const Color LIGHT_GREY          ( 0.82f, 0.82f, 0.82f );
 const Color DIM_GREY            ( 0.41f, 0.41f, 0.41f );
 
 const Color MEDIUM_GREY         ( 0.66f, 0.66f, 0.66f );
+const Color LIGHTER_GREY        ( 0.90f, 0.90f, 0.90f );

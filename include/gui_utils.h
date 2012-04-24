@@ -25,6 +25,7 @@ extern const Color control_bg;
 extern const Color control_text;
 extern const Color control_border;
 extern const Color MEDIUM_GREY;
+extern const Color LIGHTER_GREY;
 
 struct BorderInfo
 {

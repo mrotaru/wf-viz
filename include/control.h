@@ -18,16 +18,18 @@ class Control: public GUI_surface
 {
 public:
     Control():  GUI_surface( 10, 10 ), name( "control" ), draw_borders( true ), border_width(1),
-                background_color(0), text_color(0), border_color(0)
+                background_color(0), text_color(0), border_color(0), hovered(false)
                 {}
     Control( int x_, int y_, int width_, int height_, std::string name_ = "control", bool draw_borders_ = true )
              :  GUI_surface( x_, y_, width_, height_ ), name( name_ ), draw_borders( draw_borders_ ), border_width(1),
-                background_color(0), text_color(0), border_color(0)
+                background_color(0), text_color(0), border_color(0), hovered(false)
                 {}
     virtual ~Control() {};
 
     virtual void draw() = 0;
     virtual void clickEvent( int, int ) = 0;
+    void hoverEnterEvent( int, int ) { hovered = true; };
+    void hoverLeaveEvent( int, int ) { hovered = false; };
     int getID() { return ID; }
 
     // setters/getters
@@ -62,6 +64,7 @@ protected:
     Color* background_color;
     Color* text_color;
     Color* border_color;
+    bool hovered;
 };
 
 } // namespace xmx

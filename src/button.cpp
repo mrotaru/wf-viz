@@ -1,11 +1,14 @@
 #include "window.h"
 #include "button.h"
+#include "gui_utils.h"
 
 namespace xmx
 {
 
 void Button::draw()
 {
+    setBackgroundColor( hovered ? &LIGHTER_GREY : &GAINSBORO );
+
     Control::draw();
     int parent_x = parent->getX();
     int parent_y = parent->getY();

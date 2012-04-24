@@ -22,6 +22,8 @@ public:
     void draw();
 
     void clickEvent( int, int ) {}
+    void hoverEnterEvent( int, int ) {}
+    void hoverLeaveEvent( int, int ) {}
 
     std::string getText()                         { return text; }
     void setText( std::string _text )             { text = _text; }

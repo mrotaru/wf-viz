@@ -4,6 +4,8 @@
 #include <memory>
 using std::shared_ptr;
 
+#include <GL/glut.h>
+
 #include "utils.h"
 #include "window.h"
 #include "control.h"
@@ -59,6 +61,44 @@ void Window::draw()
 
     // draw title bar
     titleBar->draw();
+}
+
+void Window::hoverEnterEvent( int x_, int y_ )
+{
+    Control::hoverEnterEvent( x_, y_ );
+
+    bool over_a_control = false;
+    BOOST_FOREACH( shared_ptr< Control > control, controls )
+    {
+        if( control->isPointInside( x_ - x, y_ - y ))
+        {
+            hovered_control = control;
+            over_a_control = true;
+            control->hoverEnterEvent( x_ - x, y_ - y );
+            break;
+        }
+    }
+
+    if( !over_a_control && hovered_control )
+    {
+        hovered_control->hoverLeaveEvent( x_, y_ );
+        hovered_control = shared_ptr< Control >();
+    }
+
+    glutPostRedisplay();
+}
+
+void Window::hoverLeaveEvent( int x_, int y_ )
+{
+    Control::hoverLeaveEvent( x_, y_ );
+
+    if( hovered_control )
+    {
+        hovered_control->hoverLeaveEvent( x_, y_ );
+        hovered_control = shared_ptr< Control >();
+    }
+
+    glutPostRedisplay();
 }
 
 } // namespace xmx
