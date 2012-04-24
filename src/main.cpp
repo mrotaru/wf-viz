@@ -22,6 +22,7 @@ using namespace std;
 #include "window.h"
 #include "label.h"
 #include "button.h"
+#include "mapdisplay.h"
 using namespace xmx;
 
 #include <GL/glu.h>
@@ -55,6 +56,7 @@ void gl_init()
     gluOrtho2D( 0, GLUT_WINDOW_HEIGHT, 0, GLUT_WINDOW_WIDTH );
 }
 
+//------------------------------------------------------------------------------
 void button_clicked()
 {
     label1->setText( "The button was clicked!" );
@@ -72,13 +74,16 @@ void app_init()
     build_info = "Build info: " + BUILD_ID + " @ " + BUILD_TIME;
 
     // create a couple of windows
-    shared_ptr< Window > window1 = shared_ptr< Window >( new Window( 100, 100, 300, 100, "Window #1" ) );
-    shared_ptr< Window > window2 = shared_ptr< Window >( new Window( 200, 200, 200, 200, "Another Window" ) );
+    auto window1 = shared_ptr< Window >( new Window( 100, 100, 300, 100, "Window #1" ) );
+    auto window2 = shared_ptr< Window >( new Window( 200, 200, 400, 400, "Another Window" ) );
     label1 = shared_ptr< Label >( new Label( 200, 18, "This is a label" ) ); 
     auto btn = shared_ptr< Button >( new Button( 100, 22, "Click Me!" ) );
+    auto md  = shared_ptr< MapDisplay >( new MapDisplay( 380, 370, "World Map" ) );
+    md -> loadFromShapefile( "shapefiles/world_borders" );
     btn->setOnClick( button_clicked );
-    window1->addControl( label1, 2, 20 );
-    window1->addControl( btn,    4, 45 );
+    window1 -> addControl( label1, 2, 20 );
+    window1 -> addControl( btn,    4, 45 );
+    window2 -> addControl( md,     4, 25 );
     windows.push_back( window1 );
     windows.push_back( window2 );
     window1->giveFocus();
