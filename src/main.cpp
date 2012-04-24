@@ -65,6 +65,7 @@ void app_init()
     shared_ptr< Window > window2 = shared_ptr< Window >( new Window( 200, 200, 200, 200, "Another Window" ) );
     windows.push_back( window1 );
     windows.push_back( window2 );
+    window1->giveFocus();
 }
 
 //------------------------------------------------------------------------------

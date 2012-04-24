@@ -12,3 +12,4 @@ const Color RED         ( 1.00f, 0.00f, 0.00f );
 const Color GREEN       ( 0.00f, 1.00f, 0.00f );
 const Color BLUE        ( 0.00f, 0.00f, 1.00f );
 const Color GHOST_WHITE ( 0.97f, 0.97f, 1.00f );
+const Color DARK_GREY   ( 0.66f, 0.66f, 0.66f );

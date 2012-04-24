@@ -14,6 +14,7 @@ extern const Color RED;
 extern const Color GREEN;
 extern const Color BLUE;
 extern const Color GHOST_WHITE;
+extern const Color DARK_GREY;
 
 struct BorderInfo
 {
