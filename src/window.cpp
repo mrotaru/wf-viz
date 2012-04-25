@@ -30,6 +30,15 @@ void Window::clickEvent( int click_x, int click_y, int button, int state )
     }
 }
 
+bool Window::isPointInsideAnyControl( int x_, int y_ )
+{
+    if( y_ <= 19 ) return false; // title bar
+    BOOST_FOREACH( auto control, controls )
+        if( control -> isPointInside( x_, y_ ) )
+            return true;
+    return false;
+}
+
 void Window::draw()
 {
     // draw background

@@ -33,6 +33,7 @@ shared_ptr< Label > label1;
 shared_ptr< Window > focused_window;
 shared_ptr< Window > hovered_window;
 shared_ptr< MapDisplay > map_display;
+shared_ptr< Control > drag_started_on;
 
 shared_ptr< Control > dragged_control = nullptr;
 int drag_offset_x;
@@ -145,6 +146,11 @@ void gl_mouse_click_callback( int button, int state, int x, int y )
 {
     label1->setText( "click: x = " + to_string( x ) + ", y = " + to_string( y ) +
             ", button: " + to_string( button ) + ", state: " + to_string( state )); 
+    glutPostRedisplay();
+
+    if( state ) drag_started_on = shared_ptr< Control >();
+    if( state && dragged_control )
+        dragged_control = shared_ptr< Control >();
 
     BOOST_FOREACH( shared_ptr< Window > window, windows )
     {
@@ -153,6 +159,8 @@ void gl_mouse_click_callback( int button, int state, int x, int y )
             focused_window->losfFocus();
             window->giveFocus();
             focused_window = window;
+            if( !window->isPointInsideAnyControl( x - window->getX(), y - window->getY() ) )
+                drag_started_on = window;
             window->clickEvent( x, y, button, state );
         }
     }
@@ -161,24 +169,24 @@ void gl_mouse_click_callback( int button, int state, int x, int y )
 //------------------------------------------------------------------------------
 void gl_mouse_drag_callback( int x, int y )
 {
-    if( !dragged_control )  
-    {
-        BOOST_FOREACH( shared_ptr< Window > window, windows )
-        {
-            if( window->isPointInside( x, y ) )
-            {
-                dragged_control = window;
-                drag_offset_x = x - dragged_control->getX();
-                drag_offset_y = y - dragged_control->getY();
-            }
-        }
-    }
-    else
+    if( dragged_control )
     {
         dragged_control->setX( x - drag_offset_x );
         dragged_control->setY( y - drag_offset_y );
         dragged_control->draw();
         glutPostRedisplay(); 
+    }
+    else
+    {
+        BOOST_FOREACH( shared_ptr< Window > window, windows )
+            if( drag_started_on == window &&
+                window -> isPointInside( x, y ) &&
+               !window -> isPointInsideAnyControl( x - window -> getX(), y - window -> getY() ) )
+            {
+                dragged_control = window;
+                drag_offset_x = x - dragged_control->getX();
+                drag_offset_y = y - dragged_control->getY();
+            }
     }
 }
 
