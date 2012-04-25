@@ -79,7 +79,7 @@ void app_init()
     label1 = shared_ptr< Label >( new Label( 200, 18, "This is a label" ) ); 
     auto btn = shared_ptr< Button >( new Button( 100, 22, "Click Me!" ) );
     auto md  = shared_ptr< MapDisplay >( new MapDisplay( 380, 370, "World Map" ) );
-    md -> loadFromShapefile( "shapefiles/world_borders" );
+    md -> loadFromShapefile( "shapefiles/wbb" );
     btn->setOnClick( button_clicked );
     window1 -> addControl( label1, 2, 20 );
     window1 -> addControl( btn,    4, 45 );

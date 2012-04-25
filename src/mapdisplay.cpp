@@ -27,17 +27,11 @@ vector< LineString2D >  lines;
 vector< LineString2D >  polygons;
 BoundingBox             map_BB;
 
+//------------------------------------------------------------------------------
 void MapDisplay::draw()
 {
     Control::draw();
     int total_width  = abs( map_BB.minX ) + abs( map_BB.maxX );
-    int total_height = abs( map_BB.minY ) + abs( map_BB.maxY );
-
-//    cout << "width:  " << total_width  << endl;
-//    cout << "height: " << total_height << endl;
-
-//    glMatrixMode( GL_MODELVIEW );
-//    glTranslatef( total_width/2, total_height/2, 0.0f );
 
 	//Render Point Shapefile
 	setColor    ( BLUE );
@@ -62,57 +56,32 @@ void MapDisplay::draw()
         glEnd();
     }
 
-    int shown = 0;
     setColor( RED );
     int parent_x = parent->getX();
     int parent_y = parent->getY();
-    int parent_width = parent->getWidth();
-    int parent_height = parent->getHeight();
-    int miny =  1000;
-    int maxy = -1000;
+    int i=1;
     BOOST_FOREACH( LineString2D polygon, polygons )
     {
-        glBegin( GL_LINE_LOOP );
+        setColor( i==209 ? GREEN: RED );
+        glBegin( GL_POLYGON );
         BOOST_FOREACH( Point2D point, polygon.points )
         {
-            int px = point.x;
             int py = point.y;
-//            int y_coord = parent_y + y + (point.y < 0 ? abs(point.y) : abs(map_BB.minY) + point.y) ;
-//            int y_coord = parent_y + y + point.y;
-            int y_coord = py;
-
-            maxy = py > maxy ? py : maxy;
-            miny = py < miny ? py : miny;
-//            if( shown<=1 && point.y < 0 )
-//            {
-//                cout << "---------------------------------------" << endl;
-//                cout << "point.y:               " << point.y << endl;
-//                cout << "toGL(point.y):         " << toGl(point.y) << endl;
-//                cout << "toGL( abs(point.y) ):  " << toGl(abs(point.y)) << endl;
-//                cout << "parent_y:              " << parent_y << endl;
-//                cout << "y:                     " << y << endl;
-//                cout << "y_coord:               " << y_coord << endl;
-//                shown++;
-//            }
             int _y = 0;
             if( py > 0 )
                _y = abs(map_BB.maxY) - py;
             else
                _y = abs(map_BB.maxY) + abs(py);
             glVertex2f( parent_x + x + (point.x + total_width/2),
-//                        toGl( parent_y + (parent_height - y - (point.y + total_height)) ) );
                         toGl( parent_y + y + _y ) );
         }
         glEnd();
+        i++;
     }
-
-//    cout << "miny: " << miny << endl;
-//    cout << "maxy: " << maxy << endl;
-
-//    glLoadIdentity();
-//    glFlush();
+    glFlush();
 }
 
+//------------------------------------------------------------------------------
 void MapDisplay::loadFromShapefile( std::string filename )
 {
     SHPHandle hSHP = SHPOpen( filename.c_str(), "rb" );
@@ -175,6 +144,7 @@ void MapDisplay::loadFromShapefile( std::string filename )
     else if( hSHP -> nShapeType == SHPT_POLYGON ) //Polygon Shapefile
     {
         cout << "shapte type = SHPT_POLYGON" << endl;
+        cout << hSHP -> nRecords << " polygons. " << endl;
 		SHPObject *psShape;
 		for( int i=0; i < hSHP -> nRecords; i++ )
 		{
