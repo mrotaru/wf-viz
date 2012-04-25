@@ -31,17 +31,15 @@ BoundingBox             map_BB;
 void MapDisplay::draw()
 {
     Control::draw();
-    int total_width  = abs( map_BB.minX ) + abs( map_BB.maxX );
-    int total_height = abs( map_BB.minY ) + abs( map_BB.maxY );
-    int x_offset = parent->getX() + x;
-    int y_offset = parent->getY() + y;
-//    cout << "y_offset = " << y_offset << endl;
-//    cout << "x_offset = " << x_offset << endl;
+    int map_width  = abs( map_BB.minX ) + abs( map_BB.maxX );
+    int map_height = abs( map_BB.minY ) + abs( map_BB.maxY );
+    int x_middle = parent->getX() + x + map_width/2;
+    int y_middle = window_height - parent->getY() - y - map_height/2;
 
     glMatrixMode( GL_MODELVIEW ); 
-//    glTranslated( -1*(  x_offset + total_width/2 ), -1 * ( y_offset + total_height/2 ), 0.0f);
-//    glScalef( scale, scale, 1.0f );
-//    glTranslated(       x_offset + total_width/2,        ( y_offset + total_height/2 ), 0.0f );
+    glTranslated(  -1 * ( x_middle * scale - x_middle ), -1 * ( y_middle * scale - y_middle ), 0.0f );
+    glScalef( scale, scale, 1.0f );
+//    glTranslated(       ( x_middle * scale - x_middle ),      ( y_middle * scale - y_middle ), 0.0f );
 
 	//Render Point Shapefile
 	setColor    ( BLUE );
@@ -66,9 +64,12 @@ void MapDisplay::draw()
         glEnd();
     }
 
-    setColor( RED );
     int parent_x = parent->getX();
     int parent_y = parent->getY();
+
+    glEnable ( GL_SCISSOR_TEST );
+    glScissor( parent_x + x, toGl( parent_y + y + height ), width, height );
+    setColor( RED );
     int i=1;
     BOOST_FOREACH( LineString2D polygon, polygons )
     {
@@ -82,6 +83,7 @@ void MapDisplay::draw()
         glEnd();
         i++;
     }
+    glDisable( GL_SCISSOR_TEST );
     glFlush();
     glLoadIdentity();
 }
