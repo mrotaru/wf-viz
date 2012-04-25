@@ -39,9 +39,9 @@ void MapDisplay::draw()
 //    cout << "x_offset = " << x_offset << endl;
 
     glMatrixMode( GL_MODELVIEW ); 
-    glTranslated( -1*(  x_offset + total_width/2 ), -1 * ( y_offset + total_height/2 ), 0.0f);
-    glScalef( scale, scale, 1.0f );
-    glTranslated(       x_offset + total_width/2,        ( y_offset + total_height/2 ), 0.0f );
+//    glTranslated( -1*(  x_offset + total_width/2 ), -1 * ( y_offset + total_height/2 ), 0.0f);
+//    glScalef( scale, scale, 1.0f );
+//    glTranslated(       x_offset + total_width/2,        ( y_offset + total_height/2 ), 0.0f );
 
 	//Render Point Shapefile
 	setColor    ( BLUE );
@@ -76,15 +76,8 @@ void MapDisplay::draw()
         glBegin( GL_POLYGON );
         BOOST_FOREACH( Point2D point, polygon.points )
         {
-            int py = point.y;
-            int _y = 0;
-            if( py > 0 )
-               _y = abs(map_BB.maxY) - py;
-            else
-               _y = abs(map_BB.maxY) + abs(py);
-            
-            glVertex2f( parent_x + x + (point.x + total_width/2),
-                        toGl( parent_y + y + _y ) );
+            glVertex2f( parent_x + x + point.x,
+                  toGl( parent_y + y + point.y ) );
         }
         glEnd();
         i++;
@@ -110,6 +103,8 @@ void MapDisplay::loadFromShapefile( std::string filename )
     map_BB.maxY = hSHP -> adBoundsMax[1]; cout << "maxY: " << map_BB.maxY << endl;
     map_BB.minX = hSHP -> adBoundsMin[0]; cout << "minX: " << map_BB.minX << endl;
     map_BB.minY = hSHP -> adBoundsMin[1]; cout << "minY: " << map_BB.minY << endl;
+    int total_width  = abs( map_BB.minX ) + abs( map_BB.maxX );
+    int total_height = abs( map_BB.minY ) + abs( map_BB.maxY );
 
     if( hSHP -> nShapeType == SHPT_POINT ) //Point Shapefile
     {
@@ -155,9 +150,15 @@ void MapDisplay::loadFromShapefile( std::string filename )
     }
     else if( hSHP -> nShapeType == SHPT_POLYGON ) //Polygon Shapefile
     {
-        cout << "shapte type = SHPT_POLYGON" << endl;
+        cout << "shape type = SHPT_POLYGON" << endl;
         cout << hSHP -> nRecords << " polygons. " << endl;
+        double absMinY = abs( map_BB.minY );
+        double absMaxY = abs( map_BB.maxY );
+        double absMinX = abs( map_BB.minX );
+        double absMaxX = abs( map_BB.maxX );
+
 		SHPObject *psShape;
+        int shown = 0;
 		for( int i=0; i < hSHP -> nRecords; i++ )
 		{
 			psShape = SHPReadObject( hSHP, i );
@@ -165,12 +166,30 @@ void MapDisplay::loadFromShapefile( std::string filename )
      
 			for( int j=0; j < psShape -> nVertices; j++ )
 			{
-				double x = psShape -> padfX[j];
-				double y = psShape -> padfY[j];
+				double sx = psShape -> padfX[j];
+				double sy = psShape -> padfY[j];
 				Point2D pt;
-				pt.x = x;
-				pt.y = y;
+				
+                //--------------------------------------------------------------
+                //      MapDisplay control
+                //      .-----------------------.
+                //      |          | pt.y       |
+                //      |  pt.x    V            |
+                //      |--------->X (pt)       |
+                //      "-----------------------"
+                //--------------------------------------------------------------
+                pt.x = sx > 0 ? absMinX + sx : abs( absMinX ) - abs( sx );
+				pt.y = sy > 0 ? total_height - sy - absMinY : abs( absMaxY ) + abs( sy );
+
+                if(shown<=10)
+                {
+                    cout << "sx: " << sx << endl;
+                    cout << "sy: " << sy << endl;
+                    cout << " x: " << pt.x << endl;
+                    cout << " y: " << pt.y << endl;
+                }
       			tempPointArray.push_back( pt );
+                shown++;
 			}
 			LineString2D polygon;
 			polygon.points = tempPointArray;
