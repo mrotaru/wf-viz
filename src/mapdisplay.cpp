@@ -18,30 +18,22 @@ using namespace std;
 namespace xmx
 {
 
-typedef struct Point2D      { double x; double y;           } Point2D;
-typedef struct LineString2D { vector< Point2D > points;     } LineString2D;
-typedef struct BoundingBox  { float maxX, maxY, minX, minY; } BoundingBox;
-
-vector< Point2D >       points;
-vector< LineString2D >  lines;
-vector< LineString2D >  polygons;
-BoundingBox             map_BB;
-
 //------------------------------------------------------------------------------
 void MapDisplay::draw()
 {
     Control::draw();
-    int map_width  = abs( map_BB.minX ) + abs( map_BB.maxX );
-    int map_height = abs( map_BB.minY ) + abs( map_BB.maxY );
+
+    if( !file_loaded ) return;
+
     int x_middle = parent->getX() + x + map_width/2;
     int y_middle = window_height - parent->getY() - y - map_height/2;
 
     glMatrixMode( GL_MODELVIEW ); 
     glTranslated(  -1 * ( x_middle * scale - x_middle ), -1 * ( y_middle * scale - y_middle ), 0.0f );
     glScalef( scale, scale, 1.0f );
-//    glTranslated(       ( x_middle * scale - x_middle ),      ( y_middle * scale - y_middle ), 0.0f );
 
-	//Render Point Shapefile
+	// render point shapefile
+    //------------------------------------------------------------------------------
 	setColor    ( BLUE );
 	glEnable    ( GL_POINT_SMOOTH );
 	glPointSize ( 5.0 );
@@ -53,6 +45,8 @@ void MapDisplay::draw()
     }
 	glEnd();
 	
+    // render line shapefile
+    //------------------------------------------------------------------------------
     setColor( GREEN );
     BOOST_FOREACH( LineString2D line, lines )
     {
@@ -63,6 +57,9 @@ void MapDisplay::draw()
         }
         glEnd();
     }
+
+    // render polygon shapefile
+    //------------------------------------------------------------------------------
 
     int parent_x = parent->getX();
     int parent_y = parent->getY();
@@ -105,8 +102,8 @@ void MapDisplay::loadFromShapefile( std::string filename )
     map_BB.maxY = hSHP -> adBoundsMax[1]; cout << "maxY: " << map_BB.maxY << endl;
     map_BB.minX = hSHP -> adBoundsMin[0]; cout << "minX: " << map_BB.minX << endl;
     map_BB.minY = hSHP -> adBoundsMin[1]; cout << "minY: " << map_BB.minY << endl;
-    int total_width  = abs( map_BB.minX ) + abs( map_BB.maxX );
-    int total_height = abs( map_BB.minY ) + abs( map_BB.maxY );
+    map_width  = abs( map_BB.minX ) + abs( map_BB.maxX );
+    map_height = abs( map_BB.minY ) + abs( map_BB.maxY );
 
     if( hSHP -> nShapeType == SHPT_POINT ) //Point Shapefile
     {
@@ -157,10 +154,9 @@ void MapDisplay::loadFromShapefile( std::string filename )
         double absMinY = abs( map_BB.minY );
         double absMaxY = abs( map_BB.maxY );
         double absMinX = abs( map_BB.minX );
-        double absMaxX = abs( map_BB.maxX );
+        //double absMaxX = abs( map_BB.maxX );
 
 		SHPObject *psShape;
-        int shown = 0;
 		for( int i=0; i < hSHP -> nRecords; i++ )
 		{
 			psShape = SHPReadObject( hSHP, i );
@@ -172,26 +168,18 @@ void MapDisplay::loadFromShapefile( std::string filename )
 				double sy = psShape -> padfY[j];
 				Point2D pt;
 				
-                //--------------------------------------------------------------
+                //------------------------------------------------------------------------
                 //      MapDisplay control
                 //      .-----------------------.
                 //      |          | pt.y       |
                 //      |  pt.x    V            |
                 //      |--------->X (pt)       |
                 //      "-----------------------"
-                //--------------------------------------------------------------
+                //------------------------------------------------------------------------
                 pt.x = sx > 0 ? absMinX + sx : abs( absMinX ) - abs( sx );
-				pt.y = sy > 0 ? total_height - sy - absMinY : abs( absMaxY ) + abs( sy );
+				pt.y = sy > 0 ? map_height - sy - absMinY : abs( absMaxY ) + abs( sy );
 
-                if(shown<=10)
-                {
-                    cout << "sx: " << sx << endl;
-                    cout << "sy: " << sy << endl;
-                    cout << " x: " << pt.x << endl;
-                    cout << " y: " << pt.y << endl;
-                }
       			tempPointArray.push_back( pt );
-                shown++;
 			}
 			LineString2D polygon;
 			polygon.points = tempPointArray;
