@@ -32,6 +32,16 @@ void MapDisplay::draw()
 {
     Control::draw();
     int total_width  = abs( map_BB.minX ) + abs( map_BB.maxX );
+    int total_height = abs( map_BB.minY ) + abs( map_BB.maxY );
+    int x_offset = parent->getX() + x;
+    int y_offset = parent->getY() + y;
+//    cout << "y_offset = " << y_offset << endl;
+//    cout << "x_offset = " << x_offset << endl;
+
+    glMatrixMode( GL_MODELVIEW ); 
+    glTranslated( -1*(  x_offset + total_width/2 ), -1 * ( y_offset + total_height/2 ), 0.0f);
+    glScalef( scale, scale, 1.0f );
+    glTranslated(       x_offset + total_width/2,        ( y_offset + total_height/2 ), 0.0f );
 
 	//Render Point Shapefile
 	setColor    ( BLUE );
@@ -72,6 +82,7 @@ void MapDisplay::draw()
                _y = abs(map_BB.maxY) - py;
             else
                _y = abs(map_BB.maxY) + abs(py);
+            
             glVertex2f( parent_x + x + (point.x + total_width/2),
                         toGl( parent_y + y + _y ) );
         }
@@ -79,6 +90,7 @@ void MapDisplay::draw()
         i++;
     }
     glFlush();
+    glLoadIdentity();
 }
 
 //------------------------------------------------------------------------------

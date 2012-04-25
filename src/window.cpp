@@ -72,6 +72,9 @@ void Window::hoverEnterEvent( int x_, int y_ )
     {
         if( control->isPointInside( x_ - x, y_ - y ))
         {
+            if( hovered_control && hovered_control != control )
+                hovered_control->hoverLeaveEvent( x_ - x, y_ - y );
+
             hovered_control = control;
             over_a_control = true;
             control->hoverEnterEvent( x_ - x, y_ - y );

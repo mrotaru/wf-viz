@@ -32,6 +32,7 @@ vector < shared_ptr<Window> > windows;
 shared_ptr< Label > label1;
 shared_ptr< Window > focused_window;
 shared_ptr< Window > hovered_window;
+shared_ptr< MapDisplay > map_display;
 
 shared_ptr< Control > dragged_control = nullptr;
 int drag_offset_x;
@@ -62,6 +63,10 @@ void button_clicked()
     label1->setText( "The button was clicked!" );
 }
 
+void zoom_in_clicked()      { map_display -> setScale( map_display -> getScale() + 0.02f ); }
+void zoom_out_clicked()     { map_display -> setScale( map_display -> getScale() - 0.02f ); }
+void zoom_reset_clicked()   { map_display -> setScale( 1.0f ); }
+
 //------------------------------------------------------------------------------
 void app_init()
 {
@@ -75,15 +80,32 @@ void app_init()
 
     // create a couple of windows
     auto window1 = shared_ptr< Window >( new Window( 100, 100, 300, 100, "Window #1" ) );
-    auto window2 = shared_ptr< Window >( new Window( 200, 200, 400, 400, "Another Window" ) );
+    auto window2 = shared_ptr< Window >( new Window( 200, 200, 400, 450, "Map of the world" ) );
+
+    // controls
     label1 = shared_ptr< Label >( new Label( 200, 18, "This is a label" ) ); 
     auto btn = shared_ptr< Button >( new Button( 100, 22, "Click Me!" ) );
-    auto md  = shared_ptr< MapDisplay >( new MapDisplay( 380, 370, "World Map" ) );
-    md -> loadFromShapefile( "shapefiles/wbb" );
     btn->setOnClick( button_clicked );
+    auto zoom_in  = shared_ptr< Button >( new Button( 80, 22, "Zoom In"  ) );
+    zoom_in -> setOnClick( zoom_in_clicked );
+    auto zoom_out = shared_ptr< Button >( new Button( 80, 22, "Zoom Out" ) );
+    zoom_out -> setOnClick( zoom_out_clicked );
+    auto zoom_reset = shared_ptr< Button >( new Button( 80, 22, "Reset" ) );
+    zoom_reset -> setOnClick( zoom_reset_clicked );
+
+    // map
+    map_display  = shared_ptr< MapDisplay >( new MapDisplay( 380, 370, "World Map" ) );
+    map_display -> loadFromShapefile( "shapefiles/world_borders" );
+
+    // put controls on windows
     window1 -> addControl( label1, 2, 20 );
     window1 -> addControl( btn,    4, 45 );
-    window2 -> addControl( md,     4, 25 );
+    window2 -> addControl( map_display,   4, 25 );
+    window2 -> addControl( zoom_in,       4, 400 );
+    window2 -> addControl( zoom_out,     80, 400 );
+    window2 -> addControl( zoom_reset,  180, 400 );
+
+    // initt windowing
     windows.push_back( window1 );
     windows.push_back( window2 );
     window1->giveFocus();
@@ -96,12 +118,12 @@ void gl_display_callback()
     glClear( GL_COLOR_BUFFER_BIT );
     glRenderMode( GL_RENDER );
 
-    BOOST_FOREACH( shared_ptr< Window > window, windows )
-        window->draw();
-
     glColor3ub( 60, 60, 60 );
     printText( 10, glutGet( GLUT_WINDOW_HEIGHT ) - 18, VERSION );
     printText( 10, glutGet( GLUT_WINDOW_HEIGHT ) - 32, build_info );
+
+    BOOST_FOREACH( shared_ptr< Window > window, windows )
+        window->draw();
 
     glutSwapBuffers();
 }
