@@ -32,7 +32,7 @@ using namespace boost::assign;
 #include "button.h"
 #include "mapdisplay.h"
 #include "checkbox.h"
-//#include "data_utils.h"
+#include "data_utils.h"
 using namespace xmx;
 
 #include <GL/glu.h>
@@ -91,22 +91,17 @@ void loadXMLData( string file_name )
 
     read_xml( file_name, pt );
 
-    map< string, string > ISO3_codes = map_list_of
-        ( "ROU", "Romania" )
-        ( "ALB", "Albania" );
-
+    auto ignored = set< string>();
     int couted = 0;
     BOOST_FOREACH( ptree::value_type const& v, pt.get_child( "Root" ).get_child( "data" ) )
     {
-
-        auto map_ = shared_ptr< map< int, double > >( new map< int, double > );
-        if( v.second.get< string >( "field.<xmlattr>.key", "-" ) == "ROU" )
+        string country_code = v.second.get< string >( "field.<xmlattr>.key", "-" );
+        if( ISO3_codes.find( country_code ) != ISO3_codes.end() )
         {
             int year = -1;
             double value = -1;
             BOOST_FOREACH( ptree::value_type const& v2, v.second )
             {
-
                 string name = v2.second.get< string >( "<xmlattr>.name", "--" );
 
                 if( name == "Year" )
@@ -116,13 +111,22 @@ void loadXMLData( string file_name )
                      value = v2.second.get< double >("", -1.0f );
 
             }
-            cout << "year: " << year << ", value: " << value << endl;
-            if( data.find( "ROU" ) == data.end() )
-                data[ "ROU" ] = shared_ptr< map< int, double > >( new map< int, double > );
+            // cout << "year: " << year << ", value: " << value << endl;
 
-            data[ "ROU" ]->insert( pair< int, double>( year, value ) );
+            if( data.find( country_code ) == data.end() )
+                data[ country_code ] = shared_ptr< map< int, double > >( new map< int, double > );
+
+            data[ country_code ]->insert( pair< int, double>( year, value ) );
            
         couted++;
+        }
+        else
+        {
+            if( ignored.find( country_code ) == ignored.end() )
+            {
+                cout << "ignoring: " << country_code << endl;
+                ignored.insert( country_code );
+            }
         }
     }
     cout << data[ "ROU" ]->size() << endl;

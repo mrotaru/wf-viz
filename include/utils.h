@@ -33,5 +33,7 @@ GLfloat degrees_to_radians( GLfloat );
 typedef void (*fptr_click_event)();
 typedef void (*fptr_checkbox_event)(bool);
 
+extern map< string, string > ISO3_codes;
+
 } // namespace xmx
 #endif /* UTILS_H */
