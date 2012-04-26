@@ -89,8 +89,8 @@ void app_init()
     build_info = "Build info: " + BUILD_ID + " @ " + BUILD_TIME;
 
     // create a couple of windows
-    auto window1 = shared_ptr< Window >( new Window(  40,  70, 300, 100, "Window #1" ) );
-    auto window2 = shared_ptr< Window >( new Window( 350,  70, 400, 450, "Map of the world" ) );
+    auto window1 = shared_ptr< Window >( new Window(  40,  70, 400, 400, "Window #1" ) );
+    auto window2 = shared_ptr< Window >( new Window( 450,  70, 400, 450, "Map of the world" ) );
 
     // controls
     label1 = shared_ptr< Label >( new Label( 200, 18, "This is a label" ) ); 
@@ -106,12 +106,18 @@ void app_init()
     auto render_filled_polygons = shared_ptr< CheckBox >( new CheckBox( 200, 18, "render filled polygons" ) );
     render_filled_polygons -> setOnChange( filled_polygons_change );
 
+    string help_text = 
+        " Click 'Load Shapefile' and select a shapefile to load."
+        "\nIf the window showing the map is selected, you can use '+'"
+        "\nand '-' to zoom in and out, and the arrow keys to pan the map.";
+    auto help = shared_ptr< Label >( new Label( 280, 330, help_text ) );
+
     // map
     map_display  = shared_ptr< MapDisplay >( new MapDisplay( 380, 370, "World Map" ) );
 
     // put controls on windows
-    window1 -> addControl( label1, 2, 20 );
-    window1 -> addControl( btn,    4, 45 );
+    window1 -> addControl( help,   4,  22 );
+    window1 -> addControl( btn,    4, 245 );
     window2 -> addAutoSizedControl( map_display,   4,  25, 4, 55 );
     window2 -> addControl( zoom_in,       4, 400 );
     window2 -> addControl( zoom_out,     80, 400 );
@@ -136,7 +142,9 @@ void gl_display_callback()
     printText( 10, glutGet( GLUT_WINDOW_HEIGHT ) - 32, build_info );
 
     BOOST_FOREACH( shared_ptr< Window > window, windows )
-        window->draw();
+        if( window != focused_window )
+            window->draw();
+    focused_window -> draw();
 
     glutSwapBuffers();
 }
@@ -249,7 +257,7 @@ int main( int argc, char *argv[] )
     glutInitDisplayMode( GLUT_DOUBLE | GLUT_RGB | GLUT_MULTISAMPLE );
      
     // window
-    window_width = 800;
+    window_width = 900;
     window_height = 600;
     glutInitWindowSize( window_width, window_height );
     glutInitWindowPosition( 100, 100 );
