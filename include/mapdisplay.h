@@ -24,11 +24,19 @@ public:
         }
     void draw();
     void clickEvent( int x_, int y_, int button, int state ) {};
+    void dragEvent ( int, int );
 
     void loadFromShapefile( std::string );
 
-    void setScale( float scale_ )       { scale = scale_; }
-    float getScale()                    { return scale;   }
+    void setScale( float scale_ )           { scale = scale_; }
+    float getScale()                        { return scale;   }
+
+    void setMapOffsetX( int map_offset_x_ ) { map_offset_x = map_offset_x_; }
+    float getMapOffsetX()                   { return map_offset_x;          }
+
+    void setMapOffsetY( int map_offset_y_ ) { map_offset_y = map_offset_y_; }
+    float getMapOffsetY()                   { return map_offset_y;          }
+
 
 protected:
     std::string shapefile;

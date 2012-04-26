@@ -56,7 +56,10 @@ inline std::string to_string( const T& p )
     return ss.str();
 }
 
-template string to_string< int >( const int& );
+// initialise template functions
+//-----------------------------------------------------------------------------
+template string to_string< int >    ( const int&    );
+template string to_string< float >  ( const float&  );
 
 //-----------------------------------------------------------------------------
 void printText( int nX, int nY, string text )

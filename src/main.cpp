@@ -66,7 +66,7 @@ void button_clicked()
 
 void zoom_in_clicked()      { map_display -> setScale( map_display -> getScale() + 0.02f ); }
 void zoom_out_clicked()     { map_display -> setScale( map_display -> getScale() - 0.02f ); }
-void zoom_reset_clicked()   { map_display -> setScale( 1.0f ); }
+void zoom_reset_clicked()   { map_display -> setScale( 1.0f ); map_display -> setMapOffsetX( 0 ); map_display -> setMapOffsetY( 0 ); }
 
 //------------------------------------------------------------------------------
 void app_init()
@@ -178,7 +178,8 @@ void gl_mouse_drag_callback( int x, int y )
     }
     else
     {
-        BOOST_FOREACH( shared_ptr< Window > window, windows )
+        // dragging a window ?
+        BOOST_FOREACH( auto window, windows )
             if( drag_started_on == window &&
                 window -> isPointInside( x, y ) &&
                !window -> isPointInsideAnyControl( x - window -> getX(), y - window -> getY() ) )
@@ -187,6 +188,11 @@ void gl_mouse_drag_callback( int x, int y )
                 drag_offset_x = x - dragged_control->getX();
                 drag_offset_y = y - dragged_control->getY();
             }
+
+        // some controls ( namely, MapDisplay ) need to know when the user drags over them
+        BOOST_FOREACH( auto window, windows )
+            if( window -> isPointInside( x, y ) )
+                window -> dragEvent( x, y );
     }
 }
 

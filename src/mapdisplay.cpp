@@ -12,6 +12,7 @@ using namespace std;
 
 #include "window.h"
 #include "button.h"
+#include "utils.h"
 #include "gui_utils.h"
 #include "mapdisplay.h"
 
@@ -30,6 +31,7 @@ void MapDisplay::draw()
 
     glMatrixMode( GL_MODELVIEW ); 
     glTranslated(  -1 * ( x_middle * scale - x_middle ), -1 * ( y_middle * scale - y_middle ), 0.0f );
+    glTranslated( map_offset_x, map_offset_y, 0.0f );
     glScalef( scale, scale, 1.0f );
 
 	// render point shapefile
@@ -60,7 +62,6 @@ void MapDisplay::draw()
 
     // render polygon shapefile
     //------------------------------------------------------------------------------
-
     int parent_x = parent->getX();
     int parent_y = parent->getY();
 
@@ -81,8 +82,21 @@ void MapDisplay::draw()
         i++;
     }
     glDisable( GL_SCISSOR_TEST );
-    glFlush();
+
     glLoadIdentity();
+
+    setColor( BLACK );
+    printText( parent_x + x + 2, toGl( parent_y + y + 10 ), "x offset: " + to_string( map_offset_x ) );
+    printText( parent_x + x + 2, toGl( parent_y + y + 22 ), "y offset: " + to_string( map_offset_y ) );
+}
+
+//------------------------------------------------------------------------------
+void MapDisplay::dragEvent( int x_, int y_ )
+{
+//    cout << "drag event in MapDisplay: " << x_ << ", " << y_ << endl;
+    map_offset_x = x_ - map_offset_x;
+    map_offset_y = y_ - map_offset_y;
+    glutPostRedisplay();
 }
 
 //------------------------------------------------------------------------------
