@@ -34,6 +34,7 @@ public:
     //--------------------------------------------------------------------------
     virtual void clickEvent( int, int, int, int ) = 0;
     virtual void dragEvent ( int, int ) = 0;
+    virtual void keyPressed( unsigned char, int, int ) = 0;
     void hoverEnterEvent( int, int ) { hovered = true; };
     void hoverLeaveEvent( int, int ) { hovered = false; };
 

@@ -13,6 +13,7 @@ using std::shared_ptr;
 namespace xmx
 {
 
+//------------------------------------------------------------------------------
 void Window::addControl( shared_ptr<Control> control, int x_, int y_ )
 {
     control -> setX( x_ );
@@ -21,6 +22,7 @@ void Window::addControl( shared_ptr<Control> control, int x_, int y_ )
     controls.push_back( control );
 }
 
+//------------------------------------------------------------------------------
 void Window::clickEvent( int click_x, int click_y, int button, int state )
 {
     BOOST_FOREACH( auto control, controls )
@@ -30,6 +32,7 @@ void Window::clickEvent( int click_x, int click_y, int button, int state )
     }
 }
 
+//------------------------------------------------------------------------------
 void Window::dragEvent( int x_, int y_ )
 {
     BOOST_FOREACH( auto control, controls )
@@ -39,6 +42,7 @@ void Window::dragEvent( int x_, int y_ )
     }
 }
 
+//------------------------------------------------------------------------------
 bool Window::isPointInsideAnyControl( int x_, int y_ )
 {
     if( y_ <= 19 ) return false; // title bar
@@ -48,6 +52,7 @@ bool Window::isPointInsideAnyControl( int x_, int y_ )
     return false;
 }
 
+//------------------------------------------------------------------------------
 void Window::draw()
 {
     // draw background
@@ -81,6 +86,7 @@ void Window::draw()
     titleBar->draw();
 }
 
+//------------------------------------------------------------------------------
 void Window::hoverEnterEvent( int x_, int y_ )
 {
     Control::hoverEnterEvent( x_, y_ );
@@ -109,6 +115,7 @@ void Window::hoverEnterEvent( int x_, int y_ )
     glutPostRedisplay();
 }
 
+//------------------------------------------------------------------------------
 void Window::hoverLeaveEvent( int x_, int y_ )
 {
     Control::hoverLeaveEvent( x_, y_ );
@@ -122,6 +129,16 @@ void Window::hoverLeaveEvent( int x_, int y_ )
     glutPostRedisplay();
 }
 
+//------------------------------------------------------------------------------
+void Window::keyPressed( unsigned char key, int x_, int y_ )
+{
+    BOOST_FOREACH( auto control, controls )
+    {
+        control -> keyPressed( key, x_, y_ );
+    }
+}
+
+//------------------------------------------------------------------------------
 void Window::addAutoSizedControl( shared_ptr< Control > control,
         int x_, int y_,
         int right_margin, int bottom_margin )

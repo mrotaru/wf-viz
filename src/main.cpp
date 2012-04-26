@@ -238,6 +238,8 @@ void gl_keyboard_callback( unsigned char key, int x, int y )
             exit(0);
             break;
     }
+
+    focused_window -> keyPressed( key, x, y );
 }
 
 //------------------------------------------------------------------------------
@@ -263,6 +265,7 @@ int main( int argc, char *argv[] )
     glutMouseFunc           ( gl_mouse_click_callback );
     glutMotionFunc          ( gl_mouse_drag_callback );
     glutPassiveMotionFunc   ( gl_mouse_move_callback );
+    glutSpecialFunc         ( gl_keyboard_callback );
 
     glutMainLoop();
     
