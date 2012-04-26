@@ -23,11 +23,29 @@ void Window::addControl( shared_ptr<Control> ctrl, int x_, int y_ )
 
 void Window::clickEvent( int click_x, int click_y, int button, int state )
 {
-    BOOST_FOREACH( shared_ptr< Control > control, controls )
+    BOOST_FOREACH( auto control, controls )
     {
         if( control->isPointInside( click_x - x, click_y - y ))
             control->clickEvent( click_x - x, click_y - y, button, state );
     }
+}
+
+void Window::dragEvent( int x_, int y_ )
+{
+    BOOST_FOREACH( auto control, controls )
+    {
+        if( control->isPointInside( x_ - x, y_ - y ))
+            control->dragEvent( x_ - x, y_ - y );
+    }
+}
+
+bool Window::isPointInsideAnyControl( int x_, int y_ )
+{
+    if( y_ <= 19 ) return false; // title bar
+    BOOST_FOREACH( auto control, controls )
+        if( control -> isPointInside( x_, y_ ) )
+            return true;
+    return false;
 }
 
 void Window::draw()
@@ -54,9 +72,9 @@ void Window::draw()
         glEnd();
     }
 
-    BOOST_FOREACH( shared_ptr< Control > sp_control, controls )
+    BOOST_FOREACH( auto control, controls )
     {
-        sp_control->draw();
+        control->draw();
     }
 
     // draw title bar
@@ -68,10 +86,13 @@ void Window::hoverEnterEvent( int x_, int y_ )
     Control::hoverEnterEvent( x_, y_ );
 
     bool over_a_control = false;
-    BOOST_FOREACH( shared_ptr< Control > control, controls )
+    BOOST_FOREACH( auto control, controls )
     {
         if( control->isPointInside( x_ - x, y_ - y ))
         {
+            if( hovered_control && hovered_control != control )
+                hovered_control->hoverLeaveEvent( x_ - x, y_ - y );
+
             hovered_control = control;
             over_a_control = true;
             control->hoverEnterEvent( x_ - x, y_ - y );

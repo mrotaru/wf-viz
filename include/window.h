@@ -26,14 +26,19 @@ public:
 
     virtual ~Window() {};
     void draw();
-    void addControl( shared_ptr<Control>, int, int );
+
+    void dragEvent ( int, int );
+    void clickEvent( int, int, int, int );
+    void hoverEnterEvent( int, int );
+    void hoverLeaveEvent( int, int );
+
     bool hasFocus()     { return focus; }
     void losfFocus()    { titleBar->setBackgroundColor( &DARK_GREY ); focus = false; }
     void giveFocus()    { titleBar->setBackgroundColor( &dcol_EPoints ); focus = true; }
-    void clickEvent( int, int, int, int );
+
+    void addControl( shared_ptr<Control>, int, int );
     bool isPointInside( int x_, int y_ ) { return(  x_ >= x && x_ <= x + width && y_ >= y && y_ <= y + height); }
-    void hoverEnterEvent( int, int );
-    void hoverLeaveEvent( int, int );
+    bool isPointInsideAnyControl( int, int );
 
 protected:
     bool focus;
