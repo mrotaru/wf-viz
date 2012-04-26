@@ -89,8 +89,8 @@ void app_init()
     build_info = "Build info: " + BUILD_ID + " @ " + BUILD_TIME;
 
     // create a couple of windows
-    auto window1 = shared_ptr< Window >( new Window( 100, 100, 300, 100, "Window #1" ) );
-    auto window2 = shared_ptr< Window >( new Window( 200, 200, 400, 450, "Map of the world" ) );
+    auto window1 = shared_ptr< Window >( new Window(  40,  70, 300, 100, "Window #1" ) );
+    auto window2 = shared_ptr< Window >( new Window( 350,  70, 400, 450, "Map of the world" ) );
 
     // controls
     label1 = shared_ptr< Label >( new Label( 200, 18, "This is a label" ) ); 
