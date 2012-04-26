@@ -107,7 +107,7 @@ void app_init()
     // put controls on windows
     window1 -> addControl( label1, 2, 20 );
     window1 -> addControl( btn,    4, 45 );
-    window2 -> addControl( map_display,   4,  25 );
+    window2 -> addAutoSizedControl( map_display,   4,  25, 4, 55 );
     window2 -> addControl( zoom_in,       4, 400 );
     window2 -> addControl( zoom_out,     80, 400 );
     window2 -> addControl( zoom_reset,  180, 400 );
