@@ -4,13 +4,14 @@
 
 namespace xmx {
 
-Color* CheckBox::CHECKBOX_BORDER_COLOR = const_cast< Color* >( &LIGHT_GREY );
+Color* CheckBox::CHECKBOX_BORDER_COLOR = const_cast< Color* >( &DIM_GREY );
 Color* CheckBox::CHECKBOX_CHECKED_COLOR = const_cast< Color* >( &BLACK );
-Color* CheckBox::CHECKBOX_HOVER_COLOR = const_cast< Color* >( &DIM_GREY );
+Color* CheckBox::CHECKBOX_HOVER_COLOR = const_cast< Color* >( &LIGHT_GREY );
 Color* CheckBox::CHECKBOX_UNCHECKED_COLOR = const_cast< Color* >( &GAINSBORO );
 
 void CheckBox::draw()
 {
+    setBackgroundColor( hovered ? CHECKBOX_HOVER_COLOR: &control_bg );
     Control::draw();
 
     int parent_x = parent->getX();
@@ -25,13 +26,8 @@ void CheckBox::draw()
     int b_x2 = 12;
     int b_y2 = 3;
 
-    int c_x1 = 1;
-    int c_y1 = 1;
-    int c_x2 = 1;
-    int c_y2 = 1;
-
     // draw checkbox border
-    setColor( hovered ? CHECKBOX_BORDER_COLOR: CHECKBOX_HOVER_COLOR );
+    setColor( CHECKBOX_BORDER_COLOR );
     glLineWidth( 1 );
     glBegin(GL_LINE_LOOP);
         glVertex2f( parent_x + x + b_x1, toGl( parent_y + y + b_y1 ) );
