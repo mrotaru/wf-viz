@@ -35,6 +35,7 @@ shared_ptr< Window > focused_window;
 shared_ptr< Window > hovered_window;
 shared_ptr< MapDisplay > map_display;
 shared_ptr< Control > drag_started_on;
+shared_ptr< CheckBox > render_filled_polygons;
 
 shared_ptr< Control > dragged_control = nullptr;
 int drag_offset_x;
@@ -65,9 +66,10 @@ void button_clicked()
     label1->setText( "The button was clicked!" );
 }
 
-void zoom_in_clicked()      { map_display -> setScale( map_display -> getScale() + 0.02f ); }
-void zoom_out_clicked()     { map_display -> setScale( map_display -> getScale() - 0.02f ); }
-void zoom_reset_clicked()   { map_display -> setScale( 1.0f ); map_display -> setMapOffsetX( 0 ); map_display -> setMapOffsetY( 0 ); }
+void zoom_in_clicked()          { map_display -> setScale( map_display -> getScale() + 0.05f ); }
+void zoom_out_clicked()         { map_display -> setScale( map_display -> getScale() - 0.05f ); }
+void zoom_reset_clicked()       { map_display -> setScale( 1.0f ); map_display -> setMapOffsetX( 0 ); map_display -> setMapOffsetY( 0 ); }
+void filled_polygons_change( bool checked )   { map_display -> setDisplayFilledPolygons( checked ); }
 
 //------------------------------------------------------------------------------
 void app_init()
@@ -95,6 +97,8 @@ void app_init()
     zoom_out -> setOnClick( zoom_out_clicked );
     auto zoom_reset = shared_ptr< Button >( new Button( 80, 22, "Reset" ) );
     zoom_reset -> setOnClick( zoom_reset_clicked );
+    auto render_filled_polygons = shared_ptr< CheckBox >( new CheckBox( 200, 18, "render filled polygons" ) );
+    render_filled_polygons -> setOnChange( filled_polygons_change );
 
     // map
     map_display  = shared_ptr< MapDisplay >( new MapDisplay( 380, 370, "World Map" ) );
@@ -107,7 +111,7 @@ void app_init()
     window2 -> addControl( zoom_in,       4, 400 );
     window2 -> addControl( zoom_out,     80, 400 );
     window2 -> addControl( zoom_reset,  180, 400 );
-    window2 -> addControl( checkbox1,     4, 422 );
+    window2 -> addControl( render_filled_polygons, 4, 424 );
 
     // initt windowing
     windows.push_back( window1 );

@@ -50,6 +50,9 @@ void CheckBox::clickEvent( int x_, int y_, int button, int state )
 {
     if( button == 0 && state == 0 ) // left click
         checked = !checked;
+
+    if( onChange && !state )
+        (*onChange)( checked );
 }
 
 } // namespace xmx

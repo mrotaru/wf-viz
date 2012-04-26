@@ -31,6 +31,7 @@ GLfloat dot( GLfloat x1, GLfloat y1, GLfloat x2, GLfloat y2 );
 GLfloat degrees_to_radians( GLfloat );
 
 typedef void (*fptr_click_event)();
+typedef void (*fptr_checkbox_event)(bool);
 
 } // namespace xmx
 #endif /* UTILS_H */

@@ -72,7 +72,7 @@ void MapDisplay::draw()
     BOOST_FOREACH( LineString2D polygon, polygons )
     {
         setColor( i==209 ? GREEN: RED );
-        glBegin( GL_POLYGON );
+        glBegin( filled_polygons ? GL_POLYGON : GL_LINE_STRIP );
         BOOST_FOREACH( Point2D point, polygon.points )
         {
             glVertex2f( parent_x + x + point.x,

@@ -16,7 +16,8 @@ public:
     MapDisplay( int width_, int height_, std::string text_ ):
         Control( 0, 0, width_, height_, "mapdisplay", true ),
         shapefile( "" ), file_loaded( false ), scale(1),
-        map_width( 0 ), map_height( 0 ), map_offset_x( 0 ), map_offset_y( 0 )
+        map_width( 0 ), map_height( 0 ), map_offset_x( 0 ), map_offset_y( 0 ),
+        filled_polygons( false )
         {   setTextColor( &BLACK );
             setBackgroundColor( &GAINSBORO );
             setBorderColor( &LIGHT_GREY );
@@ -42,6 +43,9 @@ public:
     void setMapOffsetY( int map_offset_y_ ) { map_offset_y = map_offset_y_; }
     float getMapOffsetY()                   { return map_offset_y;          }
 
+    void setDisplayFilledPolygons( bool filled_polygons_ ) { filled_polygons = filled_polygons_; }
+    bool getDisplayFilledPolygons()                        { return filled_polygons; }
+
 protected:
     std::string shapefile;
     bool file_loaded;
@@ -54,6 +58,7 @@ protected:
     vector< LineString2D >  lines;
     vector< LineString2D >  polygons;
     BoundingBox             map_BB;
+    bool filled_polygons;
 };
 
 } // namespace xmx

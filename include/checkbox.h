@@ -15,28 +15,33 @@ class CheckBox: public Control
 public:
     CheckBox ( int width_, int height_, std::string text_ ):
         Control( 0, 0,  width_, height_, "checkbox", false ), text( text_ ),
-        checked( false ), pressed( false )
+        checked( false ), pressed( false ), onChange( 0 )
         {}
 
     void draw();
 
     // events
     //--------------------------------------------------------------------------
+    void setOnChange( fptr_checkbox_event fptr_ )   { onChange = fptr_;   }
+    void dragEvent ( int x_, int y_ )               {}
+    void hoverEnterEvent( int, int )                { hovered = true; };
+    void hoverLeaveEvent( int, int )                { hovered = false; };
     void clickEvent( int x_, int y_, int button, int state );
-    void dragEvent ( int x_, int y_ ) {}
-    void hoverEnterEvent( int, int ) { hovered = true; };
-    void hoverLeaveEvent( int, int ) { hovered = false; };
 
     // property get/set
     //--------------------------------------------------------------------------
-    std::string getText()                         { return text; }
-    void setText( std::string _text )             { text = _text; }
+    std::string getText()                   { return text; }
+    void setText( std::string _text )       { text = _text; }
+
+    bool getChecked()                       { return checked; }
+    void setChecked( bool checked_ )        { checked = checked_; }    
 
 protected:
     string text;
     bool checked;
     bool pressed;
-
+    fptr_checkbox_event onChange;
+    
     static Color* CHECKBOX_BORDER_COLOR;
     static Color* CHECKBOX_CHECKED_COLOR;
     static Color* CHECKBOX_HOVER_COLOR;
