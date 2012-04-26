@@ -9,6 +9,10 @@ using namespace std;
 #include <windows.h>
 #endif
 
+#if defined (__WIN32__)
+    #include "platform/win32.h"
+#endif
+
 #include <boost/foreach.hpp>
 
 #include "globals.h"
@@ -63,7 +67,9 @@ void gl_init()
 //------------------------------------------------------------------------------
 void button_clicked()
 {
-    label1->setText( "The button was clicked!" );
+    string filename = browseFile();
+    if( !filename.empty() )
+        map_display -> loadFromShapefile( filename );
 }
 
 void zoom_in_clicked()          { map_display -> setScale( map_display -> getScale() + 0.05f ); }
@@ -89,7 +95,7 @@ void app_init()
     // controls
     label1 = shared_ptr< Label >( new Label( 200, 18, "This is a label" ) ); 
     auto checkbox1 = shared_ptr< CheckBox >( new CheckBox( 200, 18, "test a checkbox" ) );
-    auto btn = shared_ptr< Button >( new Button( 100, 22, "Click Me!" ) );
+    auto btn = shared_ptr< Button >( new Button( 100, 22, "Load shapefile" ) );
     btn->setOnClick( button_clicked );
     auto zoom_in  = shared_ptr< Button >( new Button( 80, 22, "Zoom In"  ) );
     zoom_in -> setOnClick( zoom_in_clicked );
@@ -102,7 +108,6 @@ void app_init()
 
     // map
     map_display  = shared_ptr< MapDisplay >( new MapDisplay( 380, 370, "World Map" ) );
-    map_display -> loadFromShapefile( "shapefiles/world_borders" );
 
     // put controls on windows
     window1 -> addControl( label1, 2, 20 );
