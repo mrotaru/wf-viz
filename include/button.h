@@ -24,6 +24,7 @@ public:
 
     void setOnClick( fptr_click_event fptr_ )       { onClick = fptr_;              }
     void clickEvent( int x_, int y_, int button, int state );
+    void dragEvent ( int x_, int y_ ) {}
 
 protected:
     string text;

@@ -23,7 +23,8 @@ sources         = [ 'src/Point.cpp',
                     'src/control.cpp',
                     'src/window.cpp',
                     'src/button.cpp',
-                    'src/label.cpp' ]
+                    'src/label.cpp',
+                    'src/mapdisplay.cpp' ]
 main_cpp        =   'src/main.cpp'
 test_runner_cpp =   'tests/runner.cpp'
 test_sources    = [ 'tests/testPoint.cpp',
@@ -66,13 +67,15 @@ def configure( cnf ):
         # main program
         cnf.env.INCLUDES   = [ './include',
                                './external/freeglut/2.8/mingw/include',
+                               './external/shapelib/mingw/include',
                                cnf.env.BOOST_PATH ]
         cnf.env.DEFINES    = [ 'FREEGLUT_STATIC' ]
         cnf.env.LINKFLAGS  = [ '-static-libgcc', '-static-libstdc++', '-W1,subsystem,windows' ]
         cnf.env.LIB        = [ 'freeglut_static', 'opengl32', 'gdi32', 'glu32', 'winmm' ]
         cnf.env.LIBPATH    = [ cnf.path.abspath() + '/external/freeglut/2.8/mingw/lib' ]
-        cnf.env.STLIBPATH  = [ cnf.path.abspath() + '/libs/win32/gcc-mingw-4.6.2' ]
-        cnf.env.STLIB      = [ 'boost_regex-mgw46-1_49' ]
+        cnf.env.STLIBPATH  = [ cnf.path.abspath() + '/libs/win32/gcc-mingw-4.6.2',
+                               cnf.path.abspath() + '/external/shapelib/mingw/lib' ]
+        cnf.env.STLIB      = [ 'boost_regex-mgw46-1_49', 'shp' ]
 
         # for building the test runners
         cnf.env.TEST_LIBPATH = cnf.path.abspath() + '/libs/win32/gcc-mingw-4.6.2'

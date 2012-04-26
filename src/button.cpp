@@ -12,7 +12,7 @@ void Button::clickEvent( int x_, int y_, int button, int state )
     pressed = state ? false : true ;
     glutPostRedisplay();
 
-    if( onClick )
+    if( onClick && !state )
         (*onClick)();
 }
 
