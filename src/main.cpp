@@ -3,6 +3,7 @@
 #include <sstream>
 #include <list>
 #include <vector>
+#include <limits>
 using namespace std;
 
 #ifdef _MSC_VER
@@ -17,7 +18,6 @@ using namespace std;
 #include <boost/property_tree/ptree.hpp>
 #include <boost/property_tree/xml_parser.hpp>
 #include "boost/assign.hpp"
-using namespace boost::assign;
 
 #include "globals.h"
 #include "utils.h"
@@ -37,6 +37,9 @@ using namespace xmx;
 
 #include <GL/glu.h>
 #include <GL/glut.h>
+
+// data - will be loaded from an xml file
+map< string, shared_ptr< map< int, double > > > data;
 
 vector < shared_ptr<Window> > windows;
 shared_ptr< Label > label1;
@@ -82,11 +85,26 @@ void zoom_out_clicked()         { map_display -> setScale( map_display -> getSca
 void zoom_reset_clicked()       { map_display -> setScale( 1.0f ); map_display -> setMapOffsetX( 0 ); map_display -> setMapOffsetY( 0 ); }
 void filled_polygons_change( bool checked )   { map_display -> setDisplayFilledPolygons( checked ); }
 
-//------------------------------------------------------------------------------
+// Will create a map of maps with data from `file_name` of the form:
+//---------------------------------------------------------------------------------------
+//  {  // ISO3 country code     year      value  - -  - > IMPORTANT!                 
+//            |                  |          |             -------------------------------
+//            V                  V          V             if no data is available    
+//        [ "ROU" ] =>  {    [ 1990 ] =>    -1            for a particular year, then  
+//                           [ 1991 ] => 240000000        the value stored will be     
+//                             ...                        -1                         
+//                      }                                 
+//                                                        
+//        [ "MDA" ] =>  {    [ 1990 ] => 13000000
+//                           [ 1991 ] => 14000000
+//                             ...
+//                      }
+//           ...
+//  }
+//---------------------------------------------------------------------------------------
 void loadXMLData( string file_name )
 {
     using boost::property_tree::ptree;
-    map< string, shared_ptr< map< int, double > > > data;
     ptree pt;
 
     read_xml( file_name, pt );
@@ -134,6 +152,73 @@ void loadXMLData( string file_name )
     cout << map_[ 1987 ] << endl;
 }
 
+// The following functions are used to interrogate the `data` map. It is assumed
+// the are called after the xml file has been loaded. They should really be
+// encapsulated in a class, with `data` as a private field, instead of cluttering
+// main.cpp, but there's not time...
+//------------------------------------------------------------------------------
+double getMaxDataValue( int year )
+{
+    double max = numeric_limits< double >::min();
+    string max_country = "none";
+    
+    for( auto it = data.begin(); it != data.end(); it++ )
+    {
+        map< int, double > map_ = *(it)->second;
+        double value = map_[ year ];
+
+        // see if we have a value for the requested year;
+        // remember, -1 is used to signify 'N/A' - not available
+        //----------------------------------------------------------------------
+        if( value != -1 && value > max )
+        {
+            max = value;
+            max_country = it->first;
+        }
+    }
+    cout << "max for " << year << ": " << setfill(' ') << setw( 15 ) << setiosflags( ios::fixed | ios::right) << max;
+    cout << " in " << ISO3_codes[ max_country ] << endl;
+    return max;
+}
+
+//------------------------------------------------------------------------------
+double getMinDataValue( int year )
+{
+    double min = numeric_limits< double >::max();
+    string min_country = "none";
+    
+    for( auto it = data.begin(); it != data.end(); it++ )
+    {
+        map< int, double > map_ = *(it)->second;
+        double value = map_[ year ];
+
+        // see if we have a value for the requested year;
+        // remember, -1 is used to signify 'N/A' - not available
+        //----------------------------------------------------------------------
+        if( value != -1 && value < min )
+        {
+            min = value;
+            min_country = it->first;
+        }
+    }
+    cout << "min for " << year << ": " << setfill(' ') << setw( 15 ) << setiosflags( ios::fixed | ios::right) << min;
+    cout << " in " << ISO3_codes[ min_country ] << endl;
+    return min;
+}
+
+//------------------------------------------------------------------------------
+int getMaxDataYear()
+{
+    return -1;
+}
+
+//------------------------------------------------------------------------------
+int getMinDataYear()
+{
+    return -1;
+}
+
+// Perform application-specific initialisation
 //------------------------------------------------------------------------------
 void app_init()
 {
@@ -189,6 +274,11 @@ void app_init()
 
     //
     loadXMLData( "data/NY.GDP.MKTP.CD_Indicator_en.xml" );
+    for( int i = 1960; i <= 2011; i++ )
+    {
+        getMaxDataValue( i );
+        getMinDataValue( i );
+    }
 }
 
 //------------------------------------------------------------------------------

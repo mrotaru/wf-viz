@@ -26,9 +26,11 @@ void printText( int nX, int nY, string text );
 void printBigText( int nX, int nY, string text );
 void setColor( const Color& );
 void setColor( const Color* );
+void setColor( shared_ptr< Color > );
 GLfloat dist( GLfloat x1, GLfloat y1, GLfloat x2, GLfloat y2 );
 GLfloat dot( GLfloat x1, GLfloat y1, GLfloat x2, GLfloat y2 );
 GLfloat degrees_to_radians( GLfloat );
+shared_ptr< Color > getColorAt( int );
 
 typedef void (*fptr_click_event)();
 typedef void (*fptr_checkbox_event)(bool);

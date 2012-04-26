@@ -120,6 +120,13 @@ void setColor( const Color* color )
 }
 
 //-----------------------------------------------------------------------------
+void setColor( shared_ptr< Color > color_)
+{
+   if( color_ )
+       glColor3f( color_->R, color_->G, color_->B ); 
+}
+
+//-----------------------------------------------------------------------------
 GLfloat dist( GLfloat x1, GLfloat y1, GLfloat x2, GLfloat y2 )
 {
     return sqrt( ((x1 - x2) * (x1 - x2)) + ((y1 - y2) * (y1 - y2)) ) ;
@@ -138,6 +145,27 @@ GLfloat degrees_to_radians( GLfloat degrees )
 {
     double const PI = 3.14159265358979323;
     return degrees * ( PI/180.0 ); 
+}
+
+// Returns a color that represents `percentage` depending on size - the closer
+// to 100, the greener; the closer to 0, the redder.
+//------------------------------------------------------------------------------
+shared_ptr< Color > getColorAt( int percentage )
+{
+    int R, G, B;
+    if( percentage <= 50 )
+    {
+        R = 255;
+        G = percentage * 255 / 50;
+    }
+    else if( percentage > 50 )
+    {
+        R = 255 + (50 - percentage ) * 255 / 50;
+        G = 255;
+    }
+    B = 0;
+
+    return shared_ptr< Color >( new Color( R * 100 / 255, G * 100 / 255, B * 100 / 255 ) );
 }
 
 map< string, string > ISO3_codes = map_list_of
