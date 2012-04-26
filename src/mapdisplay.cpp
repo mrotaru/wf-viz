@@ -100,6 +100,37 @@ void MapDisplay::dragEvent( int x_, int y_ )
 }
 
 //------------------------------------------------------------------------------
+void MapDisplay::keyPressed( unsigned char key, int x_, int y_ )
+{
+    switch( key )
+    {
+        case GLUT_KEY_UP:
+            map_offset_y -= 5;
+            break;
+        case GLUT_KEY_DOWN:
+            map_offset_y += 5;
+            break;
+        case GLUT_KEY_LEFT:
+            map_offset_x += 5;
+            break;
+        case GLUT_KEY_RIGHT:
+            map_offset_x -= 5;
+            break;
+        case '=':
+        case '+':
+            scale += 0.5f;
+            break;
+        case '-':
+            scale -= 0.5f;
+            break;
+        case '0':
+            scale = 1;
+            break;
+    }
+    glutPostRedisplay();
+}
+
+//------------------------------------------------------------------------------
 void MapDisplay::loadFromShapefile( std::string filename )
 {
     SHPHandle hSHP = SHPOpen( filename.c_str(), "rb" );

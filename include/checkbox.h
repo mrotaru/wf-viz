@@ -27,6 +27,7 @@ public:
     void hoverEnterEvent( int, int )                { hovered = true; };
     void hoverLeaveEvent( int, int )                { hovered = false; };
     void clickEvent( int x_, int y_, int button, int state );
+    void keyPressed( unsigned char, int, int ) {}
 
     // property get/set
     //--------------------------------------------------------------------------

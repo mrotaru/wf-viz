@@ -31,6 +31,7 @@ public:
     void clickEvent( int, int, int, int );
     void hoverEnterEvent( int, int );
     void hoverLeaveEvent( int, int );
+    void keyPressed( unsigned char, int, int );
 
     bool hasFocus()     { return focus; }
     void losfFocus()    { titleBar->setBackgroundColor( &DARK_GREY ); focus = false; }

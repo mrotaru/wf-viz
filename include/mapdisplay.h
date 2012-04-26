@@ -31,6 +31,7 @@ public:
     //--------------------------------------------------------------------------
     void clickEvent( int x_, int y_, int button, int state ) {}
     void dragEvent ( int, int );
+    void keyPressed( unsigned char, int, int );
 
     // property get/set
     //--------------------------------------------------------------------------

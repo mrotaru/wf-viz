@@ -14,6 +14,10 @@ using namespace std;
 #endif
 
 #include <boost/foreach.hpp>
+#include <boost/property_tree/ptree.hpp>
+#include <boost/property_tree/xml_parser.hpp>
+#include "boost/assign.hpp"
+using namespace boost::assign;
 
 #include "globals.h"
 #include "utils.h"
@@ -28,6 +32,7 @@ using namespace std;
 #include "button.h"
 #include "mapdisplay.h"
 #include "checkbox.h"
+#include "data_utils.h"
 using namespace xmx;
 
 #include <GL/glu.h>
@@ -78,6 +83,58 @@ void zoom_reset_clicked()       { map_display -> setScale( 1.0f ); map_display -
 void filled_polygons_change( bool checked )   { map_display -> setDisplayFilledPolygons( checked ); }
 
 //------------------------------------------------------------------------------
+void loadXMLData( string file_name )
+{
+    using boost::property_tree::ptree;
+    map< string, shared_ptr< map< int, double > > > data;
+    ptree pt;
+
+    read_xml( file_name, pt );
+
+    auto ignored = set< string>();
+    int couted = 0;
+    BOOST_FOREACH( ptree::value_type const& v, pt.get_child( "Root" ).get_child( "data" ) )
+    {
+        string country_code = v.second.get< string >( "field.<xmlattr>.key", "-" );
+        if( ISO3_codes.find( country_code ) != ISO3_codes.end() )
+        {
+            int year = -1;
+            double value = -1;
+            BOOST_FOREACH( ptree::value_type const& v2, v.second )
+            {
+                string name = v2.second.get< string >( "<xmlattr>.name", "--" );
+
+                if( name == "Year" )
+                     year = v2.second.get< int >( "" );
+
+                else if( name == "Value" )
+                     value = v2.second.get< double >("", -1.0f );
+
+            }
+            // cout << "year: " << year << ", value: " << value << endl;
+
+            if( data.find( country_code ) == data.end() )
+                data[ country_code ] = shared_ptr< map< int, double > >( new map< int, double > );
+
+            data[ country_code ]->insert( pair< int, double>( year, value ) );
+           
+        couted++;
+        }
+        else
+        {
+            if( ignored.find( country_code ) == ignored.end() )
+            {
+                cout << "ignoring: " << country_code << endl;
+                ignored.insert( country_code );
+            }
+        }
+    }
+    cout << data[ "ROU" ]->size() << endl;
+    map< int, double > map_ = *(data[ "ROU" ]);
+    cout << map_[ 1987 ] << endl;
+}
+
+//------------------------------------------------------------------------------
 void app_init()
 {
     // read version number and build info
@@ -89,8 +146,8 @@ void app_init()
     build_info = "Build info: " + BUILD_ID + " @ " + BUILD_TIME;
 
     // create a couple of windows
-    auto window1 = shared_ptr< Window >( new Window(  40,  70, 300, 100, "Window #1" ) );
-    auto window2 = shared_ptr< Window >( new Window( 350,  70, 400, 450, "Map of the world" ) );
+    auto window1 = shared_ptr< Window >( new Window(  40,  70, 400, 400, "Window #1" ) );
+    auto window2 = shared_ptr< Window >( new Window( 450,  70, 400, 450, "Map of the world" ) );
 
     // controls
     label1 = shared_ptr< Label >( new Label( 200, 18, "This is a label" ) ); 
@@ -106,12 +163,18 @@ void app_init()
     auto render_filled_polygons = shared_ptr< CheckBox >( new CheckBox( 200, 18, "render filled polygons" ) );
     render_filled_polygons -> setOnChange( filled_polygons_change );
 
+    string help_text = 
+        " Click 'Load Shapefile' and select a shapefile to load."
+        "\nIf the window showing the map is selected, you can use '+'"
+        "\nand '-' to zoom in and out, and the arrow keys to pan the map.";
+    auto help = shared_ptr< Label >( new Label( 280, 230, help_text ) );
+
     // map
     map_display  = shared_ptr< MapDisplay >( new MapDisplay( 380, 370, "World Map" ) );
 
     // put controls on windows
-    window1 -> addControl( label1, 2, 20 );
-    window1 -> addControl( btn,    4, 45 );
+    window1 -> addControl( help,   4,  22 );
+    window1 -> addControl( btn,    4, 245 );
     window2 -> addAutoSizedControl( map_display,   4,  25, 4, 55 );
     window2 -> addControl( zoom_in,       4, 400 );
     window2 -> addControl( zoom_out,     80, 400 );
@@ -123,6 +186,9 @@ void app_init()
     windows.push_back( window2 );
     window1->giveFocus();
     focused_window = window1;
+
+    //
+    loadXMLData( "data/NY.GDP.MKTP.CD_Indicator_en.xml" );
 }
 
 //------------------------------------------------------------------------------
@@ -136,7 +202,9 @@ void gl_display_callback()
     printText( 10, glutGet( GLUT_WINDOW_HEIGHT ) - 32, build_info );
 
     BOOST_FOREACH( shared_ptr< Window > window, windows )
-        window->draw();
+        if( window != focused_window )
+            window->draw();
+    focused_window -> draw();
 
     glutSwapBuffers();
 }
@@ -238,6 +306,8 @@ void gl_keyboard_callback( unsigned char key, int x, int y )
             exit(0);
             break;
     }
+
+    focused_window -> keyPressed( key, x, y );
 }
 
 //------------------------------------------------------------------------------
@@ -247,7 +317,7 @@ int main( int argc, char *argv[] )
     glutInitDisplayMode( GLUT_DOUBLE | GLUT_RGB | GLUT_MULTISAMPLE );
      
     // window
-    window_width = 800;
+    window_width = 900;
     window_height = 600;
     glutInitWindowSize( window_width, window_height );
     glutInitWindowPosition( 100, 100 );
@@ -263,6 +333,7 @@ int main( int argc, char *argv[] )
     glutMouseFunc           ( gl_mouse_click_callback );
     glutMotionFunc          ( gl_mouse_drag_callback );
     glutPassiveMotionFunc   ( gl_mouse_move_callback );
+    glutSpecialFunc         ( gl_keyboard_callback );
 
     glutMainLoop();
     

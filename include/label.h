@@ -27,10 +27,11 @@ public:
 
     // events
     //--------------------------------------------------------------------------
-    void clickEvent( int, int, int, int )   {}
-    void dragEvent ( int, int )             {}
-    void hoverEnterEvent( int, int )        {}
-    void hoverLeaveEvent( int, int )        {}
+    void clickEvent( int, int, int, int )       {}
+    void dragEvent ( int, int )                 {}
+    void hoverEnterEvent( int, int )            {}
+    void hoverLeaveEvent( int, int )            {}
+    void keyPressed( unsigned char, int, int )  {}
 
     // property get/set
     //--------------------------------------------------------------------------
