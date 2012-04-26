@@ -2,7 +2,8 @@
 #define GUIUTILS_H
 
 #include "utils.h"
-using namespace xmx;
+namespace xmx
+{
 
 // standard CSS colors
 // http://www.w3schools.com/html/html_colornames.asp
@@ -33,4 +34,5 @@ struct BorderInfo
     Color colors[4];
 };
 
+} // namespace xmx
 #endif /* GUIUTILS_H */

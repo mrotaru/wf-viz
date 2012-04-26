@@ -19,12 +19,16 @@ public:
         }
     void draw();
 
-    std::string getText()                           { return text;                  }
-    void setText( std::string _text )               { text = _text;                 }
-
+    // events
+    //--------------------------------------------------------------------------
     void setOnClick( fptr_click_event fptr_ )       { onClick = fptr_;              }
     void clickEvent( int x_, int y_, int button, int state );
     void dragEvent ( int x_, int y_ ) {}
+
+    // property get/set
+    //--------------------------------------------------------------------------
+    std::string getText()                           { return text;                  }
+    void setText( std::string _text )               { text = _text;                 }
 
 protected:
     string text;

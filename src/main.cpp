@@ -9,6 +9,10 @@ using namespace std;
 #include <windows.h>
 #endif
 
+#if defined (__WIN32__)
+    #include "platform/win32.h"
+#endif
+
 #include <boost/foreach.hpp>
 
 #include "globals.h"
@@ -23,6 +27,7 @@ using namespace std;
 #include "label.h"
 #include "button.h"
 #include "mapdisplay.h"
+#include "checkbox.h"
 using namespace xmx;
 
 #include <GL/glu.h>
@@ -34,6 +39,7 @@ shared_ptr< Window > focused_window;
 shared_ptr< Window > hovered_window;
 shared_ptr< MapDisplay > map_display;
 shared_ptr< Control > drag_started_on;
+shared_ptr< CheckBox > render_filled_polygons;
 
 shared_ptr< Control > dragged_control = nullptr;
 int drag_offset_x;
@@ -61,12 +67,15 @@ void gl_init()
 //------------------------------------------------------------------------------
 void button_clicked()
 {
-    label1->setText( "The button was clicked!" );
+    string filename = browseFile();
+    if( !filename.empty() )
+        map_display -> loadFromShapefile( filename );
 }
 
-void zoom_in_clicked()      { map_display -> setScale( map_display -> getScale() + 0.02f ); }
-void zoom_out_clicked()     { map_display -> setScale( map_display -> getScale() - 0.02f ); }
-void zoom_reset_clicked()   { map_display -> setScale( 1.0f ); map_display -> setMapOffsetX( 0 ); map_display -> setMapOffsetY( 0 ); }
+void zoom_in_clicked()          { map_display -> setScale( map_display -> getScale() + 0.05f ); }
+void zoom_out_clicked()         { map_display -> setScale( map_display -> getScale() - 0.05f ); }
+void zoom_reset_clicked()       { map_display -> setScale( 1.0f ); map_display -> setMapOffsetX( 0 ); map_display -> setMapOffsetY( 0 ); }
+void filled_polygons_change( bool checked )   { map_display -> setDisplayFilledPolygons( checked ); }
 
 //------------------------------------------------------------------------------
 void app_init()
@@ -80,12 +89,13 @@ void app_init()
     build_info = "Build info: " + BUILD_ID + " @ " + BUILD_TIME;
 
     // create a couple of windows
-    auto window1 = shared_ptr< Window >( new Window( 100, 100, 300, 100, "Window #1" ) );
-    auto window2 = shared_ptr< Window >( new Window( 200, 200, 400, 450, "Map of the world" ) );
+    auto window1 = shared_ptr< Window >( new Window(  40,  70, 300, 100, "Window #1" ) );
+    auto window2 = shared_ptr< Window >( new Window( 350,  70, 400, 450, "Map of the world" ) );
 
     // controls
     label1 = shared_ptr< Label >( new Label( 200, 18, "This is a label" ) ); 
-    auto btn = shared_ptr< Button >( new Button( 100, 22, "Click Me!" ) );
+    auto checkbox1 = shared_ptr< CheckBox >( new CheckBox( 200, 18, "test a checkbox" ) );
+    auto btn = shared_ptr< Button >( new Button( 100, 22, "Load shapefile" ) );
     btn->setOnClick( button_clicked );
     auto zoom_in  = shared_ptr< Button >( new Button( 80, 22, "Zoom In"  ) );
     zoom_in -> setOnClick( zoom_in_clicked );
@@ -93,18 +103,20 @@ void app_init()
     zoom_out -> setOnClick( zoom_out_clicked );
     auto zoom_reset = shared_ptr< Button >( new Button( 80, 22, "Reset" ) );
     zoom_reset -> setOnClick( zoom_reset_clicked );
+    auto render_filled_polygons = shared_ptr< CheckBox >( new CheckBox( 200, 18, "render filled polygons" ) );
+    render_filled_polygons -> setOnChange( filled_polygons_change );
 
     // map
     map_display  = shared_ptr< MapDisplay >( new MapDisplay( 380, 370, "World Map" ) );
-    map_display -> loadFromShapefile( "shapefiles/world_borders" );
 
     // put controls on windows
     window1 -> addControl( label1, 2, 20 );
     window1 -> addControl( btn,    4, 45 );
-    window2 -> addControl( map_display,   4, 25 );
+    window2 -> addAutoSizedControl( map_display,   4,  25, 4, 55 );
     window2 -> addControl( zoom_in,       4, 400 );
     window2 -> addControl( zoom_out,     80, 400 );
     window2 -> addControl( zoom_reset,  180, 400 );
+    window2 -> addControl( render_filled_polygons, 4, 424 );
 
     // initt windowing
     windows.push_back( window1 );

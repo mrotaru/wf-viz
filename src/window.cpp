@@ -13,12 +13,12 @@ using std::shared_ptr;
 namespace xmx
 {
 
-void Window::addControl( shared_ptr<Control> ctrl, int x_, int y_ )
+void Window::addControl( shared_ptr<Control> control, int x_, int y_ )
 {
-    ctrl->setX( x_ );
-    ctrl->setY( y_ );
-    ctrl->setParent( this );
-    controls.push_back( ctrl );
+    control -> setX( x_ );
+    control -> setY( y_ );
+    control -> setParent( this );
+    controls.push_back( control );
 }
 
 void Window::clickEvent( int click_x, int click_y, int button, int state )
@@ -120,6 +120,18 @@ void Window::hoverLeaveEvent( int x_, int y_ )
     }
 
     glutPostRedisplay();
+}
+
+void Window::addAutoSizedControl( shared_ptr< Control > control,
+        int x_, int y_,
+        int right_margin, int bottom_margin )
+{
+    control -> setX( x_ );
+    control -> setY( y_ );
+    control -> setWidth ( width  - x_ - right_margin );
+    control -> setHeight( height - y_ - bottom_margin );
+    control -> setParent( this );
+    controls.push_back( control );
 }
 
 } // namespace xmx

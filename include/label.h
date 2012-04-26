@@ -19,13 +19,21 @@ public:
     Label( int width_, int height_, std::string text_ ):
         Control( 0, 0, width_, height_, "label", false ), text( text_ )
         { setTextColor( &BLACK ); }
+    Label( int x, int y, int width_, int height_, std::string text_ ):
+        Control( x, y, width_, height_, "label", false ), text( text_ )
+        { setTextColor( &BLACK ); }
+
     void draw();
 
+    // events
+    //--------------------------------------------------------------------------
     void clickEvent( int, int, int, int )   {}
     void dragEvent ( int, int )             {}
     void hoverEnterEvent( int, int )        {}
     void hoverLeaveEvent( int, int )        {}
 
+    // property get/set
+    //--------------------------------------------------------------------------
     std::string getText()                         { return text; }
     void setText( std::string _text )             { text = _text; }
 
