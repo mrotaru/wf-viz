@@ -14,6 +14,10 @@ using namespace std;
 #endif
 
 #include <boost/foreach.hpp>
+#include <boost/property_tree/ptree.hpp>
+#include <boost/property_tree/xml_parser.hpp>
+#include "boost/assign.hpp"
+using namespace boost::assign;
 
 #include "globals.h"
 #include "utils.h"
@@ -28,6 +32,7 @@ using namespace std;
 #include "button.h"
 #include "mapdisplay.h"
 #include "checkbox.h"
+//#include "data_utils.h"
 using namespace xmx;
 
 #include <GL/glu.h>
@@ -78,6 +83,54 @@ void zoom_reset_clicked()       { map_display -> setScale( 1.0f ); map_display -
 void filled_polygons_change( bool checked )   { map_display -> setDisplayFilledPolygons( checked ); }
 
 //------------------------------------------------------------------------------
+void loadXMLData( string file_name )
+{
+    using boost::property_tree::ptree;
+    map< string, shared_ptr< map< int, double > > > data;
+    ptree pt;
+
+    read_xml( file_name, pt );
+
+    map< string, string > ISO3_codes = map_list_of
+        ( "ROU", "Romania" )
+        ( "ALB", "Albania" );
+
+    int couted = 0;
+    BOOST_FOREACH( ptree::value_type const& v, pt.get_child( "Root" ).get_child( "data" ) )
+    {
+
+        auto map_ = shared_ptr< map< int, double > >( new map< int, double > );
+        if( v.second.get< string >( "field.<xmlattr>.key", "-" ) == "ROU" )
+        {
+            int year = -1;
+            double value = -1;
+            BOOST_FOREACH( ptree::value_type const& v2, v.second )
+            {
+
+                string name = v2.second.get< string >( "<xmlattr>.name", "--" );
+
+                if( name == "Year" )
+                     year = v2.second.get< int >( "" );
+
+                else if( name == "Value" )
+                     value = v2.second.get< double >("", -1.0f );
+
+            }
+            cout << "year: " << year << ", value: " << value << endl;
+            if( data.find( "ROU" ) == data.end() )
+                data[ "ROU" ] = shared_ptr< map< int, double > >( new map< int, double > );
+
+            data[ "ROU" ]->insert( pair< int, double>( year, value ) );
+           
+        couted++;
+        }
+    }
+    cout << data[ "ROU" ]->size() << endl;
+    map< int, double > map_ = *(data[ "ROU" ]);
+    cout << map_[ 1987 ] << endl;
+}
+
+//------------------------------------------------------------------------------
 void app_init()
 {
     // read version number and build info
@@ -110,7 +163,7 @@ void app_init()
         " Click 'Load Shapefile' and select a shapefile to load."
         "\nIf the window showing the map is selected, you can use '+'"
         "\nand '-' to zoom in and out, and the arrow keys to pan the map.";
-    auto help = shared_ptr< Label >( new Label( 280, 330, help_text ) );
+    auto help = shared_ptr< Label >( new Label( 280, 230, help_text ) );
 
     // map
     map_display  = shared_ptr< MapDisplay >( new MapDisplay( 380, 370, "World Map" ) );
@@ -129,6 +182,9 @@ void app_init()
     windows.push_back( window2 );
     window1->giveFocus();
     focused_window = window1;
+
+    //
+    loadXMLData( "data/NY.GDP.MKTP.CD_Indicator_en.xml" );
 }
 
 //------------------------------------------------------------------------------
