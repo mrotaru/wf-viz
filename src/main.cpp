@@ -23,6 +23,7 @@ using namespace std;
 #include "label.h"
 #include "button.h"
 #include "mapdisplay.h"
+#include "checkbox.h"
 using namespace xmx;
 
 #include <GL/glu.h>
@@ -85,6 +86,7 @@ void app_init()
 
     // controls
     label1 = shared_ptr< Label >( new Label( 200, 18, "This is a label" ) ); 
+    auto checkbox1 = shared_ptr< CheckBox >( new CheckBox( 200, 18, "test a checkbox" ) );
     auto btn = shared_ptr< Button >( new Button( 100, 22, "Click Me!" ) );
     btn->setOnClick( button_clicked );
     auto zoom_in  = shared_ptr< Button >( new Button( 80, 22, "Zoom In"  ) );
@@ -101,10 +103,11 @@ void app_init()
     // put controls on windows
     window1 -> addControl( label1, 2, 20 );
     window1 -> addControl( btn,    4, 45 );
-    window2 -> addControl( map_display,   4, 25 );
+    window2 -> addControl( map_display,   4,  25 );
     window2 -> addControl( zoom_in,       4, 400 );
     window2 -> addControl( zoom_out,     80, 400 );
     window2 -> addControl( zoom_reset,  180, 400 );
+    window2 -> addControl( checkbox1,     4, 422 );
 
     // initt windowing
     windows.push_back( window1 );

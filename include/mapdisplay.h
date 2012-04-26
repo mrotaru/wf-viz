@@ -23,11 +23,16 @@ public:
             setBorderWidth( 1 );
         }
     void draw();
-    void clickEvent( int x_, int y_, int button, int state ) {};
-    void dragEvent ( int, int );
 
     void loadFromShapefile( std::string );
 
+    // events
+    //--------------------------------------------------------------------------
+    void clickEvent( int x_, int y_, int button, int state ) {}
+    void dragEvent ( int, int );
+
+    // property get/set
+    //--------------------------------------------------------------------------
     void setScale( float scale_ )           { scale = scale_; }
     float getScale()                        { return scale;   }
 
@@ -36,7 +41,6 @@ public:
 
     void setMapOffsetY( int map_offset_y_ ) { map_offset_y = map_offset_y_; }
     float getMapOffsetY()                   { return map_offset_y;          }
-
 
 protected:
     std::string shapefile;

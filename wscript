@@ -24,7 +24,8 @@ sources         = [ 'src/Point.cpp',
                     'src/window.cpp',
                     'src/button.cpp',
                     'src/label.cpp',
-                    'src/mapdisplay.cpp' ]
+                    'src/mapdisplay.cpp',
+                    'src/checkbox.cpp' ]
 main_cpp        =   'src/main.cpp'
 test_runner_cpp =   'tests/runner.cpp'
 test_sources    = [ 'tests/testPoint.cpp',

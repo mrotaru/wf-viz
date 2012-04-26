@@ -27,13 +27,18 @@ public:
     virtual ~Control() {};
 
     virtual void draw() = 0;
+    int getID() { return ID; }
+    bool isPointInside( int, int );
+
+    // events
+    //--------------------------------------------------------------------------
     virtual void clickEvent( int, int, int, int ) = 0;
     virtual void dragEvent ( int, int ) = 0;
     void hoverEnterEvent( int, int ) { hovered = true; };
     void hoverLeaveEvent( int, int ) { hovered = false; };
-    int getID() { return ID; }
 
-    // setters/getters
+    // property get/set
+    //--------------------------------------------------------------------------
     std::string getName()                         { return name; }
     void setName( std::string _name )             { name = _name; }
 
@@ -54,8 +59,6 @@ public:
 
     int getBorderWidth()                          { return border_width;   }
     void setBorderWidth( int width_ )             { border_width = width_; }
-
-    bool isPointInside( int, int );
 
 protected:
     Window* parent;
