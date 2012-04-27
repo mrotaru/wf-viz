@@ -150,24 +150,25 @@ GLfloat degrees_to_radians( GLfloat degrees )
 // Returns a color that represents `percentage` depending on size - the closer
 // to 100, the greener; the closer to 0, the redder.
 //------------------------------------------------------------------------------
-shared_ptr< Color > getColorAt( int percentage )
+shared_ptr< Color > getColorAt( float proportion )
 {
-    int R, G, B;
-    if( percentage <= 50 )
+    float R, G, B;
+    if( proportion <= 0.5f )
     {
-        R = 255;
-        G = percentage * 255 / 50;
+        R = 0.5f;
+        G = proportion * 0.5f * 100;
     }
-    else if( percentage > 50 )
+    else
     {
-        R = 255 + (50 - percentage ) * 255 / 50;
-        G = 255;
+        R = proportion * 0.5f;
+        G = 1.0f - proportion/100;
     }
-    B = 0;
-
-    return shared_ptr< Color >( new Color( R * 100 / 255, G * 100 / 255, B * 100 / 255 ) );
+    B = 0.0f;
+    
+    return shared_ptr< Color >( new Color( R, G, B ) );
 }
 
+void Color::print() { cout << "R: "<<R<<" G: "<<G<<" B: "<<B<<endl; }
 
 } // namespace xmx
 #endif /* UTILS_CPP */

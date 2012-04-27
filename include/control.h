@@ -48,6 +48,12 @@ public:
 
     Color* getBackgroundColor()                   { return background_color;   }
     void setBackgroundColor( const Color* color_ ){ background_color = const_cast< Color* >( color_ ); }
+    void setBackgroundColor( shared_ptr< Color > color_ )
+    {
+        cout << "setting bg color: ";
+        color_ -> print();
+        background_color = &*color_;
+    }
     void useBackgroundColor()                     { background_color ?    setColor( background_color ): setColor(control_bg ); }
 
     Color* getTextColor()                         { return text_color;   }

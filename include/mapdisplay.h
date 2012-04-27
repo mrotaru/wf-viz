@@ -3,6 +3,7 @@
 
 #include "gui_utils.h"
 #include "control.h"
+#include "xml_data.h"
 
 namespace xmx {
 
@@ -17,7 +18,7 @@ public:
         Control( 0, 0, width_, height_, "mapdisplay", true ),
         shapefile( "" ), file_loaded( false ), scale(1),
         map_width( 0 ), map_height( 0 ), map_offset_x( 0 ), map_offset_y( 0 ),
-        filled_polygons( false )
+        filled_polygons( false ), have_index( false ), have_data( false )
         {   setTextColor( &BLACK );
             setBackgroundColor( &GAINSBORO );
             setBorderColor( &LIGHT_GREY );
@@ -47,6 +48,8 @@ public:
     void setDisplayFilledPolygons( bool filled_polygons_ ) { filled_polygons = filled_polygons_; }
     bool getDisplayFilledPolygons()                        { return filled_polygons; }
 
+    void setData( shared_ptr< XMLData > data_ )            { data = data_; have_data = true; }
+
 protected:
     std::string shapefile;
     bool file_loaded;
@@ -61,6 +64,9 @@ protected:
     BoundingBox             map_BB;
     bool filled_polygons;
     map< int, string > index;
+    bool have_index;
+    shared_ptr< XMLData > data;    
+    bool have_data;
 };
 
 } // namespace xmx

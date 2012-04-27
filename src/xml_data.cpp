@@ -188,8 +188,17 @@ double XMLData::getValueForYear( string iso3_code, int year )
 {
     if( !loaded ) return -1;
 
+    auto iter = data.find( iso3_code );
+    if( iter == data.end() )
+        return -1;
+
     map< int, double > map_ = *( data[ iso3_code ] );
-    return map_[ year ];
+
+    auto iter2 = map_.find( year );
+    if( iter2 != map_.end() )
+        return map_[ year ];
+    else 
+        return -1;
 }
 
 map< string, string > ISO3_codes = map_list_of

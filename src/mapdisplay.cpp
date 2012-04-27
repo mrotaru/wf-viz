@@ -71,10 +71,53 @@ void MapDisplay::draw()
     glEnable ( GL_SCISSOR_TEST );
     glScissor( parent_x + x, toGl( parent_y + y + height ), width, height );
     setColor( RED );
+
+    int year = 1990;
+    double max_for_year = 0;
+    double min_for_year = 0;
+    if( have_data )
+    {
+        max_for_year = data -> getMaxDataValue( year );
+        min_for_year = data -> getMinDataValue( year );
+    }
+
     int i=1;
     BOOST_FOREACH( LineString2D polygon, polygons )
     {
-        setColor( i==209 ? GREEN: RED );
+        // Each `polygon` contains the data for a particular country.
+        // They are stored in the order of their index, so the first country
+        // is the country which in the index file has an index of 1.
+        //--------------------------------------------------------------------------------
+        if( have_index )
+        {
+            bool not_available = false; // 
+            float proportion = 0;
+
+            // get the ISO3 code for the current country
+            string current_iso3 = index[ i ];
+
+            if( have_data && data -> isLoaded() )
+            {
+                double value = data -> getValueForYear( current_iso3, year );
+                if( value == -1 )
+                    not_available = true;
+                proportion = value / max_for_year;
+            }
+            if( not_available )
+                setColor( DIM_GREY ); 
+            else
+            {
+                shared_ptr< Color > c = getColorAt( proportion );
+//                cout << current_iso3 << " - "
+//                << setfill(' ') << setw( 10 ) <<setiosflags( ios::fixed | ios::right ) << setprecision(4) 
+//                << proportion << ", color: ";
+//                c->print();
+                setColor( c ); 
+            }
+        }
+
+        // draw the country
+        //--------------------------------------------------------------------------------
         glBegin( filled_polygons ? GL_POLYGON : GL_LINE_STRIP );
         BOOST_FOREACH( Point2D point, polygon.points )
         {
@@ -287,6 +330,7 @@ void MapDisplay::loadFromShapefile( std::string filename )
             index[ country_index ] = country_code;
         }
         cout << "done reading index file." << endl;
+        have_index = true;
     }
 }
 

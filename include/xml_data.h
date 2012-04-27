@@ -22,6 +22,8 @@ public:
     int getMaxDataYear();
     int getMinDataYear();
     double getValueForYear( string iso3_code, int year );
+    
+    bool isLoaded() { return loaded; }
 
 private:
     map< string, shared_ptr< map< int, double > > > data;

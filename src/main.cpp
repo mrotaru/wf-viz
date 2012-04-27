@@ -37,7 +37,7 @@ using namespace xmx;
 #include <GL/glu.h>
 #include <GL/glut.h>
 
-XMLData data;
+shared_ptr< XMLData > data;
 
 vector < shared_ptr<Window> > windows;
 shared_ptr< Label > label1;
@@ -83,7 +83,11 @@ void load_xml_clicked()
 {
     string filename = browseFile( "XML files *.xml\n*.xml\nAll Files *.*\n*.*\n\n" );
     if( !filename.empty() )
-        data.load( filename );
+    {
+        data = shared_ptr< XMLData >( new XMLData() );
+        data -> load( filename );
+        map_display -> setData( data );
+    }
 }
 
 void zoom_in_clicked()          { map_display -> setScale( map_display -> getScale() + 0.05f ); }
@@ -102,6 +106,7 @@ void app_init()
     getline( ver_file, BUILD_ID );
     getline( ver_file, BUILD_TIME );
     build_info = "Build info: " + BUILD_ID + " @ " + BUILD_TIME;
+
 
     // create a couple of windows
     auto window1 = shared_ptr< Window >( new Window(  40,  70, 400, 400, "Window #1" ) );
