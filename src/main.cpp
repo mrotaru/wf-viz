@@ -71,11 +71,19 @@ void gl_init()
 }
 
 //------------------------------------------------------------------------------
-void button_clicked()
+void load_shapefile_clicked()
 {
-    string filename = browseFile();
+    string filename = browseFile( "Shapefiles *.shp,*.shx\n*.shp;*.shx\nAll Files *.*\n*.*\n\n" );
     if( !filename.empty() )
         map_display -> loadFromShapefile( filename );
+}
+
+//------------------------------------------------------------------------------
+void load_xml_clicked()
+{
+    string filename = browseFile( "XML files *.xml\n*.xml\nAll Files *.*\n*.*\n\n" );
+    if( !filename.empty() )
+        data.load( filename );
 }
 
 void zoom_in_clicked()          { map_display -> setScale( map_display -> getScale() + 0.05f ); }
@@ -102,8 +110,10 @@ void app_init()
     // controls
     label1 = shared_ptr< Label >( new Label( 200, 18, "This is a label" ) ); 
     auto checkbox1 = shared_ptr< CheckBox >( new CheckBox( 200, 18, "test a checkbox" ) );
-    auto btn = shared_ptr< Button >( new Button( 100, 22, "Load shapefile" ) );
-    btn->setOnClick( button_clicked );
+    auto load_shapefile = shared_ptr< Button >( new Button( 100, 22, "Load shapefile" ) );
+    load_shapefile -> setOnClick( load_shapefile_clicked );
+    auto load_xml = shared_ptr< Button >( new Button( 100, 22, "Load XML data" ) );
+    load_xml -> setOnClick( load_xml_clicked );
     auto zoom_in  = shared_ptr< Button >( new Button( 80, 22, "Zoom In"  ) );
     zoom_in -> setOnClick( zoom_in_clicked );
     auto zoom_out = shared_ptr< Button >( new Button( 80, 22, "Zoom Out" ) );
@@ -123,8 +133,9 @@ void app_init()
     map_display  = shared_ptr< MapDisplay >( new MapDisplay( 380, 370, "World Map" ) );
 
     // put controls on windows
-    window1 -> addControl( help,   4,  22 );
-    window1 -> addControl( btn,    4, 245 );
+    window1 -> addControl( help,              4,  22 );
+    window1 -> addControl( load_shapefile,    4, 245 );
+    window1 -> addControl( load_xml,          4, 268 );
     window2 -> addAutoSizedControl( map_display,   4,  25, 4, 55 );
     window2 -> addControl( zoom_in,       4, 400 );
     window2 -> addControl( zoom_out,     80, 400 );
@@ -136,14 +147,6 @@ void app_init()
     windows.push_back( window2 );
     window1->giveFocus();
     focused_window = window1;
-
-    //
-    data.load( "data/NY.GDP.MKTP.CD_Indicator_en.xml" );
-    for( int i = data.getMinDataYear(); i <= data.getMaxDataYear(); i++ )
-    {
-        cout << "min for " << i << ": " << data.getMaxDataValue( i ) << endl;
-        cout << "max for " << i << ": " << data.getMinDataValue( i ) << endl;
-    }
 }
 
 //------------------------------------------------------------------------------

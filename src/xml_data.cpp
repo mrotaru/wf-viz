@@ -77,6 +77,7 @@ void XMLData::load( string file_name )
         }
     }
     loaded = true;
+    cout << "done." << file_name << endl;
 }
 
 // The following functions are used to interrogate the `data` map.

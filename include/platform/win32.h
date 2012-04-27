@@ -9,7 +9,7 @@
 
 namespace xmx {
 
-std::string browseFile( void );
+std::string browseFile( std::string );
 
 } // namespace xmx
 #endif /* WIN32_H */
