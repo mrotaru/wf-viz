@@ -60,6 +60,7 @@ protected:
     vector< LineString2D >  polygons;
     BoundingBox             map_BB;
     bool filled_polygons;
+    map< int, string > index;
 };
 
 } // namespace xmx

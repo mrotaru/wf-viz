@@ -127,15 +127,24 @@ void app_init()
         " Click 'Load Shapefile' and select a shapefile to load."
         "\nIf the window showing the map is selected, you can use '+'"
         "\nand '-' to zoom in and out, and the arrow keys to pan the map.";
-    auto help = shared_ptr< Label >( new Label( 280, 230, help_text ) );
+    auto help = shared_ptr< Label >( new Label( 280, 10, help_text ) );
+
+    string help_text_2 =
+        " After a shapefile is loaded, an XML file with data can be"
+        "\nloaded. It must have the format of XML files downloaded from"
+        "\nthe World Bank website. If the shapefile has an index.xml, and"
+        "\nthe country codes in it are available in the data file, the"
+        "\ndata will be processed when displaying the map.";
+    auto help2 = shared_ptr< Label >( new Label( 280, 30, help_text_2 ) );
 
     // map
     map_display  = shared_ptr< MapDisplay >( new MapDisplay( 380, 370, "World Map" ) );
 
     // put controls on windows
     window1 -> addControl( help,              4,  22 );
-    window1 -> addControl( load_shapefile,    4, 245 );
-    window1 -> addControl( load_xml,          4, 268 );
+    window1 -> addControl( load_shapefile,    9,  80 );
+    window1 -> addControl( help2,             4, 185 );
+    window1 -> addControl( load_xml,          9, 288 );
     window2 -> addAutoSizedControl( map_display,   4,  25, 4, 55 );
     window2 -> addControl( zoom_in,       4, 400 );
     window2 -> addControl( zoom_out,     80, 400 );

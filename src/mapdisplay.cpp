@@ -1,4 +1,5 @@
 #include <iostream>
+#include <fstream>
 #include <vector>
 #include <cmath>
 using namespace std;
@@ -7,6 +8,8 @@ using namespace std;
 #include <GL/glut.h>
 
 #include <boost/foreach.hpp>
+#include <boost/property_tree/ptree.hpp>
+#include <boost/property_tree/xml_parser.hpp>
 
 #include "shapefil.h"
 
@@ -133,6 +136,7 @@ void MapDisplay::keyPressed( unsigned char key, int x_, int y_ )
 //------------------------------------------------------------------------------
 void MapDisplay::loadFromShapefile( std::string filename )
 {
+    shapefile = filename;
     SHPHandle hSHP = SHPOpen( filename.c_str(), "rb" );
 
     if( hSHP == NULL )
@@ -142,6 +146,7 @@ void MapDisplay::loadFromShapefile( std::string filename )
     }
 
     file_loaded = true;
+    cout << "reading shapefile..." << endl;
 
     map_BB.maxX = hSHP -> adBoundsMax[0]; cout << "maxX: " << map_BB.maxX << endl;
     map_BB.maxY = hSHP -> adBoundsMax[1]; cout << "maxY: " << map_BB.maxY << endl;
@@ -230,6 +235,58 @@ void MapDisplay::loadFromShapefile( std::string filename )
 			polygon.points = tempPointArray;
 			polygons.push_back( polygon );
 		}
+        cout << "done reading polygon shapefile." << endl;
+    }
+
+    // look for an index file - an xml file with data of the form:
+    //------------------------------------------------------------------------------
+    //      <shape>
+    //          <index>1</index>
+    //          <id>ROU</id>
+    //      </shape>
+    //------------------------------------------------------------------------------
+    // needs to be moved to plaform.h, and made platform-independent
+    //------------------------------------------------------------------------------
+    int last_slash = shapefile.find_last_of( '\\' );
+    int last_dot   = shapefile.find_last_of( '.'  );
+    string base_name = shapefile.substr( last_slash + 1, last_dot - last_slash - 1 );
+    string folder_name = shapefile.substr( 0, last_slash );
+//    cout << "filename: " << shapefile << endl;
+//    cout << "last_slash:    " << last_slash << endl;
+//    cout << "last_dot:      " << last_dot << endl;
+//    cout << "length:        " << shapefile.length() << endl; 
+//    cout << endl << "base_name: " << base_name << endl;
+//    cout << "folder_name: " << folder_name << endl;
+    string index_file_name = folder_name + "\\" + base_name + ".xml";
+    ifstream index_file( index_file_name );
+    if( !index_file.good() )
+    {
+
+        cout << "warning: cannot find an index file for " << base_name << "." << endl;
+    }
+    else
+    {
+        index_file.close();
+
+        using boost::property_tree::ptree;
+        ptree pt;
+
+        cout << endl << "reading index file..." << endl;
+        read_xml( index_file_name, pt );
+
+        BOOST_FOREACH( ptree::value_type const& v, pt.get_child( "records" ) )
+        {
+            string country_name  = v.second.get< string >( "name"  );
+            string country_code  = v.second.get< string >( "iso3"  );
+            int    country_index = v.second.get< int    >( "index" );
+
+            cout << "ISO3: " << country_code;
+            cout << " ( " << country_name  << " )";
+            cout << " index: " << country_index << endl;
+
+            index[ country_index ] = country_code;
+        }
+        cout << "done reading index file." << endl;
     }
 }
 
