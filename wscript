@@ -24,7 +24,12 @@ sources         = [ 'src/Point.cpp',
                     'src/window.cpp',
                     'src/button.cpp',
                     'src/label.cpp',
-                    'src/mapdisplay.cpp' ]
+                    'src/mapdisplay.cpp',
+                    'src/checkbox.cpp',
+                    'src/platform/win32.cpp',
+                    'src/data_utils.cpp',
+                    'src/xml_data.cpp'
+                    ]
 main_cpp        =   'src/main.cpp'
 test_runner_cpp =   'tests/runner.cpp'
 test_sources    = [ 'tests/testPoint.cpp',
@@ -71,7 +76,7 @@ def configure( cnf ):
                                cnf.env.BOOST_PATH ]
         cnf.env.DEFINES    = [ 'FREEGLUT_STATIC' ]
         cnf.env.LINKFLAGS  = [ '-static-libgcc', '-static-libstdc++', '-W1,subsystem,windows' ]
-        cnf.env.LIB        = [ 'freeglut_static', 'opengl32', 'gdi32', 'glu32', 'winmm' ]
+        cnf.env.LIB        = [ 'freeglut_static', 'opengl32', 'gdi32', 'glu32', 'winmm', 'comdlg32' ]
         cnf.env.LIBPATH    = [ cnf.path.abspath() + '/external/freeglut/2.8/mingw/lib' ]
         cnf.env.STLIBPATH  = [ cnf.path.abspath() + '/libs/win32/gcc-mingw-4.6.2',
                                cnf.path.abspath() + '/external/shapelib/mingw/lib' ]

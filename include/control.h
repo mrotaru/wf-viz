@@ -27,13 +27,19 @@ public:
     virtual ~Control() {};
 
     virtual void draw() = 0;
+    int getID() { return ID; }
+    bool isPointInside( int, int );
+
+    // events
+    //--------------------------------------------------------------------------
     virtual void clickEvent( int, int, int, int ) = 0;
     virtual void dragEvent ( int, int ) = 0;
+    virtual void keyPressed( unsigned char, int, int ) = 0;
     void hoverEnterEvent( int, int ) { hovered = true; };
     void hoverLeaveEvent( int, int ) { hovered = false; };
-    int getID() { return ID; }
 
-    // setters/getters
+    // property get/set
+    //--------------------------------------------------------------------------
     std::string getName()                         { return name; }
     void setName( std::string _name )             { name = _name; }
 
@@ -42,6 +48,12 @@ public:
 
     Color* getBackgroundColor()                   { return background_color;   }
     void setBackgroundColor( const Color* color_ ){ background_color = const_cast< Color* >( color_ ); }
+    void setBackgroundColor( shared_ptr< Color > color_ )
+    {
+        cout << "setting bg color: ";
+        color_ -> print();
+        background_color = &*color_;
+    }
     void useBackgroundColor()                     { background_color ?    setColor( background_color ): setColor(control_bg ); }
 
     Color* getTextColor()                         { return text_color;   }
@@ -54,8 +66,6 @@ public:
 
     int getBorderWidth()                          { return border_width;   }
     void setBorderWidth( int width_ )             { border_width = width_; }
-
-    bool isPointInside( int, int );
 
 protected:
     Window* parent;

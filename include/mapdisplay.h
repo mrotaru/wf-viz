@@ -3,6 +3,7 @@
 
 #include "gui_utils.h"
 #include "control.h"
+#include "xml_data.h"
 
 namespace xmx {
 
@@ -16,18 +17,25 @@ public:
     MapDisplay( int width_, int height_, std::string text_ ):
         Control( 0, 0, width_, height_, "mapdisplay", true ),
         shapefile( "" ), file_loaded( false ), scale(1),
-        map_width( 0 ), map_height( 0 ), map_offset_x( 0 ), map_offset_y( 0 )
+        map_width( 0 ), map_height( 0 ), map_offset_x( 0 ), map_offset_y( 0 ),
+        filled_polygons( false ), have_index( false ), have_data( false ), year(0)
         {   setTextColor( &BLACK );
             setBackgroundColor( &GAINSBORO );
             setBorderColor( &LIGHT_GREY );
             setBorderWidth( 1 );
         }
     void draw();
-    void clickEvent( int x_, int y_, int button, int state ) {};
-    void dragEvent ( int, int );
 
     void loadFromShapefile( std::string );
 
+    // events
+    //--------------------------------------------------------------------------
+    void clickEvent( int x_, int y_, int button, int state ) {}
+    void dragEvent ( int, int );
+    void keyPressed( unsigned char, int, int );
+
+    // property get/set
+    //--------------------------------------------------------------------------
     void setScale( float scale_ )           { scale = scale_; }
     float getScale()                        { return scale;   }
 
@@ -37,6 +45,13 @@ public:
     void setMapOffsetY( int map_offset_y_ ) { map_offset_y = map_offset_y_; }
     float getMapOffsetY()                   { return map_offset_y;          }
 
+    void setDisplayFilledPolygons( bool filled_polygons_ ) { filled_polygons = filled_polygons_; }
+    bool getDisplayFilledPolygons()                        { return filled_polygons; }
+
+    void setData( shared_ptr< XMLData > data_ );
+    
+    void setYear( int year_ )   { year = year_; }
+    int getYear()              { return year;  }
 
 protected:
     std::string shapefile;
@@ -50,6 +65,12 @@ protected:
     vector< LineString2D >  lines;
     vector< LineString2D >  polygons;
     BoundingBox             map_BB;
+    bool filled_polygons;
+    map< int, string > index;
+    bool have_index;
+    shared_ptr< XMLData > data;    
+    bool have_data;
+    int year;
 };
 
 } // namespace xmx

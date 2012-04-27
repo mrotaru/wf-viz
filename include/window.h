@@ -31,12 +31,14 @@ public:
     void clickEvent( int, int, int, int );
     void hoverEnterEvent( int, int );
     void hoverLeaveEvent( int, int );
+    void keyPressed( unsigned char, int, int );
 
     bool hasFocus()     { return focus; }
     void losfFocus()    { titleBar->setBackgroundColor( &DARK_GREY ); focus = false; }
     void giveFocus()    { titleBar->setBackgroundColor( &dcol_EPoints ); focus = true; }
 
-    void addControl( shared_ptr<Control>, int, int );
+    void addControl( shared_ptr< Control >, int, int );
+    void addAutoSizedControl( shared_ptr< Control >, int, int, int, int );
     bool isPointInside( int x_, int y_ ) { return(  x_ >= x && x_ <= x + width && y_ >= y && y_ <= y + height); }
     bool isPointInsideAnyControl( int, int );
 

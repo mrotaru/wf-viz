@@ -7,6 +7,7 @@
 #include <string>
 #include <stdexcept>
 #include <cmath>
+#include <map>
 using namespace std;
 
 #ifdef _MSC_VER
@@ -22,6 +23,8 @@ using namespace std;
 #include <boost/regex.hpp>
 #include <boost/algorithm/string/regex.hpp>
 #include <boost/lexical_cast.hpp>
+#include "boost/assign.hpp"
+using namespace boost::assign;
 
 #include "globals.h"
 #include "utils.h"
@@ -117,6 +120,13 @@ void setColor( const Color* color )
 }
 
 //-----------------------------------------------------------------------------
+void setColor( shared_ptr< Color > color_)
+{
+   if( color_ )
+       glColor3f( color_->R, color_->G, color_->B ); 
+}
+
+//-----------------------------------------------------------------------------
 GLfloat dist( GLfloat x1, GLfloat y1, GLfloat x2, GLfloat y2 )
 {
     return sqrt( ((x1 - x2) * (x1 - x2)) + ((y1 - y2) * (y1 - y2)) ) ;
@@ -136,6 +146,29 @@ GLfloat degrees_to_radians( GLfloat degrees )
     double const PI = 3.14159265358979323;
     return degrees * ( PI/180.0 ); 
 }
+
+// Returns a color that represents `percentage` depending on size - the closer
+// to 100, the greener; the closer to 0, the redder.
+//------------------------------------------------------------------------------
+shared_ptr< Color > getColorAt( float proportion )
+{
+    float R, G, B;
+    if( proportion <= 0.5f )
+    {
+        R = 0.5f;
+        G = proportion * 0.5f * 100;
+    }
+    else
+    {
+        R = proportion * 0.5f;
+        G = 1.0f - proportion/100;
+    }
+    B = 0.0f;
+    
+    return shared_ptr< Color >( new Color( R, G, B ) );
+}
+
+void Color::print() { cout << "R: "<<R<<" G: "<<G<<" B: "<<B<<endl; }
 
 } // namespace xmx
 #endif /* UTILS_CPP */

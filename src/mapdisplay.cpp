@@ -1,4 +1,5 @@
 #include <iostream>
+#include <fstream>
 #include <vector>
 #include <cmath>
 using namespace std;
@@ -7,6 +8,8 @@ using namespace std;
 #include <GL/glut.h>
 
 #include <boost/foreach.hpp>
+#include <boost/property_tree/ptree.hpp>
+#include <boost/property_tree/xml_parser.hpp>
 
 #include "shapefil.h"
 
@@ -18,6 +21,14 @@ using namespace std;
 
 namespace xmx
 {
+
+//------------------------------------------------------------------------------
+void MapDisplay::setData( shared_ptr< XMLData > data_ )
+{
+    data = data_;
+    have_data = true;
+    year = data -> getMinDataYear();
+}
 
 //------------------------------------------------------------------------------
 void MapDisplay::draw()
@@ -68,11 +79,49 @@ void MapDisplay::draw()
     glEnable ( GL_SCISSOR_TEST );
     glScissor( parent_x + x, toGl( parent_y + y + height ), width, height );
     setColor( RED );
+
+    double max_for_year = 0;
+    double min_for_year = 0;
+    if( have_data )
+    {
+        max_for_year = data -> getMaxDataValue( year );
+        min_for_year = data -> getMinDataValue( year );
+    }
+
     int i=1;
     BOOST_FOREACH( LineString2D polygon, polygons )
     {
-        setColor( i==209 ? GREEN: RED );
-        glBegin( GL_POLYGON );
+        // Each `polygon` contains the data for a particular country.
+        // They are stored in the order of their index, so the first country
+        // is the country which in the index file has an index of 1.
+        //--------------------------------------------------------------------------------
+        if( have_index )
+        {
+            bool not_available = false; // 
+            float proportion = 0;
+
+            // get the ISO3 code for the current country
+            string current_iso3 = index[ i ];
+
+            if( have_data && data -> isLoaded() )
+            {
+                double value = data -> getValueForYear( current_iso3, year );
+                if( value == -1 )
+                    not_available = true;
+                proportion = value / max_for_year;
+            }
+            if( not_available )
+                setColor( DIM_GREY ); 
+            else
+            {
+                shared_ptr< Color > c = getColorAt( proportion );
+                setColor( c ); 
+            }
+        }
+
+        // draw the country
+        //--------------------------------------------------------------------------------
+        glBegin( filled_polygons ? GL_POLYGON : GL_LINE_STRIP );
         BOOST_FOREACH( Point2D point, polygon.points )
         {
             glVertex2f( parent_x + x + point.x,
@@ -100,8 +149,40 @@ void MapDisplay::dragEvent( int x_, int y_ )
 }
 
 //------------------------------------------------------------------------------
+void MapDisplay::keyPressed( unsigned char key, int x_, int y_ )
+{
+    switch( key )
+    {
+        case GLUT_KEY_UP:
+            map_offset_y -= 5;
+            break;
+        case GLUT_KEY_DOWN:
+            map_offset_y += 5;
+            break;
+        case GLUT_KEY_LEFT:
+            map_offset_x += 5;
+            break;
+        case GLUT_KEY_RIGHT:
+            map_offset_x -= 5;
+            break;
+        case '=':
+        case '+':
+            scale += 0.5f;
+            break;
+        case '-':
+            scale -= 0.5f;
+            break;
+        case '0':
+            scale = 1;
+            break;
+    }
+    glutPostRedisplay();
+}
+
+//------------------------------------------------------------------------------
 void MapDisplay::loadFromShapefile( std::string filename )
 {
+    shapefile = filename;
     SHPHandle hSHP = SHPOpen( filename.c_str(), "rb" );
 
     if( hSHP == NULL )
@@ -111,6 +192,7 @@ void MapDisplay::loadFromShapefile( std::string filename )
     }
 
     file_loaded = true;
+    cout << "reading shapefile..." << endl;
 
     map_BB.maxX = hSHP -> adBoundsMax[0]; cout << "maxX: " << map_BB.maxX << endl;
     map_BB.maxY = hSHP -> adBoundsMax[1]; cout << "maxY: " << map_BB.maxY << endl;
@@ -199,6 +281,55 @@ void MapDisplay::loadFromShapefile( std::string filename )
 			polygon.points = tempPointArray;
 			polygons.push_back( polygon );
 		}
+        cout << "done reading polygon shapefile." << endl;
+    }
+
+    // look for an index file - an xml file with data of the form:
+    //------------------------------------------------------------------------------
+    //      <shape>
+    //          <index>1</index>
+    //          <id>ROU</id>
+    //      </shape>
+    //------------------------------------------------------------------------------
+    // needs to be moved to plaform.h, and made platform-independent
+    //------------------------------------------------------------------------------
+    int last_slash = shapefile.find_last_of( '\\' );
+    int last_dot   = shapefile.find_last_of( '.'  );
+    string base_name = shapefile.substr( last_slash + 1, last_dot - last_slash - 1 );
+    string folder_name = shapefile.substr( 0, last_slash );
+    string index_file_name = folder_name + "\\" + base_name + ".xml";
+
+    //-------------------------------------------------------------------------------
+    ifstream index_file( index_file_name );
+    if( !index_file.good() )
+    {
+
+        cout << "warning: cannot find an index file for " << base_name << "." << endl;
+    }
+    else
+    {
+        index_file.close();
+
+        using boost::property_tree::ptree;
+        ptree pt;
+
+        cout << endl << "reading index file..." << endl;
+        read_xml( index_file_name, pt );
+
+        BOOST_FOREACH( ptree::value_type const& v, pt.get_child( "records" ) )
+        {
+            string country_name  = v.second.get< string >( "name"  );
+            string country_code  = v.second.get< string >( "iso3"  );
+            int    country_index = v.second.get< int    >( "index" );
+
+            cout << "ISO3: " << country_code;
+            cout << " ( " << country_name  << " )";
+            cout << " index: " << country_index << endl;
+
+            index[ country_index ] = country_code;
+        }
+        cout << "done reading index file." << endl;
+        have_index = true;
     }
 }
 
