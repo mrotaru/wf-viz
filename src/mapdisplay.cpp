@@ -23,6 +23,14 @@ namespace xmx
 {
 
 //------------------------------------------------------------------------------
+void MapDisplay::setData( shared_ptr< XMLData > data_ )
+{
+    data = data_;
+    have_data = true;
+    year = data -> getMinDataYear();
+}
+
+//------------------------------------------------------------------------------
 void MapDisplay::draw()
 {
     Control::draw();
@@ -72,7 +80,6 @@ void MapDisplay::draw()
     glScissor( parent_x + x, toGl( parent_y + y + height ), width, height );
     setColor( RED );
 
-    int year = 1990;
     double max_for_year = 0;
     double min_for_year = 0;
     if( have_data )

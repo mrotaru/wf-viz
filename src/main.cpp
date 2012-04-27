@@ -46,6 +46,7 @@ shared_ptr< Window > hovered_window;
 shared_ptr< MapDisplay > map_display;
 shared_ptr< Control > drag_started_on;
 shared_ptr< CheckBox > render_filled_polygons;
+shared_ptr< Label > year_display;
 
 shared_ptr< Control > dragged_control = nullptr;
 int drag_offset_x;
@@ -87,12 +88,26 @@ void load_xml_clicked()
         data = shared_ptr< XMLData >( new XMLData() );
         data -> load( filename );
         map_display -> setData( data );
+        year_display -> setText( "Year: " + to_string( map_display -> getYear()) );
     }
 }
 
 void zoom_in_clicked()          { map_display -> setScale( map_display -> getScale() + 0.05f ); }
 void zoom_out_clicked()         { map_display -> setScale( map_display -> getScale() - 0.05f ); }
 void zoom_reset_clicked()       { map_display -> setScale( 1.0f ); map_display -> setMapOffsetX( 0 ); map_display -> setMapOffsetY( 0 ); }
+
+void year_plus_clicked()        
+{ 
+    map_display -> setYear( map_display -> getYear() + 1 );
+    year_display -> setText( "Year: " + to_string( map_display -> getYear()) );
+}
+
+void year_minus_clicked()
+{
+    map_display -> setYear( map_display -> getYear() - 1 );
+    year_display -> setText( "Year: " + to_string( map_display -> getYear()) );
+}
+
 void filled_polygons_change( bool checked )   { map_display -> setDisplayFilledPolygons( checked ); }
 
 // Perform application-specific initialisation
@@ -127,6 +142,11 @@ void app_init()
     zoom_reset -> setOnClick( zoom_reset_clicked );
     auto render_filled_polygons = shared_ptr< CheckBox >( new CheckBox( 200, 18, "render filled polygons" ) );
     render_filled_polygons -> setOnChange( filled_polygons_change );
+    auto year_plus  = shared_ptr< Button >( new Button( 22, 22, "+" ) );
+    auto year_minus = shared_ptr< Button >( new Button( 22, 22, "-" ) );
+    year_plus -> setOnClick( year_plus_clicked );
+    year_minus -> setOnClick( year_minus_clicked );
+    year_display = shared_ptr< Label >( new Label( 60, 22, "Year: N/A" ) );
 
     string help_text = 
         " Click 'Load Shapefile' and select a shapefile to load."
@@ -155,6 +175,9 @@ void app_init()
     window2 -> addControl( zoom_out,     80, 400 );
     window2 -> addControl( zoom_reset,  180, 400 );
     window2 -> addControl( render_filled_polygons, 4, 424 );
+    window2 -> addControl( year_plus        , 374, 424 );
+    window2 -> addControl( year_minus       , 350, 424 );
+    window2 -> addControl( year_display     , 320, 400 );
 
     // initt windowing
     windows.push_back( window1 );
