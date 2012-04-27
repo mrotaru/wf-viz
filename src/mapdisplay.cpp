@@ -115,10 +115,6 @@ void MapDisplay::draw()
             else
             {
                 shared_ptr< Color > c = getColorAt( proportion );
-//                cout << current_iso3 << " - "
-//                << setfill(' ') << setw( 10 ) <<setiosflags( ios::fixed | ios::right ) << setprecision(4) 
-//                << proportion << ", color: ";
-//                c->print();
                 setColor( c ); 
             }
         }
@@ -301,13 +297,9 @@ void MapDisplay::loadFromShapefile( std::string filename )
     int last_dot   = shapefile.find_last_of( '.'  );
     string base_name = shapefile.substr( last_slash + 1, last_dot - last_slash - 1 );
     string folder_name = shapefile.substr( 0, last_slash );
-//    cout << "filename: " << shapefile << endl;
-//    cout << "last_slash:    " << last_slash << endl;
-//    cout << "last_dot:      " << last_dot << endl;
-//    cout << "length:        " << shapefile.length() << endl; 
-//    cout << endl << "base_name: " << base_name << endl;
-//    cout << "folder_name: " << folder_name << endl;
     string index_file_name = folder_name + "\\" + base_name + ".xml";
+
+    //-------------------------------------------------------------------------------
     ifstream index_file( index_file_name );
     if( !index_file.good() )
     {
