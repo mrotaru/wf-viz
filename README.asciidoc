@@ -3,18 +3,22 @@ VAF - Visual Analytics Framework
 A framework for the interactive and visual exploration of data.
 
 At the moment, can be built only on Windows, using the waf build
-sytem with the MinGW environment (g++). Support for Linux and
+sytem with the MinGW environment (g\++). Support for Linux and
 building with Visual Studio solutions is available for older versions,
 but have not been kept up to date due to time constraints.
 
 Requirements to build:
+
 - MinGW, with g++ 4.6 or better
 - Python 2.5 or better ( for the build system, waf )
 - git version control
+- boost 1.49 ( in "C:\pdev\boost_1_49_0", or edit `wscript` if elsewhere )
 
 To build, run the following commands inside the project's root folder:
+
 `python waf configure`
 `python waf`
 
 To run the unit tests:
+
 `python waf --check=1`
