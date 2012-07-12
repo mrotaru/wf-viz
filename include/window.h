@@ -5,7 +5,7 @@
 #include <memory>
 using std::shared_ptr;
 
-#include "GUI_surface.h"
+#include "gui_surface.h"
 #include "control.h"
 #include "label.h"
 
