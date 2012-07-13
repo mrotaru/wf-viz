@@ -3,7 +3,6 @@
 #include <string.h>
 #include <vector>
 #include <algorithm>
-using namespace std;
 
 //This is needed for virtually 
 //everything in BrowseFolder.
@@ -14,7 +13,7 @@ namespace xmx {
 // Opens a browse folder dialog.
 // Adapted from: http://old.nabble.com/i-have-a-problem-with-%22open-file-name%22-dialog-td3235202.html
 //------------------------------------------------------------------------------
-std::string browseFile( string filetypes )
+std::string browseFile( std::string filetypes )
 {
     OPENFILENAME ofn;
     char szFileName[ 500 ];

@@ -11,6 +11,8 @@ using namespace std;
 
 #if defined (__WIN32__)
     #include "platform/win32.h"
+#elif __linux
+    #include "platform/linux-gtk.h"
 #endif
 
 #include <boost/foreach.hpp>
@@ -75,8 +77,10 @@ void gl_init()
 void load_shapefile_clicked()
 {
     string filename = browseFile( "Shapefiles *.shp,*.shx\n*.shp;*.shx\nAll Files *.*\n*.*\n\n" );
+    cout <<"filename: "<< filename << endl;
     if( !filename.empty() )
         map_display -> loadFromShapefile( filename );
+    cout << "loaded xml" << endl;
 }
 
 //------------------------------------------------------------------------------
@@ -320,6 +324,10 @@ int main( int argc, char *argv[] )
 
     gl_init();  // OpenGL-specific initializations
     app_init(); // application-specific initializations
+
+    #ifdef __linux
+    Gtk::Main kit( argc, argv );
+    #endif
 
     // callbacks
     glutDisplayFunc         ( gl_display_callback );

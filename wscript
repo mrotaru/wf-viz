@@ -26,7 +26,6 @@ sources         = [ 'src/Point.cpp',
                     'src/label.cpp',
                     'src/mapdisplay.cpp',
                     'src/checkbox.cpp',
-                    'src/platform/win32.cpp',
                     'src/data_utils.cpp',
                     'src/xml_data.cpp'
                     ]
@@ -50,14 +49,23 @@ def configure( cnf ):
     #--------------------------------------------------------------------------
     if sys.platform.startswith( 'linux' ):
         cnf.env.BOOST_PATH = '/usr/local/boost_1_49_0'
+#        sources.append( 'src/platform/linux-gtk.cpp')
+
+        cnf.check_cfg(package='gtkmm-3.0',
+            args=['--cflags', '--libs'],
+            msg="Checking for gtkmm-3.0")
+        print cnf.env
 
         # main program
         cnf.env.INCLUDES   = [ './include',
+                               './external/freeglut/2.8/mingw/include',
+                               './external/shapelib/include',
                                cnf.env.BOOST_PATH ]
         cnf.env.LINKFLAGS  = [ '-static-libgcc' ]
-        cnf.env.LIB        = [ 'glut', 'GLU' ]
-        cnf.env.STLIBPATH  = [ '/usr/local/boost_1_49_0/stage/lib' ]
-        cnf.env.STLIB      = [ 'boost_regex' ]
+        cnf.env.LIB        = [ 'GLU' ]
+        cnf.env.STLIB      = [ 'boost_regex', 'glut', 'shp' ]
+        cnf.env.STLIBPATH  = [ '/usr/local/boost_1_49_0/stage/lib',
+                               cnf.path.abspath() + '/external/shapelib/lib/gcc-ubuntu-4.6.3' ]
 
         # for building the test runners
         cnf.env.TEST_LIBPATH = '/usr/local/boost_1_49_0/stage/lib'
@@ -68,6 +76,7 @@ def configure( cnf ):
     #--------------------------------------------------------------------------
     elif sys.platform == 'win32' or sys.platform == 'cygwin':
         cnf.env.BOOST_PATH = 'c:/pdev/boost_1_49_0'
+        sources.append( 'src/platform/win32.cpp')
 
         # main program
         cnf.env.INCLUDES   = [ './include',
@@ -107,19 +116,27 @@ def build( bld ):
             cxxflags    = gcc_flags
             )
 
+    if sys.platform.startswith( 'linux' ):
+        bld.objects(
+                source  = 'src/platform/linux-gtk.cpp',
+                target  = 'linux-gtk',
+                includes = bld.env.INCLUDES + bld.env[ 'INCLUDES_GTKMM-3.0' ],
+                cxxflags = gcc_flags + bld.env[ 'CXXFLAGS_GTKMM-3.0' ]
+                )
+
     # build main program
     #---------------------------------------------------
     bld.program(
             target      = bld.env.EXE_NAME,
             features    = [ 'cxxprogram' ],
-            includes    = bld.env.INCLUDES,
+            includes    = bld.env.INCLUDES + bld.env[ 'INCLUDES_GTKMM-3.0' ],
             source      = main_cpp,
             defines     = bld.env.DEFINES,
-            lib         = bld.env.LIB,
+            lib         = bld.env.LIB + bld.env[ 'LIB_GTKMM-3.0' ],
             libpath     = bld.env.LIBPATH,
-            linkflags   = bld.env.LINKFLAGS,
+            linkflags   = bld.env.LINKFLAGS + bld.env[ 'LINKFLAGS_GTKMM-3.0' ],
             cxxflags    = gcc_flags,
-            use         = 'objects'
+            use         = [ 'objects', 'linux-gtk' ]
             )
 
     # build test runner
