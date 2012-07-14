@@ -325,9 +325,6 @@ int main( int argc, char *argv[] )
     gl_init();  // OpenGL-specific initializations
     app_init(); // application-specific initializations
 
-    #ifdef __linux
-    Gtk::Main kit( argc, argv );
-    #endif
 
     // callbacks
     glutDisplayFunc         ( gl_display_callback );

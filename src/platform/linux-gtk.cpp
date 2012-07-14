@@ -11,9 +11,11 @@ namespace xmx {
 //------------------------------------------------------------------------------
 std::string browseFile( std::string filetypes )
 {
+    Gtk::Main kit(false);
+
     Gtk::FileChooserDialog dialog( "Please choose a file",
             Gtk::FILE_CHOOSER_ACTION_OPEN );
-    //dialog.set_transient_for(  gtk_get_default_root_window(  )  );
+//    dialog.set_transient_for( (Gtk::Window*)0 );
 
     //Add response buttons the the dialog:
     dialog.add_button( Gtk::Stock::CANCEL, Gtk::RESPONSE_CANCEL );
@@ -27,7 +29,6 @@ std::string browseFile( std::string filetypes )
 
     //Show the dialog and wait for a user response:
     int result = dialog.run();
-    dialog.hide();
 
     //Handle the response:
     switch( result )
@@ -39,18 +40,12 @@ std::string browseFile( std::string filetypes )
             //Notice that this is a std::string, not a Glib::ustring.
             std::string filename = dialog.get_filename(  );
             std::cout << "File selected: " <<  filename << std::endl;
+            kit.quit();
+            dialog.hide();
             return filename;
         }
-        case( Gtk::RESPONSE_CANCEL ):
-        {
-            std::cout << "Cancel clicked." << std::endl;
-            break;
-        }
-        default:
-        {
-            std::cout << "Unexpected button clicked." << std::endl;
-            break;
-        }
+        case( Gtk::RESPONSE_CANCEL ): { std::cout << "Cancel clicked." << std::endl; break; }
+        default: { std::cout << "Unexpected button clicked." << std::endl; break; }
     }
     return std::string( "" );
 }
