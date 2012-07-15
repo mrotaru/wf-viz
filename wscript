@@ -80,15 +80,15 @@ def configure( cnf ):
 
         # main program
         cnf.env.INCLUDES   = [ './include',
-                               './external/freeglut/2.8/mingw/include',
-                               './external/shapelib/mingw/include',
+                               './external/freeglut/2.8/gcc-mingw-4.6.2/include',
+                               './external/shapelib/include',
                                cnf.env.BOOST_PATH ]
         cnf.env.DEFINES    = [ 'FREEGLUT_STATIC' ]
         cnf.env.LINKFLAGS  = [ '-static-libgcc', '-static-libstdc++', '-W1,subsystem,windows' ]
         cnf.env.LIB        = [ 'freeglut_static', 'opengl32', 'gdi32', 'glu32', 'winmm', 'comdlg32' ]
-        cnf.env.LIBPATH    = [ cnf.path.abspath() + '/external/freeglut/2.8/mingw/lib' ]
+        cnf.env.LIBPATH    = [ cnf.path.abspath() + '/external/freeglut/2.8/gcc-mingw-4.6.2/lib' ]
         cnf.env.STLIBPATH  = [ cnf.path.abspath() + '/libs/win32/gcc-mingw-4.6.2',
-                               cnf.path.abspath() + '/external/shapelib/mingw/lib' ]
+                               cnf.path.abspath() + '/external/shapelib/lib/gcc-mingw-4.6.2' ]
         cnf.env.STLIB      = [ 'boost_regex-mgw46-1_49', 'shp' ]
 
         # for building the test runners
