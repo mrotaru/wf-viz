@@ -291,19 +291,24 @@ void MapDisplay::loadFromShapefile( std::string filename )
     //          <id>ROU</id>
     //      </shape>
     //------------------------------------------------------------------------------
-    // needs to be moved to plaform.h, and made platform-independent
-    //------------------------------------------------------------------------------
+#if defined (__WIN32__)
     int last_slash = shapefile.find_last_of( '\\' );
     int last_dot   = shapefile.find_last_of( '.'  );
     string base_name = shapefile.substr( last_slash + 1, last_dot - last_slash - 1 );
     string folder_name = shapefile.substr( 0, last_slash );
     string index_file_name = folder_name + "\\" + base_name + ".xml";
+#elif __linux
+    int last_slash = shapefile.find_last_of( '/' );
+    int last_dot   = shapefile.find_last_of( '.'  );
+    string base_name = shapefile.substr( last_slash + 1, last_dot - last_slash - 1 );
+    string folder_name = shapefile.substr( 0, last_slash );
+    string index_file_name = folder_name + "/" + base_name + ".xml";
+#endif
 
     //-------------------------------------------------------------------------------
     ifstream index_file( index_file_name );
     if( !index_file.good() )
     {
-
         cout << "warning: cannot find an index file for " << base_name << "." << endl;
     }
     else
