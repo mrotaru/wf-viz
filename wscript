@@ -48,28 +48,26 @@ def configure( cnf ):
     # LINUX
     #--------------------------------------------------------------------------
     if sys.platform.startswith( 'linux' ):
-        cnf.env.BOOST_PATH = '/usr/local/boost_1_49_0'
-#        sources.append( 'src/platform/linux-gtk.cpp')
+        cnf.env.BOOST_PATH = '/media/Fatty/code/boost_1_52_0'
 
         cnf.check_cfg(package='gtkmm-3.0',
             args=['--cflags', '--libs'],
             msg="Checking for gtkmm-3.0")
-        print cnf.env
 
         # main program
         cnf.env.INCLUDES   = [ './include',
-                               './external/freeglut/2.8/mingw/include',
-                               './external/shapelib/include',
+                               './deps/freeglut/2.8/include',
+                               './deps/shapelib/include',
                                cnf.env.BOOST_PATH ]
         cnf.env.LINKFLAGS  = [ '-static-libgcc' ]
         cnf.env.LIB        = [ 'GLU' ]
         cnf.env.STLIB      = [ 'boost_regex', 'glut', 'shp' ]
-        cnf.env.STLIBPATH  = [ '/usr/local/boost_1_49_0/stage/lib',
-                               cnf.path.abspath() + '/external/shapelib/lib/gcc-ubuntu-4.6.3' ]
+        cnf.env.STLIBPATH  = [ cnf.path.abspath() + '/lib/boost_1_52_0/gcc-ubuntu-4.7.2',
+                               cnf.path.abspath() + '/deps/shapelib/lib/gcc-ubuntu-4.7.2' ]
 
         # for building the test runners
-        cnf.env.TEST_LIBPATH = '/usr/local/boost_1_49_0/stage/lib'
-        cnf.env.TEST_LIB = 'boost_unit_test_framework'
+        cnf.env.TEST_STLIBPATH = cnf.path.abspath() + '/lib/boost_1_52_0/gcc-ubuntu-4.7.2'
+        cnf.env.TEST_STLIB = 'boost_unit_test_framework'
         cnf.env.TEST_INCLUDES = cnf.env.BOOST_PATH
     
     # WINDOWS
@@ -92,8 +90,8 @@ def configure( cnf ):
         cnf.env.STLIB      = [ 'boost_regex-mgw46-1_49', 'shp' ]
 
         # for building the test runners
-        cnf.env.TEST_LIBPATH = cnf.path.abspath() + '/libs/win32/gcc-mingw-4.6.2'
-        cnf.env.TEST_LIB = 'boost_unit_test_framework-mgw46-1_49'
+        cnf.env.TEST_STLIBPATH = cnf.path.abspath() + '/libs/win32/gcc-mingw-4.6.2'
+        cnf.env.TEST_STLIB = 'boost_unit_test_framework-mgw46-1_49'
         cnf.env.TEST_INCLUDES = cnf.env.BOOST_PATH
 
 #------------------------------------------------------------------------------
@@ -148,13 +146,15 @@ def build( bld ):
                 features    = [ 'cxxprogram' ],
                 includes    = bld.env.TEST_INCLUDES,
                 source      = [ test_runner_cpp ] + test_sources,
-                libpath     = bld.env.TEST_LIBPATH,
-                lib         = bld.env.TEST_LIB,
+                lib         = bld.env.LIB,
+                libpath     = bld.env.LIBPATH,
+                stlib       = bld.env.TEST_STLIB,
+                stlibpath   = bld.env.TEST_STLIBPATH,
                 linkflags   = bld.env.LINKFLAGS,
                 cxxflags    = gcc_flags,
                 use         = 'objects'
                 )
-        copy( bld.env.TEST_LIBPATH + '/lib' + bld.env.TEST_LIB + '.dll', out )
+        #copy( bld.env.TEST_LIBPATH + '/lib' + bld.env.TEST_LIB + '.dll', out )
 
     if version_file_created == 0:
         copy( 'VERSION', out )        
