@@ -44,6 +44,7 @@ def configure( cnf ):
     cnf.load( 'g++' )
     
     print 'os: ' + sys.platform 
+    abspath = cnf.path.abspath()
 
     # LINUX
     #--------------------------------------------------------------------------
@@ -62,49 +63,54 @@ def configure( cnf ):
         cnf.env.LINKFLAGS  = [ '-static-libgcc' ]
         cnf.env.LIB        = [ 'GLU' ]
         cnf.env.STLIB      = [ 'boost_regex', 'glut', 'shp' ]
-        cnf.env.STLIBPATH  = [ cnf.path.abspath() + '/lib/boost_1_52_0/gcc-ubuntu-4.7.2',
-                               cnf.path.abspath() + '/deps/shapelib/lib/gcc-ubuntu-4.7.2' ]
+        cnf.env.STLIBPATH  = [ abspath + '/lib/gcc-ubuntu',
+                               abspath + '/deps/shapelib/lib/gcc-ubuntu' ]
 
         # for building the test runners
-        cnf.env.TEST_STLIBPATH = cnf.path.abspath() + '/lib/boost_1_52_0/gcc-ubuntu-4.7.2'
+        cnf.env.TEST_STLIBPATH = abspath + '/lib/gcc-ubuntu'
         cnf.env.TEST_STLIB = 'boost_unit_test_framework'
         cnf.env.TEST_INCLUDES = cnf.env.BOOST_PATH
     
     # WINDOWS
     #--------------------------------------------------------------------------
     elif sys.platform == 'win32' or sys.platform == 'cygwin':
-        cnf.env.BOOST_PATH = 'c:/pdev/boost_1_49_0'
+        cnf.env.BOOST_VER  = '1_52_0'
+        cnf.env.GCC_VER    = '4.7.2'
+        cnf.env.BOOST_PATH = 'e:/code/boost_' + cnf.env.BOOST_VER
+        suffix = '-mgw47-mt-1_52'
+
         sources.append( 'src/platform/win32.cpp')
 
         # main program
         cnf.env.INCLUDES   = [ './include',
-                               './external/freeglut/2.8/gcc-mingw-4.6.2/include',
-                               './external/shapelib/include',
+                               './deps/freeglut/2.8/include',
+                               './deps/shapelib/include',
                                cnf.env.BOOST_PATH ]
         cnf.env.DEFINES    = [ 'FREEGLUT_STATIC' ]
-        cnf.env.LINKFLAGS  = [ '-static-libgcc', '-static-libstdc++', '-W1,subsystem,windows' ]
+        cnf.env.LINKFLAGS  = [ '-static-libgcc', '-static-libstdc++', '-Wl,--subsystem,windows' ]
         cnf.env.LIB        = [ 'freeglut_static', 'opengl32', 'gdi32', 'glu32', 'winmm', 'comdlg32' ]
-        cnf.env.LIBPATH    = [ cnf.path.abspath() + '/external/freeglut/2.8/gcc-mingw-4.6.2/lib' ]
-        cnf.env.STLIBPATH  = [ cnf.path.abspath() + '/libs/win32/gcc-mingw-4.6.2',
-                               cnf.path.abspath() + '/external/shapelib/lib/gcc-mingw-4.6.2' ]
-        cnf.env.STLIB      = [ 'boost_regex-mgw46-1_49', 'shp' ]
+        cnf.env.LIBPATH    = [ abspath + '/deps/freeglut/2.8/lib/gcc-mingw' ]
+        cnf.env.STLIBPATH  = [ abspath + '/lib/gcc-mingw',
+                               abspath + '/deps/shapelib/lib/gcc-mingw',
+                               abspath + '/deps/freeglut/2.8/lib/gcc-mingw/lib' ]
+        cnf.env.STLIB      = [ 'boost_regex' + suffix, 'shp' ]
 
         # for building the test runners
-        cnf.env.TEST_STLIBPATH = cnf.path.abspath() + '/libs/win32/gcc-mingw-4.6.2'
-        cnf.env.TEST_STLIB = 'boost_unit_test_framework-mgw46-1_49'
+        cnf.env.TEST_LIBPATH = abspath + '/lib/gcc-mingw'
+        cnf.env.TEST_LIB = 'boost_unit_test_framework' + suffix
         cnf.env.TEST_INCLUDES = cnf.env.BOOST_PATH
 
 #------------------------------------------------------------------------------
 def build( bld ):
-    version_file_created = call( 'python scripts/describe.py ', shell=True )
+    version_file_created = call( 'python tools/describe.py ', shell=True )
     if version_file_created == 0: 
-        bld.env.EXE_NAME = Popen( 'python scripts/exe_name.py' , stdout=PIPE, stderr=PIPE, shell=True ).stdout.read().strip()
+        bld.env.EXE_NAME = Popen( 'python tools/exe_name.py' , stdout=PIPE, stderr=PIPE, shell=True ).stdout.read().strip()
     else:
         bld.env.EXE_NAME = "wf-viz"
     
     gcc_flags = [ '-c', '-g', '-O2', '-Wall', '-fpermissive', '-std=c++0x' ]
 
-    # build objects
+    # build platform-independent objects
     #---------------------------------------------------
     bld.objects(
             source      = sources,
@@ -114,7 +120,10 @@ def build( bld ):
             cxxflags    = gcc_flags
             )
 
+    # build objects which require platform-dependant flags, and the main program
+    #---------------------------------------------------------------------------
     if sys.platform.startswith( 'linux' ):
+
         bld.objects(
                 source  = 'src/platform/linux-gtk.cpp',
                 target  = 'linux-gtk',
@@ -122,20 +131,33 @@ def build( bld ):
                 cxxflags = gcc_flags + bld.env[ 'CXXFLAGS_GTKMM-3.0' ]
                 )
 
-    # build main program
-    #---------------------------------------------------
-    bld.program(
-            target      = bld.env.EXE_NAME,
-            features    = [ 'cxxprogram' ],
-            includes    = bld.env.INCLUDES + bld.env[ 'INCLUDES_GTKMM-3.0' ],
-            source      = main_cpp,
-            defines     = bld.env.DEFINES,
-            lib         = bld.env.LIB + bld.env[ 'LIB_GTKMM-3.0' ],
-            libpath     = bld.env.LIBPATH,
-            linkflags   = bld.env.LINKFLAGS + bld.env[ 'LINKFLAGS_GTKMM-3.0' ],
-            cxxflags    = gcc_flags,
-            use         = [ 'objects', 'linux-gtk' ]
-            )
+        bld.program(
+                target      = bld.env.EXE_NAME,
+                features    = [ 'cxxprogram' ],
+                includes    = bld.env.INCLUDES + bld.env[ 'INCLUDES_GTKMM-3.0' ],
+                source      = main_cpp,
+                defines     = bld.env.DEFINES,
+                lib         = bld.env.LIB + bld.env[ 'LIB_GTKMM-3.0' ],
+                libpath     = bld.env.LIBPATH,
+                linkflags   = bld.env.LINKFLAGS + bld.env[ 'LINKFLAGS_GTKMM-3.0' ],
+                cxxflags    = gcc_flags,
+                use         = [ 'objects', 'linux-gtk' ]
+                )
+
+    elif sys.platform == 'win32' or sys.platform == 'cygwin':
+
+        bld.program(
+                target      = bld.env.EXE_NAME,
+                features    = [ 'cxxprogram' ],
+                includes    = bld.env.INCLUDES,
+                source      = main_cpp,
+                defines     = bld.env.DEFINES,
+                lib         = bld.env.LIB,
+                libpath     = bld.env.LIBPATH,
+                linkflags   = bld.env.LINKFLAGS,
+                cxxflags    = gcc_flags,
+                use         = [ 'objects' ]
+                )
 
     # build test runner
     #---------------------------------------------------
@@ -148,8 +170,6 @@ def build( bld ):
                 source      = [ test_runner_cpp ] + test_sources,
                 lib         = bld.env.LIB,
                 libpath     = bld.env.LIBPATH,
-                stlib       = bld.env.TEST_STLIB,
-                stlibpath   = bld.env.TEST_STLIBPATH,
                 linkflags   = bld.env.LINKFLAGS,
                 cxxflags    = gcc_flags,
                 use         = 'objects'
@@ -158,6 +178,6 @@ def build( bld ):
 
     if version_file_created == 0:
         copy( 'VERSION', out )        
-        call( 'python scripts/append_date.py ' + out + '/VERSION', shell=True )
+        call( 'python tools/append_date.py ' + out + '/VERSION', shell=True )
 
 # vim:filetype=python
