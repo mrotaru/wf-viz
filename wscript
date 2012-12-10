@@ -16,9 +16,6 @@ sources         = [ 'src/Point.cpp',
                     'src/Line.cpp',
                     'src/utils.cpp',
                     'src/globals.cpp',
-#                    'src/BezierCurve.cpp',
-#                    'src/Shape.cpp',
-#                    'src/Group.cpp',
                     'src/gui_utils.cpp',
                     'src/control.cpp',
                     'src/window.cpp',
@@ -33,7 +30,8 @@ main_cpp        =   'src/main.cpp'
 test_runner_cpp =   'tests/runner.cpp'
 test_sources    = [ 'tests/testPoint.cpp',
                     'tests/testLine.cpp',
-                    'tests/testUtils.cpp' ]
+                    'tests/testUtils.cpp'
+                    ]
 
 #------------------------------------------------------------------------------
 def options( opt ):
@@ -56,20 +54,19 @@ def configure( cnf ):
             msg="Checking for gtkmm-3.0")
 
         # main program
-        cnf.env.INCLUDES   = [ './include',
-                               './deps/freeglut/2.8/include',
-                               './deps/shapelib/include',
-                               cnf.env.BOOST_PATH ]
-        cnf.env.LINKFLAGS  = [ '-static-libgcc' ]
-        cnf.env.LIB        = [ 'GLU' ]
-        cnf.env.STLIB      = [ 'boost_regex', 'glut', 'shp' ]
-        cnf.env.STLIBPATH  = [ abspath + '/lib/gcc-ubuntu',
-                               abspath + '/deps/shapelib/lib/gcc-ubuntu' ]
+        cnf.env.INCLUDES_MAIN   = [ './include',
+                                    './deps/freeglut/2.8/include',
+                                    './deps/shapelib/include',
+                                    cnf.env.BOOST_PATH ]
+        cnf.env.LINKFLAGS_MAIN  = [ '-static-libgcc' ]
+        cnf.env.LIB_MAIN        = [ 'GLU' ]
+        cnf.env.STLIB_MAIN      = [ 'boost_regex', 'glut', 'shp' ]
+        cnf.env.STLIBPATH_MAIN  = [ abspath + '/lib/gcc-ubuntu',
+                                    abspath + '/deps/shapelib/lib/gcc-ubuntu' ]
 
         # for building the test runners
-        cnf.env.TEST_STLIBPATH = abspath + '/lib/gcc-ubuntu'
-        cnf.env.TEST_STLIB = 'boost_unit_test_framework'
-        cnf.env.TEST_INCLUDES = cnf.env.BOOST_PATH
+        cnf.env.TEST_STLIBPATH  = abspath + '/lib/gcc-ubuntu'
+        cnf.env.TEST_STLIB      = 'boost_unit_test_framework'
     
     # WINDOWS
     #--------------------------------------------------------------------------
@@ -82,23 +79,27 @@ def configure( cnf ):
         sources.append( 'src/platform/win32.cpp')
 
         # main program
-        cnf.env.INCLUDES   = [ './include',
-                               './deps/freeglut/2.8/include',
-                               './deps/shapelib/include',
-                               cnf.env.BOOST_PATH ]
-        cnf.env.DEFINES    = [ 'FREEGLUT_STATIC' ]
-        cnf.env.LINKFLAGS  = [ '-static-libgcc', '-static-libstdc++', '-Wl,--subsystem,windows' ]
-        cnf.env.LIB        = [ 'freeglut_static', 'opengl32', 'gdi32', 'glu32', 'winmm', 'comdlg32' ]
-        cnf.env.LIBPATH    = [ abspath + '/deps/freeglut/2.8/lib/gcc-mingw' ]
-        cnf.env.STLIBPATH  = [ abspath + '/lib/gcc-mingw',
-                               abspath + '/deps/shapelib/lib/gcc-mingw',
-                               abspath + '/deps/freeglut/2.8/lib/gcc-mingw/lib' ]
-        cnf.env.STLIB      = [ 'boost_regex' + suffix, 'shp' ]
+        cnf.env.INCLUDES_MAIN   = [ './include',
+                                    './deps/freeglut/2.8/include',
+                                    './deps/shapelib/include',
+                                    cnf.env.BOOST_PATH ]
+        cnf.env.DEFINES_MAIN    = [ 'FREEGLUT_STATIC' ]
+        cnf.env.LINKFLAGS_MAIN  = [ '-static-libgcc', '-static-libstdc++', '-Wl,--subsystem,windows' ]
+        cnf.env.LIB_MAIN        = [ 'opengl32', 'gdi32', 'glu32', 'winmm', 'comdlg32' ]
+        cnf.env.LIBPATH_MAIN    = [ abspath + '/deps/freeglut/2.8/lib/gcc-mingw' ]
+        cnf.env.STLIB_MAIN      = [ 'freeglut_static', 'boost_regex' + suffix, 'shp' ]
+        cnf.env.STLIBPATH_MAIN  = [ abspath + '/lib/gcc-mingw',
+                                    abspath + '/deps/shapelib/lib/gcc-mingw',
+                                    abspath + '/deps/freeglut/2.8/lib/gcc-mingw/lib' ]
 
         # for building the test runners
-        cnf.env.TEST_LIBPATH = abspath + '/lib/gcc-mingw'
-        cnf.env.TEST_LIB = 'boost_unit_test_framework' + suffix
-        cnf.env.TEST_INCLUDES = cnf.env.BOOST_PATH
+        cnf.env.DEFINES_TEST    = [ 'BOOST_TEST_DYN_LINK' ]
+        cnf.env.LIBPATH_TEST    = [ abspath + '/lib/gcc-mingw' ]
+        cnf.env.LIB_TEST        = cnf.env.LIB_MAIN + [ 'boost_unit_test_framework' + suffix ]
+        cnf.env.STLIB_TEST      = [ 'freeglut_static', 'boost_regex' + suffix, 'shp' ]
+        cnf.env.STLIBPATH_TEST  = cnf.env.STLIBPATH_MAIN
+        cnf.env.CXXFLAGS_TEST   = ''
+        cnf.env.LINKFLAGS_TEST  = ''
 
 #------------------------------------------------------------------------------
 def build( bld ):
@@ -115,8 +116,8 @@ def build( bld ):
     bld.objects(
             source      = sources,
             target      = 'objects',
-            includes    = bld.env.INCLUDES,
-            defines     = bld.env.DEFINES,
+            includes    = bld.env.INCLUDES_MAIN,
+            defines     = bld.env.DEFINES_MAIN,
             cxxflags    = gcc_flags
             )
 
@@ -127,19 +128,19 @@ def build( bld ):
         bld.objects(
                 source  = 'src/platform/linux-gtk.cpp',
                 target  = 'linux-gtk',
-                includes = bld.env.INCLUDES + bld.env[ 'INCLUDES_GTKMM-3.0' ],
+                includes = bld.env.INCLUDES_MAIN + bld.env[ 'INCLUDES_GTKMM-3.0' ],
                 cxxflags = gcc_flags + bld.env[ 'CXXFLAGS_GTKMM-3.0' ]
                 )
 
         bld.program(
                 target      = bld.env.EXE_NAME,
                 features    = [ 'cxxprogram' ],
-                includes    = bld.env.INCLUDES + bld.env[ 'INCLUDES_GTKMM-3.0' ],
+                includes    = bld.env.INCLUDES_MAIN + bld.env[ 'INCLUDES_GTKMM-3.0' ],
                 source      = main_cpp,
-                defines     = bld.env.DEFINES,
-                lib         = bld.env.LIB + bld.env[ 'LIB_GTKMM-3.0' ],
-                libpath     = bld.env.LIBPATH,
-                linkflags   = bld.env.LINKFLAGS + bld.env[ 'LINKFLAGS_GTKMM-3.0' ],
+                defines     = bld.env.DEFINES_MAIN,
+                lib         = bld.env.LIB_MAIN + bld.env[ 'LIB_GTKMM-3.0' ],
+                libpath     = bld.env.LIBPATH_MAIN,
+                linkflags   = bld.env.LINKFLAGS_MAIN + bld.env[ 'LINKFLAGS_GTKMM-3.0' ],
                 cxxflags    = gcc_flags,
                 use         = [ 'objects', 'linux-gtk' ]
                 )
@@ -149,14 +150,9 @@ def build( bld ):
         bld.program(
                 target      = bld.env.EXE_NAME,
                 features    = [ 'cxxprogram' ],
-                includes    = bld.env.INCLUDES,
                 source      = main_cpp,
-                defines     = bld.env.DEFINES,
-                lib         = bld.env.LIB,
-                libpath     = bld.env.LIBPATH,
-                linkflags   = bld.env.LINKFLAGS,
                 cxxflags    = gcc_flags,
-                use         = [ 'objects' ]
+                use         = [ 'objects', 'MAIN' ]
                 )
 
     # build test runner
@@ -166,15 +162,12 @@ def build( bld ):
         bld.program(
                 target      = 'runner',
                 features    = [ 'cxxprogram' ],
-                includes    = bld.env.TEST_INCLUDES,
+                includes    = bld.env.INCLUDES_MAIN,
                 source      = [ test_runner_cpp ] + test_sources,
-                lib         = bld.env.LIB,
-                libpath     = bld.env.LIBPATH,
-                linkflags   = bld.env.LINKFLAGS,
-                cxxflags    = gcc_flags,
-                use         = 'objects'
+                use         = [ 'objects', 'TEST' ]
                 )
-        #copy( bld.env.TEST_LIBPATH + '/lib' + bld.env.TEST_LIB + '.dll', out )
+
+        copy( bld.env.LIBPATH_TEST[0] + '/libboost_unit_test_framework-mgw47-mt-1_52.dll', out )
 
     if version_file_created == 0:
         copy( 'VERSION', out )        
