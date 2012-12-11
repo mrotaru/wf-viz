@@ -36,12 +36,12 @@ test_sources    = [ 'tests/testPoint.cpp',
 #------------------------------------------------------------------------------
 def options( opt ):
     opt.add_option('--check', action='store', default=False, help='compile test runners')
-    
+
 #------------------------------------------------------------------------------
 def configure( cnf ):
     cnf.load( 'g++' )
-    
-    print 'os: ' + sys.platform 
+
+    print 'os: ' + sys.platform
     abspath = cnf.path.abspath()
 
     # LINUX
@@ -63,11 +63,17 @@ def configure( cnf ):
         cnf.env.STLIB_MAIN      = [ 'boost_regex', 'glut', 'shp' ]
         cnf.env.STLIBPATH_MAIN  = [ abspath + '/lib/gcc-ubuntu',
                                     abspath + '/deps/shapelib/lib/gcc-ubuntu' ]
+        cnf.env.CXXFLAGS_MAIN   = [ '-c', '-g', '-O2', '-Wall', '-fpermissive', '-std=c++11' ]
 
         # for building the test runners
-        cnf.env.TEST_STLIBPATH  = abspath + '/lib/gcc-ubuntu'
-        cnf.env.TEST_STLIB      = 'boost_unit_test_framework'
-    
+        cnf.env.INCLUDES_TEST   = cnf.env.INCLUDES_MAIN
+        cnf.env.LINKFLAGS_TEST  = cnf.env.LINKFLAGS_MAIN
+        cnf.env.LIB_TEST        = cnf.env.LIB_MAIN + [ 'boost_unit_test_framework' ]
+        cnf.env.DEFINES_TEST    = [ 'BOOST_TEST_DYN_LINK' ]
+        #cnf.env.LIBPATH_TEST    = cnf.env.LIBPATH_MAIN + [ abspath + '/lib/gcc-ubuntu' ]
+        cnf.env.STLIB_TEST      = cnf.env.STLIB_MAIN
+        cnf.env.STLIBPATH_TEST  = cnf.env.STLIBPATH_MAIN
+
     # WINDOWS
     #--------------------------------------------------------------------------
     elif sys.platform == 'win32' or sys.platform == 'cygwin':
@@ -98,17 +104,15 @@ def configure( cnf ):
         cnf.env.LIB_TEST        = cnf.env.LIB_MAIN + [ 'boost_unit_test_framework' + suffix ]
         cnf.env.STLIB_TEST      = [ 'freeglut_static', 'boost_regex' + suffix, 'shp' ]
         cnf.env.STLIBPATH_TEST  = cnf.env.STLIBPATH_MAIN
-        cnf.env.CXXFLAGS_TEST   = ''
-        cnf.env.LINKFLAGS_TEST  = ''
 
 #------------------------------------------------------------------------------
 def build( bld ):
     version_file_created = call( 'python tools/describe.py ', shell=True )
-    if version_file_created == 0: 
+    if version_file_created == 0:
         bld.env.EXE_NAME = Popen( 'python tools/exe_name.py' , stdout=PIPE, stderr=PIPE, shell=True ).stdout.read().strip()
     else:
         bld.env.EXE_NAME = "wf-viz"
-    
+
     gcc_flags = [ '-c', '-g', '-O2', '-Wall', '-fpermissive', '-std=c++0x' ]
 
     # build platform-independent objects
@@ -128,21 +132,15 @@ def build( bld ):
         bld.objects(
                 source  = 'src/platform/linux-gtk.cpp',
                 target  = 'linux-gtk',
-                includes = bld.env.INCLUDES_MAIN + bld.env[ 'INCLUDES_GTKMM-3.0' ],
-                cxxflags = gcc_flags + bld.env[ 'CXXFLAGS_GTKMM-3.0' ]
+                use     =  [ 'MAIN', 'GTKMM-3.0' ]
                 )
 
         bld.program(
                 target      = bld.env.EXE_NAME,
                 features    = [ 'cxxprogram' ],
-                includes    = bld.env.INCLUDES_MAIN + bld.env[ 'INCLUDES_GTKMM-3.0' ],
                 source      = main_cpp,
-                defines     = bld.env.DEFINES_MAIN,
-                lib         = bld.env.LIB_MAIN + bld.env[ 'LIB_GTKMM-3.0' ],
-                libpath     = bld.env.LIBPATH_MAIN,
-                linkflags   = bld.env.LINKFLAGS_MAIN + bld.env[ 'LINKFLAGS_GTKMM-3.0' ],
                 cxxflags    = gcc_flags,
-                use         = [ 'objects', 'linux-gtk' ]
+                use         = [ 'objects', 'linux-gtk', 'MAIN', 'GTKMM-3.0' ]
                 )
 
     elif sys.platform == 'win32' or sys.platform == 'cygwin':
@@ -162,15 +160,15 @@ def build( bld ):
         bld.program(
                 target      = 'runner',
                 features    = [ 'cxxprogram' ],
-                includes    = bld.env.INCLUDES_MAIN,
                 source      = [ test_runner_cpp ] + test_sources,
-                use         = [ 'objects', 'TEST' ]
+                use         = [ 'objects','linux-gtkmm', 'MAIN', 'TEST', 'GTKMM-3.0' ]
                 )
 
+    if sys.platform == 'win32' or sys.platform == 'cygwin':
         copy( bld.env.LIBPATH_TEST[0] + '/libboost_unit_test_framework-mgw47-mt-1_52.dll', out )
 
     if version_file_created == 0:
-        copy( 'VERSION', out )        
+        copy( 'VERSION', out )
         call( 'python tools/append_date.py ' + out + '/VERSION', shell=True )
 
 # vim:filetype=python
