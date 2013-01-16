@@ -54,6 +54,7 @@ test_sources    =   [
 #------------------------------------------------------------------------------
 def options( opt ):
     opt.add_option('--check', action='store', default=False, help='compile test runners')
+    opt.add_option('--static_freeglut', action='store', default=False, help='link freeglut as a static lib')
 
 #------------------------------------------------------------------------------
 def configure( cnf ):
@@ -109,12 +110,14 @@ def configure( cnf ):
                                         cnf.env.BOOST_PATH ]
 
         # dynamic linking freeglut
-        cnf.env.LIBPATH_FREEGLUT    = [ abspath + '/deps/freeglut/2.8/lib/gcc-mingw' ]
+        cnf.env.LIBPATH_FREEGLUT    = [ abspath + '/deps/freeglut/2.8/lib/gcc-mingw/bin' ]
         cnf.env.LIB_FREEGLUT        = [ 'freeglut', 'opengl32', 'glu32' ]
 
         # static linking freeglut
-#        cnf.env.STLIB_FREEGLUT  = [ 'freeglut_static' ]
-#        cnf.env.DEFINES_FREEGLUT= [ 'FREEGLUT_STATIC' ]
+        if cnf.options.static_freeglut:
+            cnf.env.STLIBPATH_FREEGLUT= [ abspath + '/deps/freeglut/2.8/lib/gcc-mingw/lib' ]
+            cnf.env.STLIB_FREEGLUT  = [ 'freeglut_static' ]
+            cnf.env.DEFINES_FREEGLUT= [ 'FREEGLUT_STATIC' ]
 
         cnf.env.STLIB_BOOST_REGEX   = [ 'boost_regex' + suffix ]
 
@@ -215,8 +218,8 @@ def build( bld ):
             use         = [ 'objects', 'MAIN', 'geometry', 'GUI', 'platform' ]
             )
 
-    if sys.platform == 'win32' or sys.platform == 'cygwin':
-        copy( bld.env.LIBPATH_FREEGLUT[0] + '/bin/freeglut.dll', out )
+    if sys.platform == 'win32' or sys.platform == 'cygwin' and not bld.options.static_freeglut:
+        copy( bld.env.LIBPATH_FREEGLUT[0] + '/freeglut.dll', out )
 
     # build test runner
     #---------------------------------------------------
