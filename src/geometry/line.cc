@@ -8,8 +8,8 @@ using namespace std;
 
 #include <GL/glu.h>
 
-#include "Point.h"
-#include "Line.h"
+#include "geometry/point.h"
+#include "geometry/line.h"
 #include "utils.h"
 
 namespace xmx {

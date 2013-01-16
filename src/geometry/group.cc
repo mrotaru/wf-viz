@@ -16,10 +16,10 @@ using namespace std;
 
 #include "globals.h"
 #include "utils.h"
-#include "Point.h"
-#include "BezierCurve.h"
-#include "Shape.h"
-#include "Group.h"
+#include "geometry/point.h"
+#include "geometry/bezier_curve.h"
+#include "geometry/shape.h"
+#include "geometry/group.h"
 using namespace xmx;
 
 // disable 'comparison between signed and unsigned integer expressions'

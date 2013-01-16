@@ -21,19 +21,13 @@ using namespace std;
 
 #include "globals.h"
 #include "utils.h"
-//#include "Point.h"
-//#include "Line.h"
-//#include "BezierCurve.h"
-//#include "Shape.h"
-//#include "Group.h"
-#include "Layer.h"
-#include "window.h"
-#include "label.h"
-#include "button.h"
-#include "mapdisplay.h"
-#include "checkbox.h"
 #include "data_utils.h"
 #include "xml_data.h"
+#include "GUI/window.h"
+#include "GUI/label.h"
+#include "GUI/button.h"
+#include "GUI/map_display.h"
+#include "GUI/checkbox.h"
 using namespace xmx;
 
 #include <GL/glu.h>
@@ -58,9 +52,6 @@ string VERSION    = "?";
 string BUILD_ID   = "?";
 string BUILD_TIME = "?";
 string build_info = "";
-
-// holds the map of the world
-//Group world;
 
 //------------------------------------------------------------------------------
 void gl_init()

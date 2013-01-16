@@ -12,11 +12,11 @@ using namespace std;
 #include <boost/foreach.hpp>
 
 #include "globals.h"
-#include "Point.h"
-#include "Primitive.h"
-#include "Shape.h"
-#include "BezierCurve.h"
-#include "Line.h"
+#include "geometry/point.h"
+#include "geometry/primitive.h"
+#include "geometry/shape.h"
+#include "geometry/bezier_curve.h"
+#include "geometry/line.h"
 
 namespace xmx {
 

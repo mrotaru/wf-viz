@@ -7,7 +7,7 @@
 
 #include "utils.h"
 #include "globals.h"
-#include "Shape.h"
+#include "geometry/shape.h"
 
 namespace xmx {
 

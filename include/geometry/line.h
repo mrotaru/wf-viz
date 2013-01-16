@@ -3,7 +3,7 @@
 
 #include <string>
 #include <GL/glu.h>
-#include "Primitive.h"
+#include "geometry/primitive.h"
 
 namespace xmx {
 

@@ -7,8 +7,8 @@ using namespace std;
 
 #include "globals.h"
 #include "utils.h"
-#include "Point.h"
-#include "BezierCurve.h"
+#include "geometry/point.h"
+#include "geometry/bezier_curve.h"
 
 namespace xmx {
 

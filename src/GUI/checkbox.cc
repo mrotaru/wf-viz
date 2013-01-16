@@ -1,6 +1,6 @@
-#include "gui_utils.h"
-#include "window.h"
-#include "checkbox.h"
+#include "GUI/gui_utils.h"
+#include "GUI/window.h"
+#include "GUI/checkbox.h"
 
 namespace xmx {
 

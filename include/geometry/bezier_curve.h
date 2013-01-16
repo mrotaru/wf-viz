@@ -5,8 +5,8 @@
 #include <GL/glu.h>
 
 #include "globals.h"
-#include "Point.h"
-#include "Primitive.h"
+#include "geometry/point.h"
+#include "geometry/primitive.h"
 
 namespace xmx {
 

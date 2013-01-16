@@ -13,11 +13,12 @@ using namespace std;
 
 #include "shapefil.h"
 
-#include "window.h"
-#include "button.h"
 #include "utils.h"
-#include "gui_utils.h"
-#include "mapdisplay.h"
+
+#include "GUI/window.h"
+#include "GUI/button.h"
+#include "GUI/gui_utils.h"
+#include "GUI/map_display.h"
 
 namespace xmx
 {

@@ -1,8 +1,8 @@
 #include <GL/glut.h>
 
-#include "window.h"
-#include "button.h"
-#include "gui_utils.h"
+#include "GUI/window.h"
+#include "GUI/button.h"
+#include "GUI/gui_utils.h"
 
 namespace xmx
 {

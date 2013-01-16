@@ -9,9 +9,9 @@ using namespace std;
 #include <boost/shared_ptr.hpp>
 
 #include "utils.h"
-#include "Point.h"
-#include "Primitive.h"
-#include "BezierCurve.h"
+#include "geometry/point.h"
+#include "geometry/primitive.h"
+#include "geometry/bezier_curve.h"
 
 namespace xmx {
 

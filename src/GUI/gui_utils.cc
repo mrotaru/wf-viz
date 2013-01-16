@@ -1,5 +1,5 @@
 #include "utils.h"
-#include "gui_utils.h"
+#include "GUI/gui_utils.h"
 
 namespace xmx
 {

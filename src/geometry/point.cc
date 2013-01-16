@@ -10,7 +10,7 @@ using namespace std;
 #include <windows.h>
 #endif
 
-#include "Point.h"
+#include "geometry/point.h"
 #include "utils.h"
 
 namespace xmx {

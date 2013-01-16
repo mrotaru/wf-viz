@@ -7,8 +7,9 @@ using std::shared_ptr;
 #include <GL/glut.h>
 
 #include "utils.h"
-#include "window.h"
-#include "control.h"
+
+#include "GUI/window.h"
+#include "GUI/control.h"
 
 namespace xmx
 {

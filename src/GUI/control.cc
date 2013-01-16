@@ -5,10 +5,11 @@ using namespace std;
 #include <GL/glut.h>
 
 #include "utils.h"
-#include "window.h"
-#include "gui_utils.h"
-#include "control.h"
 #include "globals.h"
+
+#include "GUI/window.h"
+#include "GUI/gui_utils.h"
+#include "GUI/control.h"
 
 namespace xmx 
 {

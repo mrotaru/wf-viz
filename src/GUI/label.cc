@@ -2,9 +2,9 @@
 #include <GL/glut.h>
 
 #include "utils.h"
-#include "gui_utils.h"
-#include "window.h"
-#include "label.h"
+#include "GUI/gui_utils.h"
+#include "GUI/window.h"
+#include "GUI/label.h"
 
 namespace xmx
 {

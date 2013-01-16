@@ -7,9 +7,9 @@ using namespace std;
 
 #include <boost/shared_ptr.hpp>
 
-#include "Shape.h"
-#include "Group.h"
-#include "Layer.h"
+#include "geometry/shape.h"
+#include "geometry/group.h"
+#include "geometry/layer.h"
 
 namespace xmx {
 
