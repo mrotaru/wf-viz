@@ -64,13 +64,10 @@ def configure( cnf ):
     cnf.env.BOOST_VER   = '1_52_0'
     cnf.env.GCC_VER     = '4.7.2'
 
-    # main program
-    cnf.env.INCLUDES                = [ './include',
-                                        './deps/freeglut/2.8/include',
-                                        './deps/shapelib/include' ]
-
-    cnf.env.INCLUDES_SHAPELIB       = [ './deps/shapelib/include' ]
+    cnf.env.INCLUDES                = [ './include' ]
     cnf.env.INCLUDES_FREEGLUT       = [ './deps/freeglut/2.8/include' ]
+    cnf.env.INCLUDES_SHAPELIB       = [ './deps/shapelib/include' ]
+    cnf.env.STLIB_SHAPELIB          = [ 'shp' ]
 
     cnf.env.CXXFLAGS = [ '-c', '-g', '-O2', '-Wall', '-fpermissive', '-std=c++0x' ]
 
@@ -103,8 +100,8 @@ def configure( cnf ):
 
         cnf.env.INCLUDES.append( cnf.env.BOOST_PATH )
         cnf.env.LINKFLAGS_MAIN      = [ '-static-libgcc' ]
-        cnf.env.STLIBPATH           = [ abspath + '/lib/gcc-ubuntu',
-                                        abspath + '/deps/shapelib/lib/gcc-ubuntu' ]
+        cnf.env.STLIBPATH           = [ abspath + '/lib/gcc-ubuntu' ]
+        cnf.env.STLIBPATH_SHAPELIB  = [ abspath + '/deps/shapelib/lib/gcc-ubuntu' ]
 
     # WINDOWS
     #--------------------------------------------------------------------------
@@ -112,12 +109,12 @@ def configure( cnf ):
         cnf.env.BOOST_PATH = 'e:/code/boost_' + cnf.env.BOOST_VER
         cnf.env.boost_suffix = '-mgw47-mt-1_52'
 
-        # dynamic linking freeglut
-        cnf.env.LIBPATH_FREEGLUT    = [ abspath + '/deps/freeglut/2.8/lib/gcc-mingw/bin' ]
-        cnf.env.LIB_FREEGLUT        = [ 'freeglut', 'opengl32', 'glu32' ]
-
-        # static linking freeglut
-        if cnf.options.static_freeglut:
+        if not cnf.options.static_freeglut:
+            # dynamic linking freeglut
+            cnf.env.LIBPATH_FREEGLUT    = [ abspath + '/deps/freeglut/2.8/lib/gcc-mingw/bin' ]
+            cnf.env.LIB_FREEGLUT        = [ 'freeglut', 'opengl32', 'glu32' ]
+        else:
+            # static linking freeglut
             cnf.env.STLIBPATH_FREEGLUT= [ abspath + '/deps/freeglut/2.8/lib/gcc-mingw/lib' ]
             cnf.env.STLIB_FREEGLUT  = [ 'freeglut_static' ]
             cnf.env.DEFINES_FREEGLUT= [ 'FREEGLUT_STATIC' ]
@@ -130,9 +127,8 @@ def configure( cnf ):
 
         cnf.env.LINKFLAGS_MAIN      = [ '-static-libgcc', '-static-libstdc++', '-Wl,--subsystem,windows' ]
         cnf.env.LIB_MAIN            = [ 'gdi32', 'winmm', 'comdlg32' ]
-        cnf.env.STLIBPATH           = [ abspath + '/lib/gcc-mingw',
-                                        abspath + '/deps/shapelib/lib/gcc-mingw',
-                                        abspath + '/deps/freeglut/2.8/lib/gcc-mingw/lib' ]
+        cnf.env.STLIBPATH           = [ abspath + '/lib/gcc-mingw' ]
+        cnf.env.STLIBPATH_SHAPELIB  = [ abspath + '/deps/shapelib/lib/gcc-mingw' ]
         cnf.env.LIBPATH             = [ abspath + '/lib/gcc-mingw' ]
 
         # for building the test runners
@@ -152,7 +148,6 @@ def build( bld ):
     else:
         bld.env.EXE_NAME = "wf-viz"
 
-    print bld.env
     # build platform-independent objects
     #-----------------------------------
     bld.objects(
@@ -165,10 +160,6 @@ def build( bld ):
             use         = 'BOOST_REGEX'
             )
 
-    # declare shp as a static library
-    #--------------------------------
-    bld.read_stlib( 'shp', paths = bld.env.STLIBPATH )
-
     # build geometry static lib
     #-----------------------------------
     bld.shlib(
@@ -177,12 +168,12 @@ def build( bld ):
             use         =  [ 'FREEGLUT', 'objects', 'utils' ]
             )
 
-    # build GUI static lib
+    # build GUI shared lib
     #-----------------------------------
     bld.shlib(
             source      = sources_gui,
             target      = 'GUI',
-            use         = [ 'FREEGLUT', 'objects', 'utils', 'shp' ]
+            use         = [ 'FREEGLUT', 'objects', 'utils', 'SHAPELIB' ]
             )
 
     # build platform-specific object, to be linked into the main program
@@ -193,7 +184,7 @@ def build( bld ):
             use         = 'PLATFORM' # on linux, GTKMM stuff; blank on Win
             )
 
-    # build main progrma
+    # build main program
     #-------------------------------------------------------------------
     bld.program(
             target      = bld.env.EXE_NAME,
