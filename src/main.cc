@@ -12,7 +12,7 @@ using namespace std;
 #if defined (__WIN32__)
     #include "platform/win32.h"
 #elif __linux
-    #include "platform/linux-gtk.h"
+    #include "platform/linux_gtk.h"
 #endif
 
 #include <boost/foreach.hpp>
@@ -91,8 +91,8 @@ void zoom_in_clicked()          { map_display -> setScale( map_display -> getSca
 void zoom_out_clicked()         { map_display -> setScale( map_display -> getScale() - 0.05f ); }
 void zoom_reset_clicked()       { map_display -> setScale( 1.0f ); map_display -> setMapOffsetX( 0 ); map_display -> setMapOffsetY( 0 ); }
 
-void year_plus_clicked()        
-{ 
+void year_plus_clicked()
+{
     map_display -> setYear( map_display -> getYear() + 1 );
     year_display -> setText( "Year: " + to_string( map_display -> getYear()) );
 }
@@ -123,7 +123,7 @@ void app_init()
     auto window2 = shared_ptr< Window >( new Window( 450,  70, 400, 450, "Map of the world" ) );
 
     // controls
-    label1 = shared_ptr< Label >( new Label( 200, 18, "This is a label" ) ); 
+    label1 = shared_ptr< Label >( new Label( 200, 18, "This is a label" ) );
     auto checkbox1 = shared_ptr< CheckBox >( new CheckBox( 200, 18, "test a checkbox" ) );
     auto load_shapefile = shared_ptr< Button >( new Button( 100, 22, "Load shapefile" ) );
     load_shapefile -> setOnClick( load_shapefile_clicked );
@@ -143,7 +143,7 @@ void app_init()
     year_minus -> setOnClick( year_minus_clicked );
     year_display = shared_ptr< Label >( new Label( 60, 22, "Year: N/A" ) );
 
-    string help_text = 
+    string help_text =
         " Click 'Load Shapefile' and select a shapefile to load."
         "\nIf the window showing the map is selected, you can use '+'"
         "\nand '-' to zoom in and out, and the arrow keys to pan the map.";
@@ -215,7 +215,7 @@ void gl_reshape_callback( int nWidht, int nHeight )
 void gl_mouse_click_callback( int button, int state, int x, int y )
 {
     label1->setText( "click: x = " + to_string( x ) + ", y = " + to_string( y ) +
-            ", button: " + to_string( button ) + ", state: " + to_string( state )); 
+            ", button: " + to_string( button ) + ", state: " + to_string( state ));
     glutPostRedisplay();
 
     if( state ) drag_started_on = shared_ptr< Control >();
@@ -244,7 +244,7 @@ void gl_mouse_drag_callback( int x, int y )
         dragged_control->setX( x - drag_offset_x );
         dragged_control->setY( y - drag_offset_y );
         dragged_control->draw();
-        glutPostRedisplay(); 
+        glutPostRedisplay();
     }
     else
     {
@@ -305,7 +305,7 @@ int main( int argc, char *argv[] )
 {
     glutInit( &argc, argv );
     glutInitDisplayMode( GLUT_DOUBLE | GLUT_RGB | GLUT_MULTISAMPLE );
-     
+
     // window
     window_width = 900;
     window_height = 600;
@@ -327,6 +327,6 @@ int main( int argc, char *argv[] )
     glutSpecialFunc         ( gl_keyboard_callback );
 
     glutMainLoop();
-    
+
     return 0;
 }

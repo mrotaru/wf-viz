@@ -1,6 +1,6 @@
 #include <iostream>
 #include <string.h>
-#include "platform/linux-gtk.h"
+#include "platform/linux_gtk.h"
 
 namespace xmx {
 
