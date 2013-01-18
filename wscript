@@ -82,13 +82,13 @@ def configure( cnf ):
                         uselib_store = 'PLATFORM',
                         msg="Checking for gtkmm-3.0" )
 
+        cnf.env.STLIBPATH_FREEGLUT  = [ abspath + '/deps/freeglut/2.8/lib/gcc-ubuntu/lib' ]
         if not cnf.options.static_freeglut:
             # dynamic linking freeglut
             cnf.env.LIBPATH_FREEGLUT    = [ abspath + '/deps/freeglut/2.8/lib/gcc-ubuntu/bin' ]
             cnf.env.LIB_FREEGLUT        = [ 'glut', 'GLU' ]
         else:
             # static linking freeglut
-            cnf.env.STLIBPATH_FREEGLUT  = [ abspath + '/deps/freeglut/2.8/lib/gcc-ubuntu/lib' ]
             cnf.env.STLIB_FREEGLUT      = [ 'glut' ]
             cnf.env.DEFINES_FREEGLUT    = [ 'FREEGLUT_STATIC' ]
 
@@ -109,15 +109,15 @@ def configure( cnf ):
         cnf.env.BOOST_PATH = 'e:/code/boost_' + cnf.env.BOOST_VER
         cnf.env.boost_suffix = '-mgw47-mt-1_52'
 
+        cnf.env.STLIBPATH_FREEGLUT  = [ abspath + '/deps/freeglut/2.8/lib/gcc-mingw/lib' ]
         if not cnf.options.static_freeglut:
             # dynamic linking freeglut
             cnf.env.LIBPATH_FREEGLUT    = [ abspath + '/deps/freeglut/2.8/lib/gcc-mingw/bin' ]
             cnf.env.LIB_FREEGLUT        = [ 'freeglut', 'opengl32', 'glu32' ]
         else:
             # static linking freeglut
-            cnf.env.STLIBPATH_FREEGLUT= [ abspath + '/deps/freeglut/2.8/lib/gcc-mingw/lib' ]
-            cnf.env.STLIB_FREEGLUT  = [ 'freeglut_static' ]
-            cnf.env.DEFINES_FREEGLUT= [ 'FREEGLUT_STATIC' ]
+            cnf.env.STLIB_FREEGLUT      = [ 'freeglut_static' ]
+            cnf.env.DEFINES_FREEGLUT    = [ 'FREEGLUT_STATIC' ]
 
         cnf.env.STLIB_BOOST_REGEX   = [ 'boost_regex' + cnf.env.boost_suffix ]
 
@@ -166,7 +166,7 @@ def build( bld ):
     bld.shlib(
             source      = sources_geometry,
             target      = 'geometry',
-            use         =  [ 'objects', 'utils' ]
+            use         =  [ 'objects', 'utils', 'FREEGLUT' ]
             )
 
     # build GUI shared lib
@@ -174,7 +174,7 @@ def build( bld ):
     bld.shlib(
             source      = sources_gui,
             target      = 'GUI',
-            use         = [ 'objects', 'utils', 'SHAPELIB' ]
+            use         = [ 'objects', 'utils', 'SHAPELIB', 'FREEGLUT' ]
             )
 
     # build platform-specific object, to be linked into the main program
