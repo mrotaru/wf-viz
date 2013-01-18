@@ -125,6 +125,7 @@ def configure( cnf ):
         global sources_platform;
         sources_platform            = [ 'src/platform/win32.cc' ]
 
+        cnf.env.INCLUDES.append( cnf.env.BOOST_PATH )
         cnf.env.LINKFLAGS_MAIN      = [ '-static-libgcc', '-static-libstdc++', '-Wl,--subsystem,windows' ]
         cnf.env.LIB_MAIN            = [ 'gdi32', 'winmm', 'comdlg32' ]
         cnf.env.STLIBPATH           = [ abspath + '/lib/gcc-mingw' ]
@@ -157,7 +158,7 @@ def build( bld ):
     bld.objects(
             source      = utils_cc,
             target      = 'utils',
-            use         = 'BOOST_REGEX'
+            use         = [ 'BOOST_REGEX', 'FREEGLUT' ]
             )
 
     # build geometry static lib
@@ -165,7 +166,7 @@ def build( bld ):
     bld.shlib(
             source      = sources_geometry,
             target      = 'geometry',
-            use         =  [ 'FREEGLUT', 'objects', 'utils' ]
+            use         =  [ 'objects', 'utils' ]
             )
 
     # build GUI shared lib
@@ -173,7 +174,7 @@ def build( bld ):
     bld.shlib(
             source      = sources_gui,
             target      = 'GUI',
-            use         = [ 'FREEGLUT', 'objects', 'utils', 'SHAPELIB' ]
+            use         = [ 'objects', 'utils', 'SHAPELIB' ]
             )
 
     # build platform-specific object, to be linked into the main program
