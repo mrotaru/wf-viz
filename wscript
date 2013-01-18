@@ -53,7 +53,8 @@ test_sources    =   [
 #------------------------------------------------------------------------------
 def options( opt ):
     opt.add_option('--check', action='store', default=False, help='compile test runners')
-    opt.add_option('--static_freeglut', action='store', default=False, help='link freeglut as a static lib')
+    opt.add_option('--static_freeglut', action='store', default=False, help='statically link freeglut')
+    opt.add_option('--static_libs', action='store', default=False, help='statically link project libraries')
 
 #------------------------------------------------------------------------------
 def configure( cnf ):
@@ -102,6 +103,11 @@ def configure( cnf ):
         cnf.env.LINKFLAGS_MAIN      = [ '-static-libgcc' ]
         cnf.env.STLIBPATH           = [ abspath + '/lib/gcc-ubuntu' ]
         cnf.env.STLIBPATH_SHAPELIB  = [ abspath + '/deps/shapelib/lib/gcc-ubuntu' ]
+
+        # since project-specific dynamic libraries cannot be easily located
+        # on Linux, they are statically linked
+        if not cnf.options.static_libs:
+            cnf.options.static_libs = True
 
     # WINDOWS
     #--------------------------------------------------------------------------
@@ -161,21 +167,38 @@ def build( bld ):
             use         = [ 'BOOST_REGEX', 'FREEGLUT' ]
             )
 
-    # build geometry static lib
-    #-----------------------------------
-    bld.shlib(
-            source      = sources_geometry,
-            target      = 'geometry',
-            use         =  [ 'objects', 'utils', 'FREEGLUT' ]
-            )
+    if not bld.options.static_libs:
+        # build geometry shared lib
+        #-----------------------------------
+        bld.shlib(
+                source      = sources_geometry,
+                target      = 'geometry',
+                use         =  [ 'objects', 'utils', 'FREEGLUT' ]
+                )
 
-    # build GUI shared lib
-    #-----------------------------------
-    bld.shlib(
-            source      = sources_gui,
-            target      = 'GUI',
-            use         = [ 'objects', 'utils', 'SHAPELIB', 'FREEGLUT' ]
-            )
+        # build GUI shared lib
+        #-----------------------------------
+        bld.shlib(
+                source      = sources_gui,
+                target      = 'GUI',
+                use         = [ 'objects', 'utils', 'SHAPELIB', 'FREEGLUT' ]
+                )
+    else:
+        # build geometry static lib
+        #-----------------------------------
+        bld.stlib(
+                source      = sources_geometry,
+                target      = 'geometry',
+                use         =  [ 'objects', 'utils', 'FREEGLUT' ]
+                )
+
+        # build GUI static lib
+        #-----------------------------------
+        bld.stlib(
+                source      = sources_gui,
+                target      = 'GUI',
+                use         = [ 'objects', 'utils', 'SHAPELIB', 'FREEGLUT' ]
+                )
 
     # build platform-specific object, to be linked into the main program
     #-------------------------------------------------------------------
