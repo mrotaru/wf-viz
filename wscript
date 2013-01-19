@@ -50,12 +50,17 @@ test_sources    =   [
                     'tests/testUtils.cc'
                     ]
 
+# options processed by the configure and build commands
 #------------------------------------------------------------------------------
 def options( opt ):
-    opt.add_option('--check', action='store', default=False, help='compile test runners')
-    opt.add_option('--static_freeglut', action='store', default=False, help='statically link freeglut')
-    opt.add_option('--static_libs', action='store', default=False, help='statically link project libraries')
+    opt.add_option('--static_freeglut', action='store_true', default=False,
+            help='statically link freeglut')
+    opt.add_option('--static_libs',     action='store_true', default=False,
+            help='build and link project libraries')
+    opt.add_option('--check',           action='store_true', default=False,
+            help='compile and run tests')
 
+# set pl
 #------------------------------------------------------------------------------
 def configure( cnf ):
     cnf.load( 'g++' )
@@ -84,14 +89,14 @@ def configure( cnf ):
                         msg="Checking for gtkmm-3.0" )
 
         cnf.env.STLIBPATH_FREEGLUT  = [ abspath + '/deps/freeglut/2.8/lib/gcc-ubuntu/lib' ]
-        if not cnf.options.static_freeglut:
-            # dynamic linking freeglut
-            cnf.env.LIBPATH_FREEGLUT    = [ abspath + '/deps/freeglut/2.8/lib/gcc-ubuntu/bin' ]
-            cnf.env.LIB_FREEGLUT        = [ 'glut', 'GLU' ]
-        else:
+        if cnf.options.static_freeglut:
             # static linking freeglut
             cnf.env.STLIB_FREEGLUT      = [ 'glut' ]
             cnf.env.DEFINES_FREEGLUT    = [ 'FREEGLUT_STATIC' ]
+        else:
+            # dynamic linking freeglut
+            cnf.env.LIBPATH_FREEGLUT    = [ abspath + '/deps/freeglut/2.8/lib/gcc-ubuntu/bin' ]
+            cnf.env.LIB_FREEGLUT        = [ 'glut', 'GLU' ]
 
         cnf.env.STLIB_BOOST_REGEX   = [ 'boost_regex' + cnf.env.boost_suffix ]
 
@@ -112,18 +117,19 @@ def configure( cnf ):
     # WINDOWS
     #--------------------------------------------------------------------------
     elif sys.platform == 'win32' or sys.platform == 'cygwin':
-        cnf.env.BOOST_PATH = 'e:/code/boost_' + cnf.env.BOOST_VER
-        cnf.env.boost_suffix = '-mgw47-mt-1_52'
+        cnf.env.BOOST_PATH          = 'e:/code/boost_' + cnf.env.BOOST_VER
+        cnf.env.boost_suffix        = '-mgw47-mt-1_52'
+        cnf.env.FREEGLUT_DLL        = abspath + '/deps/freeglut/2.8/lib/gcc-mingw/bin/freeglut.dll'
 
         cnf.env.STLIBPATH_FREEGLUT  = [ abspath + '/deps/freeglut/2.8/lib/gcc-mingw/lib' ]
-        if not cnf.options.static_freeglut:
-            # dynamic linking freeglut
-            cnf.env.LIBPATH_FREEGLUT    = [ abspath + '/deps/freeglut/2.8/lib/gcc-mingw/bin' ]
-            cnf.env.LIB_FREEGLUT        = [ 'freeglut', 'opengl32', 'glu32' ]
-        else:
+        if cnf.options.static_freeglut:
             # static linking freeglut
             cnf.env.STLIB_FREEGLUT      = [ 'freeglut_static' ]
             cnf.env.DEFINES_FREEGLUT    = [ 'FREEGLUT_STATIC' ]
+        else:
+            # dynamic linking freeglut
+            cnf.env.STLIB_FREEGLUT      = [ 'freeglut' ]
+            cnf.env.LIB_FREEGLUT        = [ 'freeglut', 'opengl32', 'glu32' ]
 
         cnf.env.STLIB_BOOST_REGEX   = [ 'boost_regex' + cnf.env.boost_suffix ]
 
@@ -133,7 +139,7 @@ def configure( cnf ):
 
         cnf.env.INCLUDES.append( cnf.env.BOOST_PATH )
         cnf.env.LINKFLAGS_MAIN      = [ '-static-libgcc', '-static-libstdc++', '-Wl,--subsystem,windows' ]
-        cnf.env.LIB_MAIN            = [ 'gdi32', 'winmm', 'comdlg32' ]
+        cnf.env.LIB_MAIN            = [ 'opengl32', 'gdi32', 'winmm', 'comdlg32', 'glu32' ]
         cnf.env.STLIBPATH           = [ abspath + '/lib/gcc-mingw' ]
         cnf.env.STLIBPATH_SHAPELIB  = [ abspath + '/deps/shapelib/lib/gcc-mingw' ]
         cnf.env.LIBPATH             = [ abspath + '/lib/gcc-mingw' ]
@@ -159,7 +165,7 @@ def build( bld ):
     #-----------------------------------
     bld.objects(
             source      = sources,
-            target      = 'objects',
+            target      = 'objects'
             )
     bld.objects(
             source      = utils_cc,
@@ -167,38 +173,31 @@ def build( bld ):
             use         = [ 'BOOST_REGEX', 'FREEGLUT' ]
             )
 
-    if not bld.options.static_libs:
-        # build geometry shared lib
-        #-----------------------------------
-        bld.shlib(
-                source      = sources_geometry,
-                target      = 'geometry',
-                use         =  [ 'objects', 'utils', 'FREEGLUT' ]
-                )
+    # options to build geometry lib
+    #-----------------------------------
+    geometry_dict = dict( 
+            source      = sources_geometry,
+            target      = 'geometry',
+            use         = [ 'objects', 'utils', 'FREEGLUT' ]
+            )
 
-        # build GUI shared lib
-        #-----------------------------------
-        bld.shlib(
-                source      = sources_gui,
-                target      = 'GUI',
-                use         = [ 'objects', 'utils', 'SHAPELIB', 'FREEGLUT' ]
-                )
+    # options to build GUI lib
+    #-----------------------------------
+    gui_dict = dict(
+            source      = sources_gui,
+            target      = 'GUI',
+            use         = [ 'objects', 'utils', 'SHAPELIB', 'FREEGLUT' ]
+            )
+    
+    # static or dynamic local libs
+    #-----------------------------------
+    if bld.options.static_libs:
+        bld.stlib( **geometry_dict )
+        bld.stlib( **gui_dict )
     else:
-        # build geometry static lib
-        #-----------------------------------
-        bld.stlib(
-                source      = sources_geometry,
-                target      = 'geometry',
-                use         =  [ 'objects', 'utils', 'FREEGLUT' ]
-                )
+        bld.shlib( **geometry_dict )
+        bld.shlib( **gui_dict )
 
-        # build GUI static lib
-        #-----------------------------------
-        bld.stlib(
-                source      = sources_gui,
-                target      = 'GUI',
-                use         = [ 'objects', 'utils', 'SHAPELIB', 'FREEGLUT' ]
-                )
 
     # build platform-specific object, to be linked into the main program
     #-------------------------------------------------------------------
@@ -214,11 +213,11 @@ def build( bld ):
             target      = bld.env.EXE_NAME,
             features    = [ 'cxxprogram' ],
             source      = main_cc,
-            use         = [ 'objects', 'MAIN', 'geometry', 'GUI', 'platform' ]
+            use         = [ 'objects', 'MAIN', 'geometry', 'GUI', 'platform','FREEGLUT' ]
             )
 
     if sys.platform == 'win32' or sys.platform == 'cygwin' and not bld.options.static_freeglut:
-        copy( bld.env.LIBPATH_FREEGLUT[0] + '/freeglut.dll', out )
+        copy( bld.env.FREEGLUT_DLL, out )
 
     # build test runner
     #---------------------------------------------------
